@@ -289,6 +289,112 @@ REST, GraphQL and PoP native compare like this:
 <tr><th>Compatible with the other APIs</th><td>No</td><td>No</a></td><td>Yes</td></tr>
 </table>
 
+## Architecture Design and Implementation
+
+### Custom-Querying API
+
+Similar to GraphQL, PoP also provides an API which can be queried from the client, which retrieves exactly the data fields which are requested and nothing more. The custom-querying API is accessed by appending `/api` to the URL and adding parameter `fields` with the list of fields to retrieve from the queried resources. 
+
+For instance, the following link fetches a collection of posts. By adding `fields=title,content,datetime` we retrieve only these items:
+
+- Original: https://nextapi.getpop.org/posts/?output=json
+- Custom-querying: https://nextapi.getpop.org/posts/api/?fields=id|title|content|datetime
+
+The links above demonstrate fetching data only for the queried resources. What about their relationships? For instance, let’s say that we want to retrieve a list of posts with fields "title" and "content", each post’s comments with fields "content" and "date", and the author of each comment with fields "name" and "url". To achieve this in GraphQL we would implement the following query:
+
+```graph
+query {
+  post {
+    title
+    content
+    comments {
+      content
+      date
+      author {
+        name
+        url
+      }
+    }
+  }
+}
+```
+
+PoP, instead, uses a query translated into its corresponding “dot syntax” expression, which can then be supplied through parameter fields. Querying on a “post” resource, this value is:
+
+```properties
+fields=title,content,comments.content,comments.date,comments.author.name,comments.author.url
+```
+
+Or it can be simplified, using | to group all fields applied to the same resource:
+
+```properties
+fields=title|content,comments.content|date,comments.author.name|url
+```
+
+When executing this query on a [single post](https://nextapi.getpop.org/posts/a-lovely-tango/api/?fields=id|title|content,comments.content|date,comments.author.name|url) we obtain exactly the required data for all involved resources:
+
+```javascript
+{
+  "datasetmodulesettings": {
+    "dataload-dataquery-singlepost-fields": {
+      "dbkeys": {
+        "id": "posts",
+        "comments": "comments",
+        "comments.author": "users"
+      }
+    }
+  },
+  "datasetmoduledata": {
+    "dataload-dataquery-singlepost-fields": {
+      "dbobjectids": [
+        23691
+      ]
+    }
+  },
+  "databases": {
+    "posts": {
+      "23691": {
+        "id": 23691,
+        "title": "A lovely tango",
+        "content": "<div class=\"responsiveembed-container\"><iframe width=\"480\" height=\"270\" src=\"https:\\/\\/www.youtube.com\\/embed\\/sxm3Xyutc1s?feature=oembed\" frameborder=\"0\" allowfullscreen><\\/iframe><\\/div>\n",
+        "comments": [
+          "25094",
+          "25164"
+        ]
+      }
+    },
+    "comments": {
+      "25094": {
+        "id": "25094",
+        "content": "<p><a class=\"hashtagger-tag\" href=\"https:\\/\\/newapi.getpop.org\\/tags\\/videos\\/\">#videos<\\/a>\\u00a0<a class=\"hashtagger-tag\" href=\"https:\\/\\/newapi.getpop.org\\/tags\\/tango\\/\">#tango<\\/a><\\/p>\n",
+        "date": "4 Aug 2016",
+        "author": "851"
+      },
+      "25164": {
+        "id": "25164",
+        "content": "<p>fjlasdjf;dlsfjdfsj<\\/p>\n",
+        "date": "19 Jun 2017",
+        "author": "1924"
+      }
+    },
+    "users": {
+      "851": {
+        "id": 851,
+        "name": "Leonardo Losoviz",
+        "url": "https:\\/\\/newapi.getpop.org\\/u\\/leo\\/"
+      },
+      "1924": {
+        "id": 1924,
+        "name": "leo2",
+        "url": "https:\\/\\/newapi.getpop.org\\/u\\/leo2\\/"
+      }
+    }
+  }
+}
+```
+
+Hence, PoP can query resources in a REST fashion, and specify schema-based queries in a GraphQL fashion, and we will obtain exactly what is required, without over or underfetching data, and normalizing data in the database so that no data is duplicated. The query can include any number of nested relationships, and these are resolved with linear complexity time: worst case of O(n+m), where n is the number of nodes that switch domain (in this case 2: `comments` and `comments.author`) and m is the number of retrieved results (in this case 5: 1 post + 2 comments + 2 users), and average case of O(n).
+
 ## Change log
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
