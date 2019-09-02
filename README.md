@@ -9,15 +9,25 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 -->
 
-Component-based API
-
+API for PoP
 
 ## Install
 
 Via Composer
 
 ``` bash
-$ composer require getpop/api
+$ composer require getpop/api dev-master
+```
+
+**Note:** Your `composer.json` file must have the configuration below to accept minimum stability `"dev"` (there are no releases for PoP yet, and the code is installed directly from the `master` branch):
+
+```javascript
+{
+    ...
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    ...
+}
 ```
 
 <!--
