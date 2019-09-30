@@ -92,7 +92,7 @@ query {
 }
 ```
 
-Is equivalent to the following query:
+Is equivalent to the following single-line query:
 
 ```
 id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url
@@ -100,7 +100,7 @@ id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|
 
 Our endpoint therefore becomes:
 
-[/api/graphql/?fields=id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url](https://nextapi.getpop.org/api/rest/?fields=id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url)
+[/api/graphql/?fields=id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url](https://nextapi.getpop.org/api/graphql/?fields=id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url)
 
 ### Field arguments
 
