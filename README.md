@@ -42,13 +42,13 @@ $ composer require getpop/api dev-master
 
 2. Add your query under URL parameter `fields`
 
-    [/api/graphql/?fields=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|author.id|name)
+    [?fields=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|author.id|name)
 
 ### Visualize the schema
 
 The schema documenting all fields is available under field `__schema`:
 
-[/api/graphql/?fields=__schema](https://nextapi.getpop.org/api/graphql/?fields=__schema)
+[?fields=__schema](https://nextapi.getpop.org/api/graphql/?fields=__schema)
 
 ## Query syntax
 
