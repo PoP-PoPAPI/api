@@ -246,6 +246,12 @@ Overriding fields #2:
 
 - Normal vs "Try new features" behaviour: [posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata)](https://nextapi.getpop.org/api/graphql/?fields=posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata))
 
+Context: [context](https://nextapi.getpop.org/api/graphql/?fields=context)
+
+Context variable: [var(name:datastructure)](https://nextapi.getpop.org/api/graphql/?fields=var(name:datastructure))
+
+Operator over context variable: [equals(field:var(name:datastructure);value:graphql)|equals(field:var(name:datastructure);value:rest)](https://nextapi.getpop.org/api/graphql/?fields=equals(field:var(name:datastructure);value:graphql)|equals(field:var(name:datastructure);value:rest))
+
 ### Warning messages
 
 Deprecated fields: [posts.id|title|published](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|published)
