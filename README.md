@@ -237,10 +237,18 @@ Fragments with aliases: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)@
 
 Fragments with variables: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:$limit)&fragments[fr2]=id|title&variables[limit]=1](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:$limit)&fragments[fr2]=id|title&variables[limit]=1)
 
-Directives:
+Directives (with variables):
 
 - Include: [posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=true](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=true) and [posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=)
 - Skip: [posts.id|title|url<skip(if-field:echo(value:$skip))>&variables[skip]=true](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url<skip(if-field:echo(value:$skip))>&variables[skip]=true) and [posts.id|title|url<skip(if-field:echo(value:$skip))>&variables[skip]=](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url<skip(if-field:echo(value:$skip))>&variables[skip]=)
+
+Directives with fields:
+
+- Include: [posts.id|title|comments<include(if-field:has-comments)>.id|content](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|comments<include(if-field:has-comments)>.id|content)
+
+Directives with operators and fields:
+
+- Skip: [posts.id|title|comments<skip(if-field:not(field:has-comments))>.id|content](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|comments<skip(if-field:not(field:has-comments))>.id|content)
 
 Overriding fields #1: 
 
