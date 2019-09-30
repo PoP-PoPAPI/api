@@ -207,7 +207,9 @@ REST, GraphQL and PoP native compare like this:
 
 ## Query examples
 
-Variables: [?fields=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://newapi.getpop.org/api/graphql/?fields=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template)
+Variables: [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template)
+
+Bookmarks: [posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name)
 
 
 
