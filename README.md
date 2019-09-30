@@ -211,6 +211,12 @@ Variables: [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&va
 
 Bookmarks: [posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name)
 
+Field args: [posts.id|title|is-status(status:draft)|is-status(status:published)](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|is-status(status:draft)|is-status(status:published))
+
+Operators: [posts.id|title|or(fields:is-status(status:draft),is-status(status:published))](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|or(fields:is-status(status:draft),is-status(status:published)))
+
+Schema errors: [posts.id|title|non-existant-field|is-status(status:non-existant-value)|not()](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|non-existant-field|is-status(status:non-existant-value)|not())
+
 
 
 <!--
