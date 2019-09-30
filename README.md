@@ -224,7 +224,11 @@ Deprecated fields: [posts.id|title|published](https://nextapi.getpop.org/api/gra
 Overriding fields: 
 
 - Normal behaviour: [posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|excerpt)
-- "Experimental" branch: [posts.id|title|excerpt(branch:experimental)](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|excerpt(branch:experimental))
+- "Experimental" branch: [posts.id|title|excerpt(branch:experimental;length:30)](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|excerpt(branch:experimental;length:30))
+
+Overriding fields: 
+
+- Normal vs "Try new features" behaviour: [posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata)](https://nextapi.getpop.org/api/graphql/?fields=posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata))
 
 
 
