@@ -155,10 +155,10 @@ The response of the API can use both the REST and GraphQL formats, simply by ins
 
 The PoP API provides several features that neither REST or GraphQL support:
 
-- ✅ URL-based queries ([example](https://nextapi.getpop.org/api/rest/?fields=posts.id|title|date|content))
-- ✅ Operators: `AND`, `OR`, `NOT`, etc ([example](https://nextapi.getpop.org/api/rest/?fields=posts.id|title|not(field:is-status(status:publish))))
-- ✅ Field composition: Query fields inside of fields ([example](https://nextapi.getpop.org/api/rest/?fields=posts.id|title|or(fields:is-status(status:publish),is-status(status:draft))))
-- ✅ Access context variables ([example](https://nextapi.getpop.org/api/rest/?fields=context), [example](https://nextapi.getpop.org/api/rest/?fields=var(name:output)))
+- ✅ URL-based queries ([example](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|date|content))
+- ✅ Operators: `AND`, `OR`, `NOT`, etc ([example](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|not(field:is-status(status:publish))))
+- ✅ Field composition: Query fields inside of fields ([example](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|or(fields:is-status(status:publish),is-status(status:draft))))
+- ✅ Access context variables ([example](https://nextapi.getpop.org/api/graphql/?fields=context), [example](https://nextapi.getpop.org/api/graphql/?fields=var(name:output)))
 - ✅ Lower time complexity to execute queries (see below)
 - Others (coming soon)
 
@@ -204,6 +204,13 @@ REST, GraphQL and PoP native compare like this:
 <tr><th>Compatible with the other APIs</th><td>No</td><td>No</a></td><td>Yes</td></tr>
 </table>
 -->
+
+## Query examples
+
+Variables: [?fields=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://newapi.getpop.org/api/graphql/?fields=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template)
+
+
+
 <!--
 ## Architecture Design and Implementation
 
