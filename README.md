@@ -225,6 +225,15 @@ Field args: [posts.id|title|is-status(status:draft)|is-status(status:published)]
 
 Operators: [posts.id|title|or(fields:is-status(status:draft),is-status(status:published))](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|or(fields:is-status(status:draft),is-status(status:published)))
 
+Overriding fields #1: 
+
+- Normal behaviour: [posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|excerpt)
+- "Experimental" branch: [posts.id|title|excerpt(branch:experimental;length:30)](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|excerpt(branch:experimental;length:30))
+
+Overriding fields #2: 
+
+- Normal vs "Try new features" behaviour: [posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata)](https://nextapi.getpop.org/api/graphql/?fields=posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata))
+
 Schema errors: [posts.id|title|non-existant-field|is-status(status:non-existant-value)|not()](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|non-existant-field|is-status(status:non-existant-value)|not())
 
 Variable errors: [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3)
@@ -234,15 +243,6 @@ Bookmark errors: [posts(searchfor:template;limit:3)[searchposts].id|title,[searc
 DB errors: coming soon...
 
 Deprecated fields: [posts.id|title|published](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|published)
-
-Overriding fields: 
-
-- Normal behaviour: [posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|excerpt)
-- "Experimental" branch: [posts.id|title|excerpt(branch:experimental;length:30)](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|excerpt(branch:experimental;length:30))
-
-Overriding fields: 
-
-- Normal vs "Try new features" behaviour: [posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata)](https://nextapi.getpop.org/api/graphql/?fields=posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata))
 
 
 
