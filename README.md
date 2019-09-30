@@ -88,7 +88,7 @@ query {
             title
             url
         }
-        }
+      }
     }
   }
 }
