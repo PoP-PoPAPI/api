@@ -48,37 +48,7 @@ The schema listing all the available fields is available under field `__schema`:
 
 [/api/graphql/?fields=__schema](https://nextapi.getpop.org/api/graphql/?fields=__schema)
 
-## Features
-
-### Same advantages as both GraphQL and REST
-
-The PoP API provides the benefits of both REST and GraphQL APIs, at the same time:
-
-- 🤘🏽 No over/under-fetching data (as in GraphQL)
-- 🤘🏽 Shape of the response mirrors the query (as in GraphQL)
-- 🤘🏽 Passing parameters to the query nodes, at any depth, for filtering/pagination/formatting/etc (as in GraphQL)
-- 💪🏻 Server-side caching (as in REST)
-- 💪🏻 Secure: Not chance of Denial of Service attacks (as in REST)
-- 💪🏻 Provide default data when no query is provided (as in REST)
-
-### Additional features, unsupported by both GraphQL and REST
-
-The PoP API provides several features that neither REST or GraphQL support:
-
-- ✅ URL-based queries ([example](https://nextapi.getpop.org/api/rest/?fields=posts.id|title|date|content))
-- ✅ Operators: `AND`, `OR`, `NOT`, etc ([example](https://nextapi.getpop.org/api/rest/?fields=posts.id|title|not(field:is-status(status:publish))))
-- ✅ Field composition: Query fields inside of fields ([example](https://nextapi.getpop.org/api/rest/?fields=posts.id|title|or(fields:is-status(status:publish),is-status(status:draft))))
-- ✅ Access context variables ([example](https://nextapi.getpop.org/api/rest/?fields=context), [example](https://nextapi.getpop.org/api/rest/?fields=var(name:output)))
-- Others (coming soon)
-
-### Generate GraphQL and REST-compatible responses
-
-The response of the API can use both the REST and GraphQL formats, simply by installing the corresponding extension:
-
-- [PoP REST API](https://github.com/getpop/api-rest)
-- [PoP GraphQL API](https://github.com/getpop/api-graphql)
-
-## Query syntax
+### Query syntax
 
 PoP accepts the query through parameter `fields`, with a syntax similar to that from GraphQL but provided as a single-line query, in which:
 
@@ -130,27 +100,59 @@ Our endpoint therefore becomes:
 
 [/api/graphql/?fields=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url](https://nextapi.getpop.org/api/rest/?fields=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url)
 
-### Field arguments
+#### Field arguments
 
 A field can have arguments: an array of `key:value` properties, appended next to the field name enclosed with `()` and separated with `;`, which modify the output from the field. 
 
 For instance, an author's posts can be ordered (`posts(order:title|asc)`) and limited to a string and number of results (`posts(searchfor:template;limit:3)`), a date can be printed with a specific format (`posts.date(format:d/m/Y)`), the featured image can be retrieved for a specific size (`featuredimage-props(size:large)`), and others.
 
-### Aliases
+#### Aliases
 
 Description coming soon...
 
-### Bookmarks
+#### Bookmarks
 
 Description coming soon...
 
-### Variables
+#### Variables
 
 Description coming soon...
 
-### Fragments
+#### Fragments
 
 Description coming soon...
+
+
+## Features
+
+### Same advantages as both GraphQL and REST
+
+The PoP API provides the benefits of both REST and GraphQL APIs, at the same time:
+
+- 🤘🏽 No over/under-fetching data (as in GraphQL)
+- 🤘🏽 Shape of the response mirrors the query (as in GraphQL)
+- 🤘🏽 Passing parameters to the query nodes, at any depth, for filtering/pagination/formatting/etc (as in GraphQL)
+- 💪🏻 Server-side caching (as in REST)
+- 💪🏻 Secure: Not chance of Denial of Service attacks (as in REST)
+- 💪🏻 Provide default data when no query is provided (as in REST)
+
+### Additional features, unsupported by both GraphQL and REST
+
+The PoP API provides several features that neither REST or GraphQL support:
+
+- ✅ URL-based queries ([example](https://nextapi.getpop.org/api/rest/?fields=posts.id|title|date|content))
+- ✅ Operators: `AND`, `OR`, `NOT`, etc ([example](https://nextapi.getpop.org/api/rest/?fields=posts.id|title|not(field:is-status(status:publish))))
+- ✅ Field composition: Query fields inside of fields ([example](https://nextapi.getpop.org/api/rest/?fields=posts.id|title|or(fields:is-status(status:publish),is-status(status:draft))))
+- ✅ Access context variables ([example](https://nextapi.getpop.org/api/rest/?fields=context), [example](https://nextapi.getpop.org/api/rest/?fields=var(name:output)))
+- Others (coming soon)
+
+### Generate GraphQL and REST-compatible responses
+
+The response of the API can use both the REST and GraphQL formats, simply by installing the corresponding extension:
+
+- [PoP REST API](https://github.com/getpop/api-rest)
+- [PoP GraphQL API](https://github.com/getpop/api-graphql)
+
 
 <!--
 ### Examples
