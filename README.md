@@ -78,13 +78,18 @@ The response of the API can use both the REST and GraphQL formats, simply by ins
 - [PoP REST API](https://github.com/getpop/api-rest)
 - [PoP GraphQL API](https://github.com/getpop/api-graphql)
 
-## Defining what data to fetch through fields
+## Query syntax
 
-Through a parameter `datastructure` in the URL we can select if the response must be REST-compatible or GraphQL-compatible. To fetch the data fields, for REST it supports default fields (as in typical REST behaviour), or explicitly querying for the fields, like in GraphQL. For this, the GraphQL query is passed in the URL through parameter `fields`, converted to a "custom dot notation" format:
+PoP accepts the query through parameter `fields`, following a syntax based on that from GraphQL, but provided as a single-line query:
 
-- Defining the path to a field with `.`
-- Separating different nodes with `,`
-- Grouping all property fields on a node with `|`
+- Fields are separated with `,`
+- Define the field path with `.`
+- Group all properties on a node with `|`
+- Field arguments are surrounded by `(...)`, and separated by `;`
+- Aliases are prepended with `@`
+- Variables are prefixed with `$`
+- Fragments are prefixed with `--`
+- Directives are surrounded by `<...>`, inside which they follow the same syntax as a field
 
 For instance, the following GraphQL query:
 
@@ -112,7 +117,7 @@ query {
 }
 ```
 
-Is converted to the "custom dot notation" format like this:
+Is equivalent to this query for PoP:
 
 ```
 id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url
@@ -121,15 +126,36 @@ id|title|url|content,comments.id|content|date,comments.author.id|name|url,commen
 And our endpoint URL becomes:
 
 ```
-{ENDPOINT-URL}/api/?datastructure=graphql&fields=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url
+/api/graphql/?fields=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url
 ```
 
 ### Field arguments
 
-Similar to GraphQL, a field may have arguments: an array of `key:value` properties, appended next to the field name enclosed with `()` and separated with `;`, which modify the output from the field. 
+A field can have arguments: an array of `key:value` properties, appended next to the field name enclosed with `()` and separated with `;`, which modify the output from the field. 
 
 For instance, an author's posts can be ordered (`posts(order:title|asc)`) and limited to a string and number of results (`posts(searchfor:template;limit:3)`), a date can be printed with a specific format (`posts.date(format:d/m/Y)`), the featured image can be retrieved for a specific size (`featuredimage-props(size:large)`), and others.
 
+### Aliases
+
+Description coming soon...
+
+### Bookmars
+
+Description coming soon...
+
+### Variables
+
+Description coming soon...
+
+### Fragments
+
+Description coming soon...
+
+### Aliases
+
+Description coming soon...
+
+<!--
 ### Examples
 
 **REST:**
@@ -141,12 +167,13 @@ For instance, an author's posts can be ordered (`posts(order:title|asc)`) and li
 
 - [Retrieving client-custom data](https://nextapi.getpop.org/en/posts/api/?datastructure=graphql&fields=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url)
 - [Returning an author's posts that contain a certain string](https://nextapi.getpop.org/author/themedemos/api/?datastructure=graphql&fields=id|name,posts(searchfor:template).id|title|url)
-<!--
-- [Filtering data in a nested node](https://nextapi.getpop.org/en/posts/api/?datastructure=graphql&fields=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts(limit:2;offset:1;searchfor:elephant).id|title|url)
-- [Passing attributes to format elements](https://nextapi.getpop.org/en/posts/api/?datastructure=graphql&fields=id|title|url|content,comments.id|content|date,comments.author.id|name|url|avatar(size:40)|share-url(provider:facebook)|share-url(provider:twitter),comments.author.posts.id|title|url)
--->
 
 **Note:** Setting parameter `datastructure` to either `graphql` or `rest` formats the response for the corresponding API. If `datastructure` is left empty, the response is the native one for PoP: a relational database structure (see "Data API layer" section below).
+-->
+
+## Time complexity of executing queries
+
+PoP fetches a piece data from the database only once, even if the query fetches it several times. The query can include any number of nested relationships, and these are resolved with linear complexity time: worst case of `O(n^2)` (where `n` is the number of nodes that switch domain plus the number of retrieved results), and average case of `O(n)`.
 
 ## Comparison among APIs
 
@@ -169,6 +196,7 @@ REST, GraphQL and PoP native compare like this:
 <tr><th>Compatible with the other APIs</th><td>No</td><td>No</a></td><td>Yes</td></tr>
 </table>
 
+<!--
 ## Architecture Design and Implementation
 
 ### Custom-Querying API
@@ -274,6 +302,7 @@ When executing this query on a [single post](https://nextapi.getpop.org/posts/a-
 ```
 
 Hence, PoP can query resources in a REST fashion, and specify schema-based queries in a GraphQL fashion, and we will obtain exactly what is required, without over or underfetching data, and normalizing data in the database so that no data is duplicated. The query can include any number of nested relationships, and these are resolved with linear complexity time: worst case of O(n+m), where n is the number of nodes that switch domain (in this case 2: `comments` and `comments.author`) and m is the number of retrieved results (in this case 5: 1 post + 2 comments + 2 users), and average case of O(n).
+-->
 
 ## Change log
 
