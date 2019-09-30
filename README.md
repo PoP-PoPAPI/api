@@ -70,23 +70,25 @@ For instance, the following GraphQL query:
 
 ```graphql
 query {
-  id
-  title
-  url
-  content
-  comments {
+  posts {
     id
+    title
+    url
     content
-    date
-    author {
-      id
-      name
-      url
-      posts {
+    comments {
         id
-        title
+        content
+        date
+        author {
+        id
+        name
         url
-      }
+        posts {
+            id
+            title
+            url
+        }
+        }
     }
   }
 }
@@ -95,12 +97,12 @@ query {
 Is equivalent to the following single-line query:
 
 ```
-id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url
+posts.id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url
 ```
 
 Our endpoint therefore becomes:
 
-[/api/graphql/?fields=id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url](https://nextapi.getpop.org/api/graphql/?fields=id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url)
+[/api/graphql/?fields=posts.id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url)
 
 ### Field arguments
 
