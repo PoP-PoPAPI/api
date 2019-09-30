@@ -182,6 +182,7 @@ The PoP API provides several features that neither REST or GraphQL support:
 
 PoP fetches a piece data from the database only once, even if the query fetches it several times. The query can include any number of nested relationships, and these are resolved with linear complexity time: worst case of `O(n^2)` (where `n` is the number of nodes that switch domain plus the number of retrieved results), and average case of `O(n)`.
 
+<!--
 ## Comparison among APIs
 
 REST, GraphQL and PoP native compare like this:
@@ -202,7 +203,7 @@ REST, GraphQL and PoP native compare like this:
 <tr><th>Open to DoS attack?</th><td>No</td><td><a href="https://blog.apollographql.com/securing-your-graphql-api-from-malicious-queries-16130a324a6b">Yes</a></td><td>No</td></tr>
 <tr><th>Compatible with the other APIs</th><td>No</td><td>No</a></td><td>Yes</td></tr>
 </table>
-
+-->
 <!--
 ## Architecture Design and Implementation
 
