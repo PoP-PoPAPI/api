@@ -207,6 +207,12 @@ REST, GraphQL and PoP native compare like this:
 
 ## Query examples
 
+Grouping properties: [posts.id|title|url](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url)
+
+Deep nesting: [posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url)
+
+Field args: [posts(searchfor:template;limit:3).id|title](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3).id|title)
+
 Variables: [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template)
 
 Bookmarks: [posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name)
