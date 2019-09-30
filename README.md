@@ -205,7 +205,9 @@ REST, GraphQL and PoP native compare like this:
 </table>
 -->
 
-## Query examples
+## Examples
+
+### Queries
 
 Grouping properties: [posts.id|title|url](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url)
 
@@ -225,6 +227,12 @@ Field args: [posts.id|title|is-status(status:draft)|is-status(status:published)]
 
 Operators: [posts.id|title|or(fields:is-status(status:draft),is-status(status:published))](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|or(fields:is-status(status:draft),is-status(status:published)))
 
+Fragments: [posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title)
+
+Concatenating fragments: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title)
+
+Fragments inside fragments: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3&fragments[fr3]=author.id|url](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3&fragments[fr3]=author.id|url)
+
 Overriding fields #1: 
 
 - Normal behaviour: [posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|excerpt)
@@ -234,15 +242,21 @@ Overriding fields #2:
 
 - Normal vs "Try new features" behaviour: [posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata)](https://nextapi.getpop.org/api/graphql/?fields=posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata))
 
+### Warning messages
+
+Deprecated fields: [posts.id|title|published](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|published)
+
+### Error messages
+
 Schema errors: [posts.id|title|non-existant-field|is-status(status:non-existant-value)|not()](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|non-existant-field|is-status(status:non-existant-value)|not())
 
 Variable errors: [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3)
 
 Bookmark errors: [posts(searchfor:template;limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name)
 
-DB errors: coming soon...
+Fragment errors: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3withtypo&fragments[fr3]=author.id|url](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3withtypo&fragments[fr3]=author.id|url)
 
-Deprecated fields: [posts.id|title|published](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|published)
+DB errors: coming soon...
 
 
 
