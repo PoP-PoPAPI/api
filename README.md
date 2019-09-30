@@ -32,6 +32,8 @@ $ composer require getpop/api dev-master
 
 ## Usage
 
+### Query data
+
 1. Select the endpoint:
 
     - GraphQL: [/api/graphql/](https://nextapi.getpop.org/api/graphql/)
