@@ -233,6 +233,10 @@ Concatenating fragments: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)
 
 Fragments inside fragments: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3&fragments[fr3]=author.id|url](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3&fragments[fr3]=author.id|url)
 
+Fragments with aliases: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)@firstpost&fragments[fr2]=id|title](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)@firstpost&fragments[fr2]=id|title)
+
+Fragments with variables: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:$limit)&fragments[fr2]=id|title&variables[limit]=1](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:$limit)&fragments[fr2]=id|title&variables[limit]=1)
+
 Overriding fields #1: 
 
 - Normal behaviour: [posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|excerpt)
