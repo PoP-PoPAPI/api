@@ -136,6 +136,13 @@ The PoP API provides the benefits of both REST and GraphQL APIs, at the same tim
 - 💪🏻 Secure: Not chance of Denial of Service attacks (as in REST)
 - 💪🏻 Provide default data when no query is provided (as in REST)
 
+### Generate GraphQL and REST-compatible responses
+
+The response of the API can use both the REST and GraphQL formats, simply by installing the corresponding extension:
+
+- [PoP REST API](https://github.com/getpop/api-rest)
+- [PoP GraphQL API](https://github.com/getpop/api-graphql)
+
 ### Additional features, unsupported by both GraphQL and REST
 
 The PoP API provides several features that neither REST or GraphQL support:
@@ -144,15 +151,8 @@ The PoP API provides several features that neither REST or GraphQL support:
 - ✅ Operators: `AND`, `OR`, `NOT`, etc ([example](https://nextapi.getpop.org/api/rest/?fields=posts.id|title|not(field:is-status(status:publish))))
 - ✅ Field composition: Query fields inside of fields ([example](https://nextapi.getpop.org/api/rest/?fields=posts.id|title|or(fields:is-status(status:publish),is-status(status:draft))))
 - ✅ Access context variables ([example](https://nextapi.getpop.org/api/rest/?fields=context), [example](https://nextapi.getpop.org/api/rest/?fields=var(name:output)))
+- ✅ Lower time complexity to execute queries (see below)
 - Others (coming soon)
-
-### Generate GraphQL and REST-compatible responses
-
-The response of the API can use both the REST and GraphQL formats, simply by installing the corresponding extension:
-
-- [PoP REST API](https://github.com/getpop/api-rest)
-- [PoP GraphQL API](https://github.com/getpop/api-graphql)
-
 
 <!--
 ### Examples
