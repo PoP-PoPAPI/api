@@ -106,9 +106,13 @@ Our endpoint therefore becomes:
 
 ### Field arguments
 
-A field can have arguments: an array of `key:value` properties, appended next to the field name enclosed with `()` and separated with `;`, which modify the output from the field. 
+A field can have arguments: an array of `key:value` properties, appended next to the field name enclosed with `()` and separated with `;`, which modify the output (results, formatting, etc) from the field. 
 
-For instance, an author's posts can be ordered (`posts(order:title|asc)`) and limited to a string and number of results (`posts(searchfor:template;limit:3)`), a date can be printed with a specific format (`posts.date(format:d/m/Y)`), the featured image can be retrieved for a specific size (`featuredimage-props(size:large)`), and others.
+Examples: 
+
+- Order posts by title: [posts(order:title|asc)](https://nextapi.getpop.org/api/graphql/?fields=posts(order:title|asc).id|title|url|date)
+- Search "template" and limit it to 3 results: [posts(searchfor:template;limit:3)](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3).id|title|url|date)
+- Format a date: [posts.date(format:d/m/Y)](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url|date(format:d/m/Y))
 
 ### Aliases
 
