@@ -219,7 +219,12 @@ Schema errors: [posts.id|title|non-existant-field|is-status(status:non-existant-
 
 DB errors: coming soon...
 
-Deprecated field: [posts.id|title|published](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|published)
+Deprecated fields: [posts.id|title|published](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|published)
+
+Overriding fields: 
+
+- Normal behaviour: [posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|excerpt)
+- "Experimental" branch: [posts.id|title|excerpt(branch:experimental)](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|excerpt(branch:experimental))
 
 
 
