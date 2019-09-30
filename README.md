@@ -46,11 +46,11 @@ $ composer require getpop/api dev-master
 
 ### Visualize the schema
 
-The schema listing all the available fields is available under field `__schema`:
+The schema documenting all fields is available under field `__schema`:
 
 [/api/graphql/?fields=__schema](https://nextapi.getpop.org/api/graphql/?fields=__schema)
 
-### Query syntax
+## Query syntax
 
 PoP accepts the query through parameter `fields`, with a syntax similar to that from GraphQL but provided as a single-line query, in which:
 
@@ -95,32 +95,32 @@ query {
 Is equivalent to the following query:
 
 ```
-id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url
+id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url
 ```
 
 Our endpoint therefore becomes:
 
-[/api/graphql/?fields=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url](https://nextapi.getpop.org/api/rest/?fields=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url)
+[/api/graphql/?fields=id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url](https://nextapi.getpop.org/api/rest/?fields=id|title|url|content|comments.id|content|date|author.id|name|url|posts.id|title|url)
 
-#### Field arguments
+### Field arguments
 
 A field can have arguments: an array of `key:value` properties, appended next to the field name enclosed with `()` and separated with `;`, which modify the output from the field. 
 
 For instance, an author's posts can be ordered (`posts(order:title|asc)`) and limited to a string and number of results (`posts(searchfor:template;limit:3)`), a date can be printed with a specific format (`posts.date(format:d/m/Y)`), the featured image can be retrieved for a specific size (`featuredimage-props(size:large)`), and others.
 
-#### Aliases
+### Aliases
 
 Description coming soon...
 
-#### Bookmarks
+### Bookmarks
 
 Description coming soon...
 
-#### Variables
+### Variables
 
 Description coming soon...
 
-#### Fragments
+### Fragments
 
 Description coming soon...
 
