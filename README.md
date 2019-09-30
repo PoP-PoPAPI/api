@@ -209,33 +209,61 @@ REST, GraphQL and PoP native compare like this:
 
 ### Queries
 
-Grouping properties: [posts.id|title|url](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url)
+Grouping properties: 
 
-Deep nesting: [posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url)
+- [posts.id|title|url](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url)
 
-Field args: [posts(searchfor:template;limit:3).id|title](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3).id|title)
+Deep nesting: 
 
-Variables: [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template)
+- [posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url)
 
-Bookmarks: [posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name)
+Field args: 
 
-Aliases: [posts(searchfor:template;limit:3)@searchposts.id|title](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3)@searchposts.id|title)
+- [posts(searchfor:template;limit:3).id|title](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3).id|title)
 
-Bookmark + Alias: [posts(searchfor:template;limit:3)[@searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3)[@searchposts].id|title,[searchposts].author.id|name)
+Variables: 
 
-Field args: [posts.id|title|is-status(status:draft)|is-status(status:published)](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|is-status(status:draft)|is-status(status:published))
+- [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template)
 
-Operators: [posts.id|title|or(fields:is-status(status:draft),is-status(status:published))](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|or(fields:is-status(status:draft),is-status(status:published)))
+Bookmarks: 
 
-Fragments: [posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title)
+- [posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name)
 
-Concatenating fragments: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title)
+Aliases: 
 
-Fragments inside fragments: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3&fragments[fr3]=author.id|url](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3&fragments[fr3]=author.id|url)
+- [posts(searchfor:template;limit:3)@searchposts.id|title](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3)@searchposts.id|title)
 
-Fragments with aliases: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)@firstpost&fragments[fr2]=id|title](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)@firstpost&fragments[fr2]=id|title)
+Bookmark + Alias: 
 
-Fragments with variables: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:$limit)&fragments[fr2]=id|title&variables[limit]=1](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:$limit)&fragments[fr2]=id|title&variables[limit]=1)
+- [posts(searchfor:template;limit:3)[@searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3)[@searchposts].id|title,[searchposts].author.id|name)
+
+Field args: 
+
+- [posts.id|title|is-status(status:draft)|is-status(status:published)](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|is-status(status:draft)|is-status(status:published))
+
+Operators: 
+
+- [posts.id|title|or(fields:is-status(status:draft),is-status(status:published))](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|or(fields:is-status(status:draft),is-status(status:published)))
+
+Fragments: 
+
+- [posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title)
+
+Concatenating fragments: 
+
+- [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title)
+
+Fragments inside fragments: 
+
+- [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3&fragments[fr3]=author.id|url](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3&fragments[fr3]=author.id|url)
+
+Fragments with aliases: 
+
+- [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)@firstpost&fragments[fr2]=id|title](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)@firstpost&fragments[fr2]=id|title)
+
+Fragments with variables: 
+
+- [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:$limit)&fragments[fr2]=id|title&variables[limit]=1](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:$limit)&fragments[fr2]=id|title&variables[limit]=1)
 
 Directives (with variables):
 
@@ -259,27 +287,45 @@ Overriding fields #2:
 
 - Normal vs "Try new features" behaviour: [posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata)](https://nextapi.getpop.org/api/graphql/?fields=posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata))
 
-Context: [context](https://nextapi.getpop.org/api/graphql/?fields=context)
+Context: 
 
-Context variable: [var(name:datastructure)](https://nextapi.getpop.org/api/graphql/?fields=var(name:datastructure))
+- [context](https://nextapi.getpop.org/api/graphql/?fields=context)
 
-Operator over context variable: [equals(field:var(name:datastructure);value:graphql)|equals(field:var(name:datastructure);value:rest)](https://nextapi.getpop.org/api/graphql/?fields=equals(field:var(name:datastructure);value:graphql)|equals(field:var(name:datastructure);value:rest))
+Context variable: 
+
+- [var(name:datastructure)](https://nextapi.getpop.org/api/graphql/?fields=var(name:datastructure))
+
+Operator over context variable: 
+
+- [equals(field:var(name:datastructure);value:graphql)|equals(field:var(name:datastructure);value:rest)](https://nextapi.getpop.org/api/graphql/?fields=equals(field:var(name:datastructure);value:graphql)|equals(field:var(name:datastructure);value:rest))
 
 ### Warning messages
 
-Deprecated fields: [posts.id|title|published](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|published)
+Deprecated fields: 
+
+- [posts.id|title|published](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|published)
 
 ### Error messages
 
-Schema errors: [posts.id|title|non-existant-field|is-status(status:non-existant-value)|not()](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|non-existant-field|is-status(status:non-existant-value)|not())
+Schema errors: 
 
-Variable errors: [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3)
+- [posts.id|title|non-existant-field|is-status(status:non-existant-value)|not()](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|non-existant-field|is-status(status:non-existant-value)|not())
 
-Bookmark errors: [posts(searchfor:template;limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name)
+Variable errors: 
 
-Fragment errors: [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3withtypo&fragments[fr3]=author.id|url](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3withtypo&fragments[fr3]=author.id|url)
+- [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3)
 
-DB errors: coming soon...
+Bookmark errors: 
+
+- [posts(searchfor:template;limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name)
+
+Fragment errors: 
+
+- [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3withtypo&fragments[fr3]=author.id|url](https://nextapi.getpop.org/api/graphql/?fields=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3withtypo&fragments[fr3]=author.id|url)
+
+DB errors: 
+
+- coming soon...
 
 
 
