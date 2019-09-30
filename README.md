@@ -217,6 +217,10 @@ Operators: [posts.id|title|or(fields:is-status(status:draft),is-status(status:pu
 
 Schema errors: [posts.id|title|non-existant-field|is-status(status:non-existant-value)|not()](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|non-existant-field|is-status(status:non-existant-value)|not())
 
+DB errors: coming soon...
+
+Deprecated field: [posts.id|title|published](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|published)
+
 
 
 <!--
