@@ -80,16 +80,19 @@ The response of the API can use both the REST and GraphQL formats, simply by ins
 
 ## Query syntax
 
-PoP accepts the query through parameter `fields`, following a syntax based on that from GraphQL, but provided as a single-line query:
+PoP accepts the query through parameter `fields`, with a syntax similar to that from GraphQL but provided as a single-line query, in which:
 
 - Fields are separated with `,`
-- Define the field path with `.`
-- Group all properties on a node with `|`
+- The field path is delineated with `.`
+- Properties on a node are grouped with `|`
+<!--
 - Field arguments are surrounded by `(...)`, and separated by `;`
+- Bookmarks are surrounded by `[...]`
 - Aliases are prepended with `@`
 - Variables are prefixed with `$`
 - Fragments are prefixed with `--`
 - Directives are surrounded by `<...>`, inside which they follow the same syntax as a field
+-->
 
 For instance, the following GraphQL query:
 
@@ -117,17 +120,15 @@ query {
 }
 ```
 
-Is equivalent to this query for PoP:
+Is equivalent to the following query:
 
 ```
 id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url
 ```
 
-And our endpoint URL becomes:
+Our endpoint therefore becomes:
 
-```
-/api/graphql/?fields=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url
-```
+[/api/graphql/?fields=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url](https://nextapi.getpop.org/api/rest/?fields=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url)
 
 ### Field arguments
 
@@ -139,7 +140,7 @@ For instance, an author's posts can be ordered (`posts(order:title|asc)`) and li
 
 Description coming soon...
 
-### Bookmars
+### Bookmarks
 
 Description coming soon...
 
@@ -148,10 +149,6 @@ Description coming soon...
 Description coming soon...
 
 ### Fragments
-
-Description coming soon...
-
-### Aliases
 
 Description coming soon...
 
