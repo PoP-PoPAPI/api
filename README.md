@@ -53,17 +53,29 @@ RewriteRule ^api/?$ /?scheme=api [L,P,QSA]
 
 ## Usage
 
-1. Select the endpoint:
+1. Add the API endpoint to any URL:
 
-    - GraphQL: `/api/graphql/`<br/>(if [GraphQL package](https://github.com/getpop/api-graphql) installed)
-    - REST: `/api/rest/`<br/>(if [REST package](https://github.com/getpop/api-rest) installed)
-    - PoP native: `/api/`
+    - GraphQL: `.../api/graphql/`
+    - REST: `.../api/rest/`
+    - PoP native: `.../api/`
+
+> Note: to enable GraphQL and/or REST endpoints, the corresponding package must be installed: [GraphQL package](https://github.com/getpop/api-graphql), [REST package](https://github.com/getpop/api-rest) 
 
 2. Add your query under URL parameter `fields`
 
-Example: [/api/graphql/?fields=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|author.id|name)
+In the homepage, the initial selected resource on which the query is applied is `"root"`: 
 
-> Note: Query field `__schema` to visualize all available fields: [?fields=__schema](https://nextapi.getpop.org/api/graphql/?fields=__schema)
+- [/api/graphql/?fields=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|author.id|name)
+
+Otherwise, the selected resource (or resources) is the corresponding one to the URL, such as a [single post](https://nextapi.getpop.org/posts/a-lovely-tango/) or a [collection of posts](https://nextapi.getpop.org/posts/):
+
+- [/posts/a-lovely-tango/api/graphql/?fields=id|title|author.id|name](https://nextapi.getpop.org/posts/a-lovely-tango/api/graphql/?fields=id|title|author.id|name)
+- [/posts/api/graphql/?fields=id|title|author.id|name](https://nextapi.getpop.org/posts/api/graphql/?fields=id|title|author.id|name)
+
+To visualize all available fields for the resource, use query field `__schema`: 
+
+- From root: [/api/graphql/?fields=__schema](https://nextapi.getpop.org/api/graphql/?fields=__schema)
+- From posts: [/posts/api/graphql/?fields=__schema](https://nextapi.getpop.org/posts/api/graphql/?fields=__schema)
 
 
 ## Features
