@@ -59,8 +59,6 @@ RewriteRule ^api/?$ /?scheme=api [L,P,QSA]
     - REST: `.../api/rest/`
     - PoP native: `.../api/`
 
-> Note: to enable GraphQL and/or REST endpoints, the corresponding package must be installed: [GraphQL package](https://github.com/getpop/api-graphql), [REST package](https://github.com/getpop/api-rest) 
-
 2. Add your query under URL parameter `fields`
 
 In the homepage, the initial selected resource on which the query is applied is `"root"`: 
@@ -71,6 +69,8 @@ Otherwise, the selected resource, or set of resources, is the corresponding one 
 
 - [/posts/a-lovely-tango/api/graphql/?fields=id|title|author.id|name](https://nextapi.getpop.org/posts/a-lovely-tango/api/graphql/?fields=id|title|author.id|name)
 - [/posts/api/graphql/?fields=id|title|author.id|name](https://nextapi.getpop.org/posts/api/graphql/?fields=id|title|author.id|name)
+
+> Note: to enable GraphQL and/or REST endpoints, the corresponding package must be installed: [GraphQL package](https://github.com/getpop/api-graphql), [REST package](https://github.com/getpop/api-rest) 
 
 ### Visualize the schema
 
