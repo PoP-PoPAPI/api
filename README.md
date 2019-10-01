@@ -101,8 +101,8 @@ _From REST:_
 
 The response of the API can use both the REST and GraphQL formats, simply by installing the corresponding extension:
 
-- [PoP REST API](https://github.com/getpop/api-rest)
 - [PoP GraphQL API](https://github.com/getpop/api-graphql)
+- [PoP REST API](https://github.com/getpop/api-rest)
 
 ### Additional features, unsupported by both GraphQL and REST
 
