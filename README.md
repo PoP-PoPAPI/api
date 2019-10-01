@@ -30,6 +30,27 @@ $ composer require getpop/api dev-master
 }
 ```
 
+### Enable pretty permalinks
+
+Add the following code in the `.htaccess` file to enable API endpoint `/api/`:
+
+```apache
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# Rewrite from /some-url/api/ to /some-url/?scheme=api
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteRule ^(.*)/api/?$ /$1/?scheme=api [L,P,QSA]
+
+# Rewrite from api/ to /?scheme=api
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteRule ^api/?$ /?scheme=api [L,P,QSA]
+</IfModule>
+```
+
 ## Usage
 
 1. Select the endpoint:
