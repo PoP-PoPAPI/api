@@ -67,7 +67,7 @@ In the homepage, the initial selected resource on which the query is applied is 
 
 - [/api/graphql/?fields=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|author.id|name)
 
-Otherwise, the selected resource (or resources) is the corresponding one to the URL, such as a [single post](https://nextapi.getpop.org/posts/a-lovely-tango/) or a [collection of posts](https://nextapi.getpop.org/posts/):
+Otherwise, the selected resource, or set of resources, is the corresponding one to the URL, such as a [single post](https://nextapi.getpop.org/posts/a-lovely-tango/) or a [collection of posts](https://nextapi.getpop.org/posts/):
 
 - [/posts/a-lovely-tango/api/graphql/?fields=id|title|author.id|name](https://nextapi.getpop.org/posts/a-lovely-tango/api/graphql/?fields=id|title|author.id|name)
 - [/posts/api/graphql/?fields=id|title|author.id|name](https://nextapi.getpop.org/posts/api/graphql/?fields=id|title|author.id|name)
