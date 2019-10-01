@@ -157,7 +157,12 @@ Example:
 
 ### Directives
 
-Description coming soon...
+A “directive” enables to modify the response from one or many fields, in any way. They must be surrounded by `<...>` and, if more than one directive is provided, separated by `,`. A directive can also receive arguments, with a syntax similar to field arguments: they are surrounded by `(...)`, and its paris of `key:value` are separated by `;`.
+
+Examples:
+
+- [posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=true](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=true)
+- [posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=)
 
 ## Features
 
