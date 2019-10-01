@@ -32,23 +32,17 @@ $ composer require getpop/api dev-master
 
 ## Usage
 
-### Query data
-
 1. Select the endpoint:
 
-    - GraphQL: [/api/graphql/](https://nextapi.getpop.org/api/graphql/)
-    - REST: [/api/rest/](https://nextapi.getpop.org/api/rest/)
-    - PoP native: [/api/](https://nextapi.getpop.org/api/)
+    - GraphQL: `/api/graphql/`
+    - PoP native: `/api/`
 
 2. Add your query under URL parameter `fields`
 
-    [?fields=...](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|author.id|name)
+Example: [/api/graphql/?fields=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|author.id|name)
 
-### Visualize the schema
+> Note: Query field `__schema` to visualize all available fields: [?fields=__schema](https://nextapi.getpop.org/api/graphql/?fields=__schema)
 
-The schema documenting all fields is available under field `__schema`:
-
-[?fields=__schema](https://nextapi.getpop.org/api/graphql/?fields=__schema)
 
 ## Features
 
