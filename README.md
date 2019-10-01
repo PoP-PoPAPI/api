@@ -106,7 +106,7 @@ Our endpoint therefore becomes:
 
 ### Field arguments
 
-A field can have arguments: an array of `key:value` properties, appended next to the field name enclosed with `()` and separated with `;`, which modify the output (results, formatting, etc) from the field. 
+A field can have arguments: An array of `key:value` properties, appended next to the field name enclosed with `()` and separated with `;`, which modify the output (results, formatting, etc) from the field. 
 
 Examples: 
 
@@ -116,7 +116,12 @@ Examples:
 
 ### Aliases
 
-Description coming soon...
+A field is, by default, output under its own definition (for instance, [posts(order:title|asc)](https://nextapi.getpop.org/api/graphql/?fields=posts(order:title|asc).id|title|url|date) is output under property `posts(order:title|asc)`). An alias, which is a property name prepended with `@`, allows to change this property to anything we desire.
+
+Examples:
+
+- [posts(order:title|asc)@orderedposts](https://nextapi.getpop.org/api/graphql/?fields=posts(order:title|asc)@orderedposts.id|title|url|date)
+- [posts.date(format:d/m/Y)@formatteddate](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url|date(format:d/m/Y)@formatteddate)
 
 ### Bookmarks
 
