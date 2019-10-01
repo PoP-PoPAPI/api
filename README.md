@@ -72,10 +72,9 @@ Otherwise, the selected resource, or set of resources, is the corresponding one 
 - [/posts/a-lovely-tango/api/graphql/?fields=id|title|author.id|name](https://nextapi.getpop.org/posts/a-lovely-tango/api/graphql/?fields=id|title|author.id|name)
 - [/posts/api/graphql/?fields=id|title|author.id|name](https://nextapi.getpop.org/posts/api/graphql/?fields=id|title|author.id|name)
 
-To visualize all available fields for the resource, use query field `__schema`: 
+To visualize all available fields, use query field `__schema` from the root: 
 
-- From root: [/api/graphql/?fields=__schema](https://nextapi.getpop.org/api/graphql/?fields=__schema)
-- From posts: [/posts/api/graphql/?fields=__schema](https://nextapi.getpop.org/posts/api/graphql/?fields=__schema)
+- [/api/graphql/?fields=__schema](https://nextapi.getpop.org/api/graphql/?fields=__schema)
 
 
 ## Features
