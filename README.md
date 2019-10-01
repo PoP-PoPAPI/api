@@ -188,6 +188,7 @@ The PoP API provides several features that neither REST or GraphQL support:
 - ✅ Field composition: Query fields inside of fields ([example](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|or(fields:is-status(status:publish),is-status(status:draft))))
 - ✅ Access context variables ([example](https://nextapi.getpop.org/api/graphql/?fields=context), [example](https://nextapi.getpop.org/api/graphql/?fields=var(name:output)))
 - ✅ Lower time complexity to execute queries (see below)
+- ✅ Complex query resolution without server-side coding (coming soon)
 - Others (coming soon)
 
 <!--
