@@ -50,6 +50,39 @@ The schema documenting all fields is available under field `__schema`:
 
 [?fields=__schema](https://nextapi.getpop.org/api/graphql/?fields=__schema)
 
+## Features
+
+### Same advantages as both GraphQL and REST
+
+The PoP API provides the benefits of both REST and GraphQL APIs, at the same time:
+
+- 🤘🏽 No over/under-fetching data (as in GraphQL)
+- 🤘🏽 Shape of the response mirrors the query (as in GraphQL)
+- 🤘🏽 Passing parameters to the query nodes, at any depth, for filtering/pagination/formatting/etc (as in GraphQL)
+- 💪🏻 Server-side caching (as in REST)
+- 💪🏻 Secure: Not chance of Denial of Service attacks (as in REST)
+- 💪🏻 Provide default data when no query is provided (as in REST)
+
+### Generate GraphQL and REST-compatible responses
+
+The response of the API can use both the REST and GraphQL formats, simply by installing the corresponding extension:
+
+- [PoP REST API](https://github.com/getpop/api-rest)
+- [PoP GraphQL API](https://github.com/getpop/api-graphql)
+
+### Additional features, unsupported by both GraphQL and REST
+
+The PoP API provides several features that neither REST or GraphQL support:
+
+- ✅ URL-based queries ([example](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|date|content))
+- ✅ Operators: `AND`, `OR`, `NOT`, etc ([example](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|not(field:is-status(status:publish))))
+- ✅ Field composition: Query fields inside of fields ([example](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|or(fields:is-status(status:publish),is-status(status:draft))))
+- ✅ Access context variables ([example](https://nextapi.getpop.org/api/graphql/?fields=context), [example](https://nextapi.getpop.org/api/graphql/?fields=var(name:output)))
+- ✅ Lower time complexity to execute queries (see below)
+- ✅ Complex query resolution without server-side coding (coming soon)
+- Others (coming soon)
+
+
 ## Query syntax
 
 PoP accepts the query through parameter `fields`, with a syntax similar to that from GraphQL but provided as a single-line query, in which:
@@ -163,38 +196,6 @@ Examples:
 
 - [posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=true](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=true)
 - [posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=)
-
-## Features
-
-### Same advantages as both GraphQL and REST
-
-The PoP API provides the benefits of both REST and GraphQL APIs, at the same time:
-
-- 🤘🏽 No over/under-fetching data (as in GraphQL)
-- 🤘🏽 Shape of the response mirrors the query (as in GraphQL)
-- 🤘🏽 Passing parameters to the query nodes, at any depth, for filtering/pagination/formatting/etc (as in GraphQL)
-- 💪🏻 Server-side caching (as in REST)
-- 💪🏻 Secure: Not chance of Denial of Service attacks (as in REST)
-- 💪🏻 Provide default data when no query is provided (as in REST)
-
-### Generate GraphQL and REST-compatible responses
-
-The response of the API can use both the REST and GraphQL formats, simply by installing the corresponding extension:
-
-- [PoP REST API](https://github.com/getpop/api-rest)
-- [PoP GraphQL API](https://github.com/getpop/api-graphql)
-
-### Additional features, unsupported by both GraphQL and REST
-
-The PoP API provides several features that neither REST or GraphQL support:
-
-- ✅ URL-based queries ([example](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|date|content))
-- ✅ Operators: `AND`, `OR`, `NOT`, etc ([example](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|not(field:is-status(status:publish))))
-- ✅ Field composition: Query fields inside of fields ([example](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|or(fields:is-status(status:publish),is-status(status:draft))))
-- ✅ Access context variables ([example](https://nextapi.getpop.org/api/graphql/?fields=context), [example](https://nextapi.getpop.org/api/graphql/?fields=var(name:output)))
-- ✅ Lower time complexity to execute queries (see below)
-- ✅ Complex query resolution without server-side coding (coming soon)
-- Others (coming soon)
 
 <!--
 ### Examples
