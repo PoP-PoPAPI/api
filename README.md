@@ -65,9 +65,9 @@ In the homepage, the initial selected resource on which the query is applied is 
 
 - [/api/graphql/?fields=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|author.id|name)
 
-Otherwise, the selected resource, or set of resources, is the corresponding one to the URL, such as a [single post](https://nextapi.getpop.org/posts/a-lovely-tango/) or a [collection of posts](https://nextapi.getpop.org/posts/):
+Otherwise, the selected resource, or set of resources, is the corresponding one to the URL, such as a [single post](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/) or a [collection of posts](https://nextapi.getpop.org/posts/):
 
-- [/posts/a-lovely-tango/api/graphql/?fields=id|title|author.id|name](https://nextapi.getpop.org/posts/a-lovely-tango/api/graphql/?fields=id|title|author.id|name)
+- [/2013/01/11/markup-html-tags-and-formatting/api/graphql/?fields=id|title|author.id|name](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/api/graphql/?fields=id|title|author.id|name)
 - [/posts/api/graphql/?fields=id|title|author.id|name](https://nextapi.getpop.org/posts/api/graphql/?fields=id|title|author.id|name)
 
 > Note: to enable GraphQL and/or REST endpoints, the corresponding package must be installed: [GraphQL package](https://github.com/getpop/api-graphql), [REST package](https://github.com/getpop/api-rest) 
@@ -441,7 +441,7 @@ Or it can be simplified, using | to group all fields applied to the same resourc
 fields=title|content,comments.content|date,comments.author.name|url
 ```
 
-When executing this query on a [single post](https://nextapi.getpop.org/posts/a-lovely-tango/api/?fields=id|title|content,comments.content|date,comments.author.name|url) we obtain exactly the required data for all involved resources:
+When executing this query on a [single post](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/api/?fields=id|title|content,comments.content|date,comments.author.name|url) we obtain exactly the required data for all involved resources:
 
 ```javascript
 {
