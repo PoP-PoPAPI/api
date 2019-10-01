@@ -116,7 +116,7 @@ Examples:
 
 ### Aliases
 
-A field is, by default, output under its own definition (for instance, [posts(order:title|asc)](https://nextapi.getpop.org/api/graphql/?fields=posts(order:title|asc).id|title|url|date) is output under property `posts(order:title|asc)`). An alias, which is a property name prepended with `@`, allows to change this property to anything we desire.
+A field is, by default, output under its own definition (for instance, [posts(order:title|asc)](https://nextapi.getpop.org/api/graphql/?fields=posts(order:title|asc).id|title|url|date) is output under property `posts(order:title|asc)`). An “alias”, which is a property name prepended with `@`, allows to change this property to anything we desire.
 
 Examples:
 
@@ -125,7 +125,19 @@ Examples:
 
 ### Bookmarks
 
-Description coming soon...
+The query allows to iterate down a path using `.` (for instance: [posts.comments.author.id|name](https://nextapi.getpop.org/api/graphql/?fields=posts.comments.author.id|name)). We can assign a “bookmark” to any specific level, as to start iterating from there once again. To use it, we place any name surrounded by `[...]` after the path level, and then the same name, also surrounded by `[...]`, as the root path level to iterate from there.
+
+Example:
+
+- [posts.comments[comments].author.id|name,[comments].post.id|title](https://nextapi.getpop.org/api/graphql/?fields=posts.comments[comments].author.id|name,[comments].post.id|title)
+
+### Bookmark with Alias
+
+Bookmarks can be combined with aliases by adding `@` to the name surrounded by `[...]`.
+
+Example:
+
+- [posts.comments[@postcomments].author.id|name,[postcomments].post.id|title](https://nextapi.getpop.org/api/graphql/?fields=posts.comments[@postcomments].author.id|name,[postcomments].post.id|title)
 
 ### Variables
 
