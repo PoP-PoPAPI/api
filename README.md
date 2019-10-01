@@ -50,12 +50,17 @@ Example: [/api/graphql/?fields=posts.id|title|author.id|name](https://nextapi.ge
 
 The PoP API provides the benefits of both REST and GraphQL APIs, at the same time:
 
-- 🤘🏽 No over/under-fetching data (as in GraphQL)
-- 🤘🏽 Shape of the response mirrors the query (as in GraphQL)
-- 🤘🏽 Passing parameters to the query nodes, at any depth, for filtering/pagination/formatting/etc (as in GraphQL)
-- 💪🏻 Server-side caching (as in REST)
-- 💪🏻 Secure: Not chance of Denial of Service attacks (as in REST)
-- 💪🏻 Provide default data when no query is provided (as in REST)
+_From GraphQL:_
+
+- ✅ No over/under-fetching data
+- ✅ Shape of the response mirrors query
+- ✅ Field arguments (for filtering/pagination/formatting/etc)
+
+_From REST:_
+
+- ✅ Server-side caching
+- ✅ Secure: Not chance of Denial of Service attacks
+- ✅ Pre-define fields
 
 ### Generate GraphQL and REST-compatible responses
 
