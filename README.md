@@ -55,7 +55,8 @@ RewriteRule ^api/?$ /?scheme=api [L,P,QSA]
 
 1. Select the endpoint:
 
-    - GraphQL: `/api/graphql/`
+    - GraphQL: `/api/graphql/`<br/>(if [GraphQL package](https://github.com/getpop/api-graphql) installed)
+    - REST: `/api/rest/`<br/>(if [REST package](https://github.com/getpop/api-rest) installed)
     - PoP native: `/api/`
 
 2. Add your query under URL parameter `fields`
