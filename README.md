@@ -141,12 +141,19 @@ Example:
 
 ### Variables
 
-Description coming soon...
+We can use variables, which are names prepended with `$`, to pass field argument values defined through URL parameters: Either under URL parameter with the variable name, or under URL parameter `variables` and then the variable name.
+
+Examples:
+
+- [posts(searchfor:$term;limit:$limit).id|title&variables[limit]=3&term=template](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:$term;limit:$limit).id|title&variables[limit]=3&term=template)
 
 ### Fragments
 
 Description coming soon...
 
+### Directives
+
+Description coming soon...
 
 ## Features
 
