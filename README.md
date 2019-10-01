@@ -251,7 +251,7 @@ Deep nesting:
 
 - [posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url](https://nextapi.getpop.org/api/graphql/?fields=posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url)
 
-Field args: 
+Field arguments: 
 
 - [posts(searchfor:template;limit:3).id|title](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:template;limit:3).id|title)
 
