@@ -141,15 +141,19 @@ Example:
 
 ### Variables
 
-We can use variables, which are names prepended with `$`, to pass field argument values defined through URL parameters: Either under URL parameter with the variable name, or under URL parameter `variables` and then the variable name.
+We can use “variables”, which are names prepended with `$`, to pass field argument values defined through URL parameters: Either under URL parameter with the variable name, or under URL parameter `variables` and then the variable name.
 
-Examples:
+Example:
 
 - [posts(searchfor:$term;limit:$limit).id|title&variables[limit]=3&term=template](https://nextapi.getpop.org/api/graphql/?fields=posts(searchfor:$term;limit:$limit).id|title&variables[limit]=3&term=template)
 
 ### Fragments
 
-Description coming soon...
+We can use “fragments”, which must be prepended using `--`, to re-use query sections.
+
+Example:
+
+- [posts(limit:2).--fr1,users(id:1).posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title](https://nextapi.getpop.org/api/graphql/?fields=posts(limit:2).--fr1,users(id:1).posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title)
 
 ### Directives
 
