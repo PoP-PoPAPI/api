@@ -1,8 +1,9 @@
 <?php
 namespace PoP\API\Schema;
-use PoP\Translation\Contracts\TranslationAPIInterface;
 use PoP\ComponentModel\GeneralUtils;
 use PoP\ComponentModel\Schema\QuerySyntax;
+use PoP\ComponentModel\Schema\QueryHelpers;
+use PoP\Translation\Contracts\TranslationAPIInterface;
 use PoP\ComponentModel\Schema\ErrorMessageStoreInterface;
 
 class FieldQueryConvertor implements FieldQueryConvertorInterface
