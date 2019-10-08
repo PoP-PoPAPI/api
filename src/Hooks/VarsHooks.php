@@ -3,6 +3,7 @@ namespace PoP\API\Hooks;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\Hooks\Facades\HooksAPIFacade;
 use PoP\API\Facades\Schema\FieldQueryConvertorFacade;
+use PoP\ComponentModel\Server\Utils;
 
 class VarsHooks
 {
@@ -26,7 +27,7 @@ class VarsHooks
         // Allow WP API to set the "routing-state" first
         // Each page is an independent configuration
         $vars = &$vars_in_array[0];
-        if (!Server\Utils::disableAPI() && $vars['scheme'] == POP_SCHEME_API) {
+        if (!Utils::disableAPI() && $vars['scheme'] == POP_SCHEME_API) {
             $this->addFieldsToVars($vars);
         } elseif ($vars['nature'] == POP_NATURE_STANDARD) {
             $dataquery_manager = DataQueryManagerFactory::getInstance();
@@ -70,7 +71,7 @@ class VarsHooks
         // Allow WP API to set the "routing-state" first
         // Each page is an independent configuration
         $vars = Engine_Vars::getVars();
-        if (!Server\Utils::disableAPI() && $vars['scheme'] == POP_SCHEME_API) {
+        if (!Utils::disableAPI() && $vars['scheme'] == POP_SCHEME_API) {
             $this->addFieldsToComponents($components);
         } elseif ($vars['routing-state']['is-standard']) {
             $dataquery_manager = DataQueryManagerFactory::getInstance();
