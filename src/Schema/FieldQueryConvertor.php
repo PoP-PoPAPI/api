@@ -1,6 +1,5 @@
 <?php
 namespace PoP\API\Schema;
-use PoP\API\Schema\QueryTokens;
 use PoP\ComponentModel\GeneralUtils;
 use PoP\ComponentModel\Schema\QuerySyntax;
 use PoP\ComponentModel\Schema\ErrorMessageStoreInterface;

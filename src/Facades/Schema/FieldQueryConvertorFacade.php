@@ -1,7 +1,7 @@
 <?php
 namespace PoP\API\Facades\Schema;
 
-use PoP\ComponentModel\Schema\FieldQueryConvertorInterface;
+use PoP\API\Schema\FieldQueryConvertorInterface;
 use PoP\Root\Container\ContainerBuilderFactory;
 
 class FieldQueryConvertorFacade
