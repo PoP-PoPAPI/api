@@ -1,0 +1,10 @@
+services:
+    field_query_convertor:
+        class: \PoP\API\Schema\FieldQueryConvertor
+        public: true
+        arguments:
+            $errorMessageStore: '@error_message_store'
+
+    PoP\API\Hooks\:
+        resource: '../src/Hooks/*'
+        public: true
