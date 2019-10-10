@@ -65,7 +65,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 // The fields are split by "."
                 // Watch out: we need to ignore all instances of "(" and ")" which may happen inside the fieldArg values!
                 // Eg: /api/?fields=posts(searchfor:this => ( and this => ) are part of the search too).id|title
-                $dotfields = GeneralUtils::splitElements($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], true);
+                $dotfields = GeneralUtils::splitElements($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING]);
 
                 // If there is a path to the node...
                 if (count($dotfields) >= 2) {
@@ -324,7 +324,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // The fields are split by "."
         // Watch out: we need to ignore all instances of "(" and ")" which may happen inside the fieldArg values!
         // Eg: /api/?fields=posts(searchfor:this => ( and this => ) are part of the search too).id|title
-        $dotfields = GeneralUtils::splitElements($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], true);
+        $dotfields = GeneralUtils::splitElements($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING]);
 
         // Replace all fragment placeholders with the actual fragments
         // Do this at the beginning, because the fragment may contain new leaves, which need be at the last level of the $dotfields array. So this array must be recalculated after replacing the fragments in
@@ -362,7 +362,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 // Replace with the actual fragment
                 $fragmentName = substr($dotfields[$pathLevel], strlen(QuerySyntax::SYMBOL_FRAGMENT_PREFIX));
                 if ($fragment = $this->getFragment($fragmentName, $fragments)) {
-                    $fragmentDotfields = GeneralUtils::splitElements($fragment, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], true);
+                    $fragmentDotfields = GeneralUtils::splitElements($fragment, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING]);
                     array_splice($dotfields, $pathLevel, 1, $fragmentDotfields);
                 } else {
                     $this->errorMessageStore->addQueryError(sprintf(
