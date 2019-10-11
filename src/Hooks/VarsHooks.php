@@ -4,7 +4,7 @@ use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\Hooks\Facades\HooksAPIFacade;
 use PoP\API\Facades\Schema\FieldQueryConvertorFacade;
 use PoP\ComponentModel\Server\Utils;
-
+use PoP\ComponentModel\DataQueryManagerFactory;
 class VarsHooks
 {
     public function __construct()
