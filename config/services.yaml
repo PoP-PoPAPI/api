@@ -11,3 +11,7 @@ services:
     PoP\API\Hooks\:
         resource: '../src/Hooks/*'
         public: true
+
+    PoP\API\DirectiveResolvers\:
+        resource: '../src/DirectiveResolvers/*'
+        public: true
