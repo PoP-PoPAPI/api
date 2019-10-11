@@ -1,6 +1,7 @@
 <?php
 namespace PoP\API\DirectiveResolvers;
 use PoP\ComponentModel\DirectiveResolvers\AbstractDirectiveResolver;
+use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 
 class SkipDirectiveResolver extends AbstractDirectiveResolver
 {
@@ -11,7 +12,7 @@ class SkipDirectiveResolver extends AbstractDirectiveResolver
     //     return self::DIRECTIVE_NAME;
     // }
 
-    public function resolveDirective($fieldResolver, array &$resultIDItems, array &$idsDataFields, array &$dbItems, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(FieldResolverInterface $fieldResolver, array &$resultIDItems, array &$idsDataFields, array &$dbItems, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         // Check the condition field. If it is satisfied, then skip those fields
         $skipDataFieldsForIds = $this->getIdsSatisfyingCondition($fieldResolver, $resultIDItems, $this->directive, $idsDataFields, $dbErrors, $dbWarnings);

@@ -1,9 +1,10 @@
 <?php
 namespace PoP\API\DirectiveResolvers;
+use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 
 trait FilterIDsSatisfyingConditionDirectiveResolverTrait
 {
-    protected function getIdsSatisfyingCondition($fieldResolver, array &$resultIDItems, string $directive, array &$idsDataFields, array &$dbErrors, array &$dbWarnings)
+    protected function getIdsSatisfyingCondition(FieldResolverInterface $fieldResolver, array &$resultIDItems, string $directive, array &$idsDataFields, array &$dbErrors, array &$dbWarnings)
     {
         // Check the condition field. If it is satisfied, then skip those fields
         $idsSatisfyingCondition = [];
