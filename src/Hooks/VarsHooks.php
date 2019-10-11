@@ -5,6 +5,8 @@ use PoP\Hooks\Facades\HooksAPIFacade;
 use PoP\API\Facades\Schema\FieldQueryConvertorFacade;
 use PoP\ComponentModel\Server\Utils;
 use PoP\ComponentModel\DataQueryManagerFactory;
+use PoP\ComponentModel\Engine_Vars;
+
 class VarsHooks
 {
     public function __construct()
