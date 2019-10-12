@@ -1,6 +1,8 @@
 <?php
 namespace PoP\API\ModuleProcessors;
 
+use PoP\ComponentModel\ModuleProcessors\AbstractDataloadModuleProcessor;
+
 abstract class AbstractRelationalFieldDataloadModuleProcessor extends AbstractDataloadModuleProcessor
 {
     protected function getInnerSubmodules(array $module): array
