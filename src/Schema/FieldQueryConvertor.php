@@ -120,8 +120,10 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         list(
                             $fieldArgsOpeningSymbolPos,
                             $fieldArgsClosingSymbolPos,
+                            $aliasSymbolPos,
                             $bookmarkOpeningSymbolPos,
                             $bookmarkClosingSymbolPos,
+                            $skipOutputIfNullSymbolPos,
                             $fieldDirectivesOpeningSymbolPos,
                             $fieldDirectivesClosingSymbolPos,
                         ) = $symbolPositions;
@@ -390,7 +392,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
             $this->translationAPI->__('The property has been ignored', 'pop-component-model');
 
         // --------------------------------------------------------
-        // Validate correctness of query constituents: fieldArgs, bookmark, directive
+        // Validate correctness of query constituents: fieldArgs, bookmark, skipOutputIfNull, directive
         // --------------------------------------------------------
         // Field Args
         list(
@@ -472,9 +474,8 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
         // --------------------------------------------------------
         // Validate correctness of order of elements: ...(...)[...]<...>
-        // (0. field name, 1. field args, 2. bookmarks, 3. field directives)
+        // (0. field name, 1. field args, 2. bookmarks, 3. skip output if null?, 4. field directives)
         // --------------------------------------------------------
-        // After the ")", it must be either the end, "@", "[" or "<"
         if ($fieldArgsOpeningSymbolPos !== false) {
             if ($fieldArgsOpeningSymbolPos == 0) {
                 return sprintf(
@@ -485,9 +486,10 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
             }
         }
 
-        // After the ")", it must be either the end, "@", "[" or "<"
+        // After the ")", it must be either the end, "@", "[", "?" or "<"
+        $aliasSymbolPos = QueryHelpers::findFieldAliasSymbolPosition($property);
+        $skipOutputIfNullSymbolPos = QueryHelpers::findSkipOutputIfNullSymbolPosition($property);
         if ($fieldArgsClosingSymbolPos !== false) {
-            $aliasSymbolPos = QueryHelpers::findFieldAliasSymbolPosition($property);
             $nextCharPos = $fieldArgsClosingSymbolPos+strlen(QuerySyntax::SYMBOL_FIELDARGS_CLOSING);
             if (!(
                 // It's in the last position
@@ -496,32 +498,58 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 ($bookmarkOpeningSymbolPos !== false && $bookmarkOpeningSymbolPos == $nextCharPos) ||
                 // Next comes "@"
                 ($aliasSymbolPos !== false && $aliasSymbolPos == $nextCharPos) ||
+                // Next comes "?"
+                ($skipOutputIfNullSymbolPos !== false && $skipOutputIfNullSymbolPos == $nextCharPos) ||
                 // Next comes "<"
                 ($fieldDirectivesOpeningSymbolPos !== false && $fieldDirectivesOpeningSymbolPos == $nextCharPos)
             )) {
                 return sprintf(
-                    $this->translationAPI->__('After \'%s\', property \'%s\' must either end or be followed by \'%s\', \'%s\' or \'%s\'. %s', 'pop-component-model'),
+                    $this->translationAPI->__('After \'%s\', property \'%s\' must either end or be followed by \'%s\', \'%s\', \'%s\' or \'%s\'. %s', 'pop-component-model'),
                     QuerySyntax::SYMBOL_FIELDARGS_CLOSING,
                     $property,
                     QuerySyntax::SYMBOL_BOOKMARK_OPENING,
                     QuerySyntax::SYMBOL_FIELDALIAS_PREFIX,
+                    QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL,
                     QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING,
                     $errorMessageEnd
                 );
             }
         }
 
-        // After the "]", it must be either the end or "<"
+        // After the "]", it must be either the end, "?" or "<"
         if ($bookmarkClosingSymbolPos !== false) {
+            $nextCharPos = $bookmarkClosingSymbolPos+strlen(QuerySyntax::SYMBOL_FIELDARGS_CLOSING);
             if (!(
                 // It's in the last position
                 ($bookmarkClosingSymbolPos == strlen($property)-strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING)) ||
-                // Next comes "["
-                ($fieldDirectivesOpeningSymbolPos !== false && $fieldDirectivesOpeningSymbolPos == $bookmarkClosingSymbolPos+strlen(QuerySyntax::SYMBOL_FIELDARGS_CLOSING))
+                // Next comes "?"
+                ($skipOutputIfNullSymbolPos !== false && $skipOutputIfNullSymbolPos == $nextCharPos) ||
+                // Next comes "<"
+                ($fieldDirectivesOpeningSymbolPos !== false && $fieldDirectivesOpeningSymbolPos == $nextCharPos)
+            )) {
+                return sprintf(
+                    $this->translationAPI->__('After \'%s\', property \'%s\' must either end or be followed by \'%s\' or \'%s\'. %s', 'pop-component-model'),
+                    QuerySyntax::SYMBOL_BOOKMARK_CLOSING,
+                    $property,
+                    QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL,
+                    QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING,
+                    $errorMessageEnd
+                );
+            }
+        }
+
+        // After the "?", it must be either the end or "<"
+        if ($skipOutputIfNullSymbolPos !== false) {
+            $nextCharPos = $skipOutputIfNullSymbolPos+strlen(QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL);
+            if (!(
+                // It's in the last position
+                ($skipOutputIfNullSymbolPos == strlen($property)-strlen(QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL)) ||
+                // Next comes "<"
+                ($fieldDirectivesOpeningSymbolPos !== false && $fieldDirectivesOpeningSymbolPos == $nextCharPos)
             )) {
                 return sprintf(
                     $this->translationAPI->__('After \'%s\', property \'%s\' must either end or be followed by \'%s\'. %s', 'pop-component-model'),
-                    QuerySyntax::SYMBOL_BOOKMARK_CLOSING,
+                    QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL,
                     $property,
                     QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING,
                     $errorMessageEnd
@@ -548,7 +576,9 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
             $fieldArgsOpeningSymbolPos,
             $fieldArgsClosingSymbolPos,
             $bookmarkOpeningSymbolPos,
+            $aliasSymbolPos,
             $bookmarkClosingSymbolPos,
+            $skipOutputIfNullSymbolPos,
             $fieldDirectivesOpeningSymbolPos,
             $fieldDirectivesClosingSymbolPos,
         ];
