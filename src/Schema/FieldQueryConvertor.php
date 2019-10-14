@@ -138,7 +138,6 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                             $bookmarkStartPos = $bookmarkOpeningSymbolPos+strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING);
                             $bookmark = substr($dotfields[$pathLevel], $bookmarkStartPos, $bookmarkClosingSymbolPos-$bookmarkStartPos);
 
-
                             // If the bookmark starts with "@", it's also a property alias.
                             $alias = '';
                             if (substr($bookmark, 0, strlen(QuerySyntax::SYMBOL_FIELDALIAS_PREFIX)) == QuerySyntax::SYMBOL_FIELDALIAS_PREFIX) {
@@ -158,7 +157,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                                         ''
                                 );
 
-                            // Recalculate the path (all the levels until the pathLevel), and store it to be used on a later iteration
+                                // Recalculate the path (all the levels until the pathLevel), and store it to be used on a later iteration
                             $bookmarkPath = $dotfields;
                             array_splice($bookmarkPath, $pathLevel+1);
                             $bookmarkPaths[$bookmark] = $bookmarkPath;
