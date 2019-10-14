@@ -5,6 +5,9 @@ use PoP\ComponentModel\Schema\QuerySyntax;
 use PoP\ComponentModel\Schema\QueryHelpers;
 use PoP\Translation\Contracts\TranslationAPIInterface;
 use PoP\ComponentModel\Schema\ErrorMessageStoreInterface;
+use function strlen;
+use function substr;
+use function count;
 
 class FieldQueryConvertor implements FieldQueryConvertorInterface
 {
@@ -61,7 +64,6 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
             // Split the ElemCount by ",". Use `splitElements` instead of `explode` so that the "," can also be inside the fieldArgs
             foreach (GeneralUtils::splitElements($dotNotation, QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_BOOKMARK_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_BOOKMARK_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $commafields) {
-
                 // The fields are split by "."
                 // Watch out: we need to ignore all instances of "(" and ")" which may happen inside the fieldArg values!
                 // Eg: /api/?fields=posts(searchfor:this => ( and this => ) are part of the search too).id|title
@@ -80,6 +82,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         (substr($firstPathLevel, -1*strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING)) == QuerySyntax::SYMBOL_BOOKMARK_CLOSING)
                     ) {
                         $bookmark = substr($firstPathLevel, strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING), strlen($firstPathLevel)-1-strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING));
+
                         // If this bookmark was not set...
                         if (!isset($bookmarkPaths[$bookmark])) {
                             // Show an error and discard this element
@@ -107,6 +110,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                             $dotfields[$pathLevel],
                             $commafields
                         );
+
                         // If the validation is a string, then it's an error
                         if (is_string($errorMessageOrSymbolPositions)) {
                             $error = (string)$errorMessageOrSymbolPositions;
@@ -131,8 +135,9 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         // If it has both "[" and "]"...
                         if ($bookmarkClosingSymbolPos !== false && $bookmarkOpeningSymbolPos !== false) {
                             // Extract the bookmark
-                            $startAliasPos = $bookmarkOpeningSymbolPos+strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING);
-                            $bookmark = substr($dotfields[$pathLevel], $startAliasPos, $bookmarkClosingSymbolPos-$startAliasPos);
+                            $bookmarkStartPos = $bookmarkOpeningSymbolPos+strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING);
+                            $bookmark = substr($dotfields[$pathLevel], $bookmarkStartPos, $bookmarkClosingSymbolPos-$bookmarkStartPos);
+
 
                             // If the bookmark starts with "@", it's also a property alias.
                             $alias = '';
@@ -244,7 +249,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                     // /api/graphql/?fields=posts(order:title|asc).id|title
                     $pipeElements = GeneralUtils::splitElements($commafields, QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
                     if (count($pipeElements) >= 2) {
-                        $pipePos = \strlen($pipeElements[0]);
+                        $pipePos = strlen($pipeElements[0]);
                         // Make sure the dot is not inside "()". Otherwise this will not work:
                         // /api/graphql/?fields=posts(order:title|asc).id|date(format:Y.m.d)
                         $pipeRest = substr($commafields, 0, $pipePos);
@@ -575,8 +580,8 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         return [
             $fieldArgsOpeningSymbolPos,
             $fieldArgsClosingSymbolPos,
-            $bookmarkOpeningSymbolPos,
             $aliasSymbolPos,
+            $bookmarkOpeningSymbolPos,
             $bookmarkClosingSymbolPos,
             $skipOutputIfNullSymbolPos,
             $fieldDirectivesOpeningSymbolPos,
