@@ -152,7 +152,12 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                                 substr($dotfields[$pathLevel], 0, $bookmarkOpeningSymbolPos).
                                 $alias.
                                 (
-                                    ($fieldDirectivesOpeningSymbolPos !== false) ?
+                                    $skipOutputIfNullSymbolPos !== false ?
+                                        QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL :
+                                        ''
+                                ).
+                                (
+                                    $fieldDirectivesOpeningSymbolPos !== false ?
                                         substr($dotfields[$pathLevel], $fieldDirectivesOpeningSymbolPos) :
                                         ''
                                 );
