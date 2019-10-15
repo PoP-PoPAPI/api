@@ -66,7 +66,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
             foreach (GeneralUtils::splitElements($dotNotation, QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_BOOKMARK_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_BOOKMARK_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $commafields) {
                 // The fields are split by "."
                 // Watch out: we need to ignore all instances of "(" and ")" which may happen inside the fieldArg values!
-                // Eg: /api/?fields=posts(searchfor:this => ( and this => ) are part of the search too).id|title
+                // Eg: /api/?query=posts(searchfor:this => ( and this => ) are part of the search too).id|title
                 $dotfields = GeneralUtils::splitElements($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
 
                 // If there is a path to the node...
@@ -167,9 +167,9 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                             array_splice($bookmarkPath, $pathLevel+1);
                             $bookmarkPaths[$bookmark] = $bookmarkPath;
                             // This works now:
-                            // ?fields=posts(limit:3;search:template)[@posts].id|title,[posts].url
+                            // ?query=posts(limit:3;search:template)[@posts].id|title,[posts].url
                             // Also support appending "@" before the bookmark for the aliases
-                            // ?fields=posts(limit:3;search:template)[@posts].id|title,[@posts].url
+                            // ?query=posts(limit:3;search:template)[@posts].id|title,[@posts].url
                             if ($alias) {
                                 $bookmarkPaths[$alias] = $bookmarkPath;
                             }
@@ -250,15 +250,15 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 while ($dotPos !== false) {
                     // Position of the first "|". Everything before there is path + first property
                     // We must make sure the "|" is not inside "()", otherwise this would fail:
-                    // /api/graphql/?fields=posts(order:title|asc).id|title
+                    // /api/graphql/?query=posts(order:title|asc).id|title
                     $pipeElements = GeneralUtils::splitElements($commafields, QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
                     if (count($pipeElements) >= 2) {
                         $pipePos = strlen($pipeElements[0]);
                         // Make sure the dot is not inside "()". Otherwise this will not work:
-                        // /api/graphql/?fields=posts(order:title|asc).id|date(format:Y.m.d)
+                        // /api/graphql/?query=posts(order:title|asc).id|date(format:Y.m.d)
                         $pipeRest = substr($commafields, 0, $pipePos);
                         $dotElements = GeneralUtils::splitElements($pipeRest, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
-                        // Watch out case in which there is no previous sectionPath. Eg: fields=id|comments.id
+                        // Watch out case in which there is no previous sectionPath. Eg: query=id|comments.id
                         if ($lastDotPos = strlen($pipeRest) - strlen($dotElements[count($dotElements)-1])) {
                             // The path to the properties
                             $sectionPath = substr($commafields, 0, $lastDotPos);
@@ -334,7 +334,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
     {
         // The fields are split by "."
         // Watch out: we need to ignore all instances of "(" and ")" which may happen inside the fieldArg values!
-        // Eg: /api/?fields=posts(searchfor:this => ( and this => ) are part of the search too).id|title
+        // Eg: /api/?query=posts(searchfor:this => ( and this => ) are part of the search too).id|title
         $dotfields = GeneralUtils::splitElements($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
 
         // Replace all fragment placeholders with the actual fragments
