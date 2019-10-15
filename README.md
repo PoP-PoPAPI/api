@@ -109,7 +109,7 @@ The response of the API can use both the REST and GraphQL formats, simply by ins
 The PoP API provides several features that neither REST or GraphQL support:
 
 - ✅ URL-based queries ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|date|content))
-- ✅ Operators: `AND`, `OR`, `NOT`, etc ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|not(value:is-status(status:publish))))
+- ✅ Operators: `AND`, `OR`, `NOT`, etc ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|not(is-status(status:publish))))
 - ✅ Field composition: Query fields inside of fields ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|or([is-status(status:publish),is-status(status:draft)])))
 - ✅ Access context variables ([example](https://nextapi.getpop.org/api/graphql/?query=context), [example](https://nextapi.getpop.org/api/graphql/?query=var(name:output)))
 - ✅ Lower time complexity to execute queries (see below)
@@ -228,8 +228,8 @@ A “directive” enables to modify the response from one or many fields, in any
 
 Examples:
 
-- [posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=true](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=true)
-- [posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=)
+- [posts.id|title|url<include(if:$include)>&variables[include]=true](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=true)
+- [posts.id|title|url<include(if:$include)>&variables[include]=](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=)
 
 <!--
 ### Examples
@@ -312,7 +312,7 @@ Field args:
 
 Operators: 
 
-- [posts.id|title|or(fields:is-status(status:draft),is-status(status:published))](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|or([is-status(status:draft),is-status(status:published)]))
+- [posts.id|title|or([is-status(status:draft),is-status(status:published)])](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|or([is-status(status:draft),is-status(status:published)]))
 
 Fragments: 
 
@@ -336,16 +336,16 @@ Fragments with variables:
 
 Directives (with variables):
 
-- Include: [posts.id|title|url<include(if-field:echo(value:$include))>&variables[include]=true](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=true) and [posts.id|title|url<include(if:$include)>&variables[include]=](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=)
-- Skip: [posts.id|title|url<skip(if-field:echo(value:$skip))>&variables[skip]=true](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<skip(if:$skip)>&variables[skip]=true) and [posts.id|title|url<skip(if:$skip)>&variables[skip]=](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<skip(if:$skip)>&variables[skip]=)
+- Include: [posts.id|title|url<include(if:$include)>&variables[include]=true](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=true) and [posts.id|title|url<include(if:$include)>&variables[include]=](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=)
+- Skip: [posts.id|title|url<skip(if:$skip)>&variables[skip]=true](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<skip(if:$skip)>&variables[skip]=true) and [posts.id|title|url<skip(if:$skip)>&variables[skip]=](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<skip(if:$skip)>&variables[skip]=)
 
 Directives with fields:
 
-- Include: [posts.id|title|comments<include(if-field:has-comments)>.id|content](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|comments<include(if:has-comments())>.id|content)
+- Include: [posts.id|title|comments<include(if:has-comments())>.id|content](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|comments<include(if:has-comments())>.id|content)
 
 Directives with operators and fields:
 
-- Skip: [posts.id|title|comments<skip(if-field:not(field:has-comments))>.id|content](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|comments<skip(if:not(value:has-comments()))>.id|content)
+- Skip: [posts.id|title|comments<skip(if:not(has-comments()))>.id|content](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|comments<skip(if:not(has-comments()))>.id|content)
 
 Overriding fields #1: 
 
@@ -366,7 +366,7 @@ Context variable:
 
 Operator over context variable: 
 
-- [equals(field:var(name:datastructure);value:graphql)|equals(field:var(name:datastructure);value:rest)](https://nextapi.getpop.org/api/graphql/?query=equals(value1:var(name:datastructure),value2:graphql)|equals(value1:var(name:datastructure),value2:rest))
+- [equals(var(name:datastructure),graphql)|equals(var(name:datastructure),rest)](https://nextapi.getpop.org/api/graphql/?query=equals(var(name:datastructure),graphql)|equals(var(name:datastructure),rest))
 
 ### Warning messages
 
