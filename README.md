@@ -178,7 +178,7 @@ A field can have arguments: An array of `key:value` properties, appended next to
 Examples: 
 
 - Order posts by title: [posts(order:title|asc)](https://nextapi.getpop.org/api/graphql/?query=posts(order:title|asc).id|title|url|date)
-- Search "template" and limit it to 3 results: [posts(searchfor:template;limit:3)](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template;limit:3).id|title|url|date)
+- Search "template" and limit it to 3 results: [posts(searchfor:template;limit:3)](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3).id|title|url|date)
 - Format a date: [posts.date(format:d/m/Y)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url|date(format:d/m/Y))
 
 ### Aliases
@@ -212,7 +212,7 @@ We can use “variables”, which are names prepended with `$`, to pass field ar
 
 Example:
 
-- [posts(searchfor:$term;limit:$limit).id|title&variables[limit]=3&term=template](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$term;limit:$limit).id|title&variables[limit]=3&term=template)
+- [posts(searchfor:$term;limit:$limit).id|title&variables[limit]=3&term=template](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$term,limit:$limit).id|title&variables[limit]=3&term=template)
 
 ### Fragments
 
@@ -288,23 +288,23 @@ Deep nesting:
 
 Field arguments: 
 
-- [posts(searchfor:template;limit:3).id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template;limit:3).id|title)
+- [posts(searchfor:template;limit:3).id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3).id|title)
 
 Variables: 
 
-- [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template)
+- [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3&variables[search]=template)
 
 Bookmarks: 
 
-- [posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name)
+- [posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name)
 
 Aliases: 
 
-- [posts(searchfor:template;limit:3)@searchposts.id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template;limit:3)@searchposts.id|title)
+- [posts(searchfor:template;limit:3)@searchposts.id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)@searchposts.id|title)
 
 Bookmark + Alias: 
 
-- [posts(searchfor:template;limit:3)[@searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template;limit:3)[@searchposts].id|title,[searchposts].author.id|name)
+- [posts(searchfor:template;limit:3)[@searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[@searchposts].id|title,[searchposts].author.id|name)
 
 Field args: 
 
@@ -350,11 +350,11 @@ Directives with operators and fields:
 Overriding fields #1: 
 
 - Normal behaviour: [posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt)
-- "Experimental" branch: [posts.id|title|excerpt(branch:experimental;length:30)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental;length:30))
+- "Experimental" branch: [posts.id|title|excerpt(branch:experimental;length:30)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental,length:30))
 
 Overriding fields #2: 
 
-- Normal vs "Try new features" behaviour: [posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata))
+- Normal vs "Try new features" behaviour: [posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
 
 Context: 
 
@@ -366,7 +366,7 @@ Context variable:
 
 Operator over context variable: 
 
-- [equals(field:var(name:datastructure);value:graphql)|equals(field:var(name:datastructure);value:rest)](https://nextapi.getpop.org/api/graphql/?query=equals(field:var(name:datastructure);value:graphql)|equals(field:var(name:datastructure);value:rest))
+- [equals(field:var(name:datastructure);value:graphql)|equals(field:var(name:datastructure);value:rest)](https://nextapi.getpop.org/api/graphql/?query=equals(value1:var(name:datastructure),value2:graphql)|equals(value1:var(name:datastructure),value2:rest))
 
 ### Warning messages
 
@@ -382,11 +382,11 @@ Schema errors:
 
 Variable errors: 
 
-- [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3)
+- [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3)
 
 Bookmark errors: 
 
-- [posts(searchfor:template;limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template;limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name)
+- [posts(searchfor:template;limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name)
 
 Fragment errors: 
 
@@ -625,7 +625,7 @@ _Author:_
 
 **Examples:**
 
-_List of users + up to 2 posts for each, ordered by date:_<br/>[id|name|url,posts(limit:2;order:date|desc).id|title|url|date](https://nextapi.getpop.org/users/api/?datastructure=graphql&query=id|name|url,posts(limit:2;order:date|desc).id|title|url|date)
+_List of users + up to 2 posts for each, ordered by date:_<br/>[id|name|url,posts(limit:2;order:date|desc).id|title|url|date](https://nextapi.getpop.org/users/api/?datastructure=graphql&query=id|name|url,posts(limit:2,order:date|desc).id|title|url|date)
 
 _Author + all posts, with their tags and comments, and the comment author info:_<br/>[id|name|url,posts.id|title,posts.tags.id|slug|count|url,posts.comments.id|content|date,posts.comments.author.id|name](https://nextapi.getpop.org/author/themedemos/api/?datastructure=graphql&query=id|name|url,posts.id|title,posts.tags.id|slug|count|url,posts.comments.id|content|date,posts.comments.author.id|name)
 
@@ -675,7 +675,7 @@ _Tag:_
 
 **Examples:**
 
-_List of tags + all their posts filtered by date and ordered by title, their comments, and the comment authors:_<br/>[id|slug|count|url,posts(date-from:2009-09-15;date-to:2010-07-10;order:title|asc).id|title|url|date](https://nextapi.getpop.org/tags/api/?datastructure=graphql&query=id|slug|count|url,posts(date-from:2009-09-15;date-to:2010-07-10;order:title|asc).id|title|url|date)
+_List of tags + all their posts filtered by date and ordered by title, their comments, and the comment authors:_<br/>[id|slug|count|url,posts(date-from:2009-09-15;date-to:2010-07-10;order:title|asc).id|title|url|date](https://nextapi.getpop.org/tags/api/?datastructure=graphql&query=id|slug|count|url,posts(date-from:2009-09-15,date-to:2010-07-10,order:title|asc).id|title|url|date)
 
 _Tag + all their posts, their comments and the comment authors:_<br/>[id|slug|count|url,posts.id|title,posts.comments.content|date,posts.comments.author.id|name|url](https://nextapi.getpop.org/tag/html/api/?datastructure=graphql&query=id|slug|count|url,posts.id|title,posts.comments.content|date,posts.comments.author.id|name|url)
 

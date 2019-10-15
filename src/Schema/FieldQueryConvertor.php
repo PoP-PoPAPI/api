@@ -167,9 +167,9 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                             array_splice($bookmarkPath, $pathLevel+1);
                             $bookmarkPaths[$bookmark] = $bookmarkPath;
                             // This works now:
-                            // ?query=posts(limit:3;search:template)[@posts].id|title,[posts].url
+                            // ?query=posts(limit:3,search:template)[@posts].id|title,[posts].url
                             // Also support appending "@" before the bookmark for the aliases
-                            // ?query=posts(limit:3;search:template)[@posts].id|title,[@posts].url
+                            // ?query=posts(limit:3,search:template)[@posts].id|title,[@posts].url
                             if ($alias) {
                                 $bookmarkPaths[$alias] = $bookmarkPath;
                             }
