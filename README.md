@@ -124,14 +124,6 @@ PoP accepts the query through parameter `fields`, with a syntax similar to that 
 - Fields are separated with `,`
 - The field path is delineated with `.`
 - Properties on a node are grouped with `|`
-<!--
-- Field arguments are surrounded by `(...)`, and separated by `;`
-- Bookmarks are surrounded by `[...]`
-- Aliases are prepended with `@`
-- Variables are prefixed with `$`
-- Fragments are prefixed with `--`
-- Directives are surrounded by `<...>`, inside which they follow the same syntax as a field
--->
 
 For instance, the following GraphQL query:
 
@@ -173,13 +165,17 @@ Our endpoint therefore becomes:
 
 ### Field arguments
 
-A field can have arguments: An array of `key:value` properties, appended next to the field name enclosed with `()` and separated with `;`, which modify the output (results, formatting, etc) from the field. 
+A field can have arguments: An array of `name:value` properties, appended next to the field name enclosed with `()` and separated with `,`, which modify the output (results, formatting, etc) from the field. 
 
 Examples: 
 
 - Order posts by title: [posts(order:title|asc)](https://nextapi.getpop.org/api/graphql/?query=posts(order:title|asc).id|title|url|date)
-- Search "template" and limit it to 3 results: [posts(searchfor:template;limit:3)](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3).id|title|url|date)
+- Search "template" and limit it to 3 results: [posts(searchfor:template,limit:3)](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3).id|title|url|date)
 - Format a date: [posts.date(format:d/m/Y)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url|date(format:d/m/Y))
+
+Argument names can also be deduced from the schema. Then, only the `value` needs be provided: 
+
+- Format a date: [posts.date(d/m/Y)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url|date(d/m/Y))
 
 ### Aliases
 
@@ -212,7 +208,7 @@ We can use “variables”, which are names prepended with `$`, to pass field ar
 
 Example:
 
-- [posts(searchfor:$term;limit:$limit).id|title&variables[limit]=3&term=template](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$term,limit:$limit).id|title&variables[limit]=3&term=template)
+- [posts(searchfor:$term,limit:$limit).id|title&variables[limit]=3&term=template](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$term,limit:$limit).id|title&variables[limit]=3&term=template)
 
 ### Fragments
 
@@ -224,7 +220,7 @@ Example:
 
 ### Directives
 
-A “directive” enables to modify the response from one or many fields, in any way. They must be surrounded by `<...>` and, if more than one directive is provided, separated by `,`. A directive can also receive arguments, with a syntax similar to field arguments: they are surrounded by `(...)`, and its paris of `key:value` are separated by `;`.
+A “directive” enables to modify the response from one or many fields, in any way. They must be surrounded by `<...>` and, if more than one directive is provided, separated by `,`. A directive can also receive arguments, with a syntax similar to field arguments: they are surrounded by `(...)`, and its pairs of `key:value` are separated by `,`.
 
 Examples:
 
@@ -288,23 +284,23 @@ Deep nesting:
 
 Field arguments: 
 
-- [posts(searchfor:template;limit:3).id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3).id|title)
+- [posts(searchfor:template,limit:3).id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3).id|title)
 
 Variables: 
 
-- [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3&variables[search]=template)
+- [posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3&variables[search]=template)
 
 Bookmarks: 
 
-- [posts(searchfor:template;limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name)
+- [posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name)
 
 Aliases: 
 
-- [posts(searchfor:template;limit:3)@searchposts.id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)@searchposts.id|title)
+- [posts(searchfor:template,limit:3)@searchposts.id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)@searchposts.id|title)
 
 Bookmark + Alias: 
 
-- [posts(searchfor:template;limit:3)[@searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[@searchposts].id|title,[searchposts].author.id|name)
+- [posts(searchfor:template,limit:3)[@searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[@searchposts].id|title,[searchposts].author.id|name)
 
 Field args: 
 
@@ -350,11 +346,11 @@ Directives with operators and fields:
 Overriding fields #1: 
 
 - Normal behaviour: [posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt)
-- "Experimental" branch: [posts.id|title|excerpt(branch:experimental;length:30)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental,length:30))
+- "Experimental" branch: [posts.id|title|excerpt(branch:experimental,length:30)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental,length:30))
 
 Overriding fields #2: 
 
-- Normal vs "Try new features" behaviour: [posts(limit:2).id|title|content|content(branch:try-new-features;project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
+- Normal vs "Try new features" behaviour: [posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
 
 Context: 
 
@@ -382,11 +378,11 @@ Schema errors:
 
 Variable errors: 
 
-- [posts(searchfor:$search;limit:$limit).id|title&variables[limit]=3](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3)
+- [posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3)
 
 Bookmark errors: 
 
-- [posts(searchfor:template;limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name)
+- [posts(searchfor:template,limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name)
 
 Fragment errors: 
 
