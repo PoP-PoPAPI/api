@@ -6,6 +6,7 @@ use PoP\API\Facades\Schema\FieldQueryConvertorFacade;
 use PoP\ComponentModel\Server\Utils;
 use PoP\ComponentModel\DataQueryManagerFactory;
 use PoP\ComponentModel\Engine_Vars;
+use PoP\API\Schema\QueryInputs;
 
 class VarsHooks
 {
@@ -39,20 +40,15 @@ class VarsHooks
             // So the settings for these pages depend on the URL params
             if (in_array($route, $dataquery_manager->getNonCacheableRoutes())) {
                 $this->addFieldsToVars($vars);
-            } elseif (in_array($route, $dataquery_manager->getCacheableRoutes())) {
-                if ($layouts = $_REQUEST[GD_URLPARAM_LAYOUTS]) {
-                    $layouts = is_array($layouts) ? $layouts : array($layouts);
-                    $vars['layouts'] = $layouts;
-                }
             }
         }
     }
 
     private function addFieldsToVars(&$vars)
     {
-        if (isset($_REQUEST[GD_URLPARAM_FIELDS])) {
+        if (isset($_REQUEST[QueryInputs::QUERY])) {
             // The fields param can either be an array or a string. Convert them to array
-            $vars['fields'] = $_REQUEST[GD_URLPARAM_FIELDS];
+            $vars['fields'] = $_REQUEST[QueryInputs::QUERY];
             if (is_string($vars['fields'])) {
                 $vars['fields'] = FieldQueryConvertorFacade::getInstance()->convertAPIQuery($vars['fields']);
             }
@@ -83,10 +79,6 @@ class VarsHooks
             // So the settings for these pages depend on the URL params
             if (in_array($route, $dataquery_manager->getNonCacheableRoutes())) {
                 $this->addFieldsToComponents($components);
-            } elseif (in_array($route, $dataquery_manager->getCacheableRoutes())) {
-                if ($layouts = $vars['layouts']) {
-                    $components[] = TranslationAPIFacade::getInstance()->__('layouts:', 'pop-engine').implode('.', $layouts);
-                }
             }
         }
 

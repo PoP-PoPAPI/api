@@ -2,6 +2,7 @@
 namespace PoP\API\ModuleProcessors;
 use PoP\ComponentModel\Schema\QuerySyntax;
 use PoP\ComponentModel\Facades\Managers\ModuleProcessorManagerFacade;
+use PoP\API\Schema\QueryInputs;
 
 trait ModuleProcessorTrait
 {
@@ -55,7 +56,7 @@ trait ModuleProcessorTrait
                         return
                             $cmsenginehelpers->addQueryArgs(
                                 [
-                                    GD_URLPARAM_FIELDS => implode(
+                                    QueryInputs::QUERY => implode(
                                         QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR,
                                         $apifields
                                     ),
