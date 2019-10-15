@@ -48,9 +48,9 @@ class VarsHooks
     {
         if (isset($_REQUEST[QueryInputs::QUERY])) {
             // The fields param can either be an array or a string. Convert them to array
-            $vars['fields'] = $_REQUEST[QueryInputs::QUERY];
-            if (is_string($vars['fields'])) {
-                $vars['fields'] = FieldQueryConvertorFacade::getInstance()->convertAPIQuery($vars['fields']);
+            $vars['query'] = $_REQUEST[QueryInputs::QUERY];
+            if (is_string($vars['query'])) {
+                $vars['query'] = FieldQueryConvertorFacade::getInstance()->convertAPIQuery($vars['query']);
             }
         }
     }
@@ -58,7 +58,7 @@ class VarsHooks
     private function addFieldsToComponents(&$components)
     {
         $vars = Engine_Vars::getVars();
-        if ($fields = $vars['fields']) {
+        if ($fields = $vars['query']) {
             // Serialize instead of implode, because $fields can contain $key => $value
             $components[] = TranslationAPIFacade::getInstance()->__('fields:', 'pop-engine').serialize($fields);
         }
