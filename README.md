@@ -425,7 +425,7 @@ query {
 }
 ```
 
-PoP, instead, uses a query translated into its corresponding “dot syntax” expression, which can then be supplied through parameter fields. Querying on a “post” resource, this value is:
+PoP, instead, uses a query translated into its corresponding “dot syntax” expression, which can then be supplied through parameter query. Querying on a “post” resource, this value is:
 
 ```properties
 query=title,content,comments.content,comments.date,comments.author.name,comments.author.url
