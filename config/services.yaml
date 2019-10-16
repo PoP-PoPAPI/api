@@ -3,7 +3,7 @@ services:
         bind:
             PoP\Translation\Contracts\TranslationAPIInterface: '@translation_api'
             PoP\ComponentModel\Schema\ErrorMessageStoreInterface: '@error_message_store'
-            PoP\QueryParsing\Parser\QueryParserInterface: '@query_parser'
+            PoP\QueryParsing\Parsers\QueryParserInterface: '@query_parser'
 
     field_query_convertor:
         class: \PoP\API\Schema\FieldQueryConvertor
