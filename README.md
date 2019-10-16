@@ -59,7 +59,7 @@ RewriteRule ^api/?$ /?scheme=api [L,P,QSA]
     - REST: `.../api/rest/`
     - PoP native: `.../api/`
 
-2. Add your query under URL parameter `fields`
+2. Add your query under URL parameter `query`
 
 In the homepage, the initial selected resource on which the query is applied is `"root"`: 
 
@@ -119,7 +119,7 @@ The PoP API provides several features that neither REST or GraphQL support:
 
 ## Query syntax
 
-PoP accepts the query through parameter `fields`, with a syntax similar to that from GraphQL but provided as a single-line query, in which:
+PoP accepts the query through parameter `query`, with a syntax similar to that from GraphQL but provided as a single-line query, in which:
 
 - Fields are separated with `,`
 - The field path is delineated with `.`
@@ -399,7 +399,7 @@ DB errors:
 
 ### Custom-Querying API
 
-Similar to GraphQL, PoP also provides an API which can be queried from the client, which retrieves exactly the data fields which are requested and nothing more. The custom-querying API is accessed by appending `/api` to the URL and adding parameter `fields` with the list of fields to retrieve from the queried resources. 
+Similar to GraphQL, PoP also provides an API which can be queried from the client, which retrieves exactly the data fields which are requested and nothing more. The custom-querying API is accessed by appending `/api` to the URL and adding parameter `query` with the list of fields to retrieve from the queried resources. 
 
 For instance, the following link fetches a collection of posts. By adding `query=title,content,datetime` we retrieve only these items:
 
@@ -551,9 +551,9 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 For the **REST-compatible API**, add parameter `datastructure=rest` to the endpoint URL. 
 
-For the **GraphQL-compatible API**, add parameter `datastructure=graphql` to the endpoint URL, and parameter `fields` with the fields to retrieve (using a [custom dot notation](https://github.com/leoloso/PoP#defining-what-data-to-fetch-through-fields)) from the list of fields defined below. In addition, a field may have [arguments](https://github.com/leoloso/PoP#field-arguments) to modify its results.
+For the **GraphQL-compatible API**, add parameter `datastructure=graphql` to the endpoint URL, and parameter `query` with the fields to retrieve (using a [custom dot notation](https://github.com/leoloso/PoP#defining-what-data-to-fetch-through-fields)) from the list of fields defined below. In addition, a field may have [arguments](https://github.com/leoloso/PoP#field-arguments) to modify its results.
 
-For the **PoP native API**, add parameter `fields` to the endpoint URL, similar to GraphQL.
+For the **PoP native API**, add parameter `query` to the endpoint URL, similar to GraphQL.
 
 ----
 
