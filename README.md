@@ -236,34 +236,49 @@ _**Operator over context variable:**_
 
 - [/?query=equals(var(name:datastructure),graphql)|equals(var(name:datastructure),rest)](https://nextapi.getpop.org/api/graphql/?query=equals(var(name:datastructure),graphql)|equals(var(name:datastructure),rest))
 
-### Warning messages
+## Handling errors
 
-Deprecated fields: 
+The API returns error messages, which are categorized depending on their severity:
+
+_**Deprecated fields:** (Severity: low)_
+
+Fields that are not used anymore, and will eventually be replaced with another field (most likely in a future version of the API)
 
 - [/?query=posts.id|title|published](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|published)
 
-### Error messages
+_**Schema warnings:** (Severity: medium)_
 
-Schema errors: 
+Errors in the schema on non-mandatory field arguments, which can be ignored and do not halt the execution of the query
 
-- [/?query=posts.id|title|non-existant-field|is-status(status:non-existant-value)|not()](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|non-existant-field|is-status(status:non-existant-value)|not())
+- [/?query=posts(limit:3.5).id|title](https://nextapi.getpop.org/api/graphql/?query=posts(limit:3.5).id|title)
 
-Variable errors: 
+_**Database warnings:** (Severity: medium)_
 
-- [/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3)
+Errors produced when data fetched from the queried object causes an error on its nesting field
 
-Bookmark errors: 
+- <a href="https://nextapi.getpop.org/api/graphql/?query=users.posts(limit:name()).id|title">/?query=users.posts(limit:name()).id|title</a>
 
-- [/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name)
+_**Query errors:** (Severity: high)_
 
-Fragment errors: 
+Whenever the query uses a wrong syntax, which prevents it from being parsed/interpreted properly
 
-- [/?query=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3withtypo&fragments[fr3]=author.id|url](https://nextapi.getpop.org/api/graphql/?query=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3withtypo&fragments[fr3]=author.id|url)
+- <a href="https://nextapi.getpop.org/api/graphql/?query=posts.id(key:value)(key:value)">/?query=posts.id(key:value)(key:value)</a>
 
-DB errors: 
+_**Schema errors:** (Severity: high)_
 
-- coming soon...
+Whenever the query refers to non-existing fields, or using non-valid values
 
+- [/?query=posts.id|title|non-existant-field|is-status(status:non-existant-value)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|non-existant-field|is-status(status:non-existant-value))
+
+_**Database errors:** (Severity: high)_
+
+Errors produced when retrieving data from the database, that halt the execution of the query
+
+### Error bubbling
+
+Within nested fields, errors bubble up: Since the output from a field is the input to another one, if the output field fails, the input field may also fail:
+
+- <a href="https://nextapi.getpop.org/api/graphql/?query=post(divide(a,4)).id|title">/?query=post(divide(a,4)).id|title</a>
 
 
 <!--
