@@ -140,7 +140,7 @@ PoP fetches a piece data from the database only once, even if the query fetches 
 
 As a consequence, executing a query with multiple levels of nested properties will still be executed fairly quickly:
 
-[/?query=users.posts.author.posts.comments.id|content](https://nextapi.getpop.org/api/graphql/?query=users.posts.author.posts.comments.id|content)
+- [/?query=users.posts.author.posts.comments.id|content](https://nextapi.getpop.org/api/graphql/?query=users.posts.author.posts.comments.id|content)
 
 ## Decentralized schema
 
