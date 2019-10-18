@@ -207,8 +207,8 @@ _**Directives:**_
 
 _**Operators:**_
 
-- [or([1, 0])](https://nextapi.getpop.org/api/graphql/?query=or([1, 0]))
-- [and([1, 0])](https://nextapi.getpop.org/api/graphql/?query=and([1, 0]))
+- <a href="https://nextapi.getpop.org/api/graphql/?query=or([1, 0])">/?or([1, 0])</a>
+- <a href="https://nextapi.getpop.org/api/graphql/?query=and([1, 0])">/?and([1, 0])</a>
 
 _**Nested fields:**_
 
@@ -220,12 +220,12 @@ _**Directives with nested fields:**_
 
 _**Overriding fields #1:**_
 
-- Normal behaviour: [posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt)
-- "Experimental" branch: [posts.id|title|excerpt(branch:experimental,length:30)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental,length:30))
+- Normal behaviour:<br/>[posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt)
+- "Experimental" branch:<br/>[posts.id|title|excerpt(branch:experimental,length:30)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental,length:30))
 
 _**Overriding fields #2:**_
 
-- Normal vs "Try new features" behaviour: [posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
+- Normal vs "Try new features" behaviour:<br/>[posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
 
 _**Context:**_
 
