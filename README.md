@@ -65,7 +65,7 @@ RewriteRule ^api/?$ /?scheme=api [L,P,QSA]
 
 In the homepage, the initial selected resource on which the query is applied is `"root"`: 
 
-- [/?query=/?query=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|author.id|name)
+- [/?query=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|author.id|name)
 
 Otherwise, the selected resource, or set of resources, is the corresponding one to the URL, such as a [single post](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/) or a [collection of posts](https://nextapi.getpop.org/posts/):
 
@@ -76,20 +76,20 @@ Otherwise, the selected resource, or set of resources, is the corresponding one 
 
 To visualize all available fields, use query field `__schema` from the root: 
 
-- [/?query=/?query=__schema](https://nextapi.getpop.org/api/graphql/?query=__schema)
+- [/?query=__schema](https://nextapi.getpop.org/api/graphql/?query=__schema)
 
 ### Query syntax
 
 Please refer to the syntax from the [Field Query](https://github.com/getpop/field-query#syntax) package.
 
-## Obtain the same advantages as provided by GraphQL and REST
+## All benefits from GraphQL and REST
 
 The API can transform the application into both a GraphQL and/or REST server, simply by installing the corresponding extension:
 
 - [/?query=GraphQL API](https://github.com/getpop/api-graphql)
 - [/?query=REST API](https://github.com/getpop/api-rest)
 
-The PoP API manages to provide the benefits of both REST and GraphQL APIs, at the same time:
+The PoP API manages to provide all the same benefits of both REST and GraphQL APIs, **at the same time**:
 
 _From GraphQL:_
 
@@ -134,6 +134,32 @@ The PoP API provides several features that neither REST or GraphQL support:
 
 PoP fetches a piece data from the database only once, even if the query fetches it several times. The query can include any number of nested relationships, and these are resolved with worst case complexity time of `O(n^2)`, and average case of `O(n)` (where `n` is the number of nested properties).
 
+## Decentralized schema
+
+Taking advantage of the [component-based architecture](https://www.smashingmagazine.com/2019/01/introducing-component-based-api/) (as opposed to an architectured based on schemas, as the standard GraphQL implementation), the PoP API is natively decentralized. This has many benefits:
+
+- Different versions of the API can be implemented for different projects or clients
+- Different teams can work on the API at the same time, without affecting each others' work or have to plan together
+- It becomes extremely easy to version control. For instance, each field can have its own versioning
+- It becomes very easy to iterate. For instance, a quick fix for a bug can be deployed instantly, for the specific scenario under which the bug happens
+
+For instance, we can develop a new feature for the API, such as adding a field argument `length` on the `excerpt` field, and initially release it under a branch called `"experimental"`. In order to use this field, the client is required to add this branch on the field arguments in the query:
+
+_**Standard behaviour:**_<br/>
+[/?query=posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt)
+
+_**New feature not yet available:**_<br/>
+<a href="https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(length:30)">/?query=posts.id|title|excerpt(length:30)</a>
+
+_**New feature available under "experimental" branch:**_<br/>
+<a href="https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental,length:30)">[/?query=posts.id|title|excerpt(length:30,branch:experimental)</a>
+
+<!--
+_**Overriding fields #2:**_
+
+- Normal vs "Try new features" behaviour:<br/>[/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
+-->
+
 ## Complex query resolution without server-side coding
 
 <!--
@@ -159,9 +185,54 @@ REST, GraphQL and PoP native compare like this:
 </table>
 -->
 
+## Handling errors
+
+The API returns error messages, which are categorized depending on their severity:
+
+_**Deprecated fields:** (Severity: low)_
+
+Fields that are not used anymore, and will eventually be replaced with another field (most likely in a future version of the API)
+
+- [/?query=posts.id|title|published](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|published)
+
+_**Schema warnings:** (Severity: medium)_
+
+Errors in the schema on non-mandatory field arguments, which can be ignored and do not halt the execution of the query
+
+- [/?query=posts(limit:3.5).id|title](https://nextapi.getpop.org/api/graphql/?query=posts(limit:3.5).id|title)
+
+_**Database warnings:** (Severity: medium)_
+
+Errors produced when data fetched from the queried object causes an error on its nesting field
+
+- <a href="https://nextapi.getpop.org/api/graphql/?query=users.posts(limit:name()).id|title">/?query=users.posts(limit:name()).id|title</a>
+
+_**Query errors:** (Severity: high)_
+
+Whenever the query uses a wrong syntax, which prevents it from being parsed/interpreted properly
+
+- <a href="https://nextapi.getpop.org/api/graphql/?query=posts.id(key:value)(key:value)">/?query=posts.id(key:value)(key:value)</a>
+
+_**Schema errors:** (Severity: high)_
+
+Whenever the query refers to non-existing fields, or using non-valid values
+
+- [/?query=posts.id|title|non-existant-field|is-status(status:non-existant-value)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|non-existant-field|is-status(status:non-existant-value))
+
+_**Database errors:** (Severity: high)_
+
+Errors produced when retrieving data from the database, that halt the execution of the query
+
+### Error bubbling
+
+Within nested fields, errors bubble up: Since the output from a field is the input to another one, if the output field fails, the input field may also fail:
+
+- <a href="https://nextapi.getpop.org/api/graphql/?query=post(divide(a,4)).id|title">/?query=post(divide(a,4)).id|title</a>
+
+
 ## Examples
 
-Examples below use the GraphQL API
+Examples below use the GraphQL API. More examples can be found on the [Field Query](https://github.com/getpop/field-query) package.
 
 ### Queries
 
@@ -215,15 +286,6 @@ _**Directives with nested fields:**_
 
 - [/?query=posts.id|title|comments<include(if:has-comments())>.id|content](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|comments<include(if:has-comments())>.id|content)
 
-_**Overriding fields #1:**_
-
-- Normal behaviour:<br/>[/?query=posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt)
-- "Experimental" branch:<br/>[/?query=posts.id|title|excerpt(branch:experimental,length:30)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental,length:30))
-
-_**Overriding fields #2:**_
-
-- Normal vs "Try new features" behaviour:<br/>[/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
-
 _**Context:**_
 
 - [/?query=context](https://nextapi.getpop.org/api/graphql/?query=context)
@@ -235,51 +297,6 @@ _**Context variable:**_
 _**Operator over context variable:**_
 
 - [/?query=equals(var(name:datastructure),graphql)|equals(var(name:datastructure),rest)](https://nextapi.getpop.org/api/graphql/?query=equals(var(name:datastructure),graphql)|equals(var(name:datastructure),rest))
-
-## Handling errors
-
-The API returns error messages, which are categorized depending on their severity:
-
-_**Deprecated fields:** (Severity: low)_
-
-Fields that are not used anymore, and will eventually be replaced with another field (most likely in a future version of the API)
-
-- [/?query=posts.id|title|published](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|published)
-
-_**Schema warnings:** (Severity: medium)_
-
-Errors in the schema on non-mandatory field arguments, which can be ignored and do not halt the execution of the query
-
-- [/?query=posts(limit:3.5).id|title](https://nextapi.getpop.org/api/graphql/?query=posts(limit:3.5).id|title)
-
-_**Database warnings:** (Severity: medium)_
-
-Errors produced when data fetched from the queried object causes an error on its nesting field
-
-- <a href="https://nextapi.getpop.org/api/graphql/?query=users.posts(limit:name()).id|title">/?query=users.posts(limit:name()).id|title</a>
-
-_**Query errors:** (Severity: high)_
-
-Whenever the query uses a wrong syntax, which prevents it from being parsed/interpreted properly
-
-- <a href="https://nextapi.getpop.org/api/graphql/?query=posts.id(key:value)(key:value)">/?query=posts.id(key:value)(key:value)</a>
-
-_**Schema errors:** (Severity: high)_
-
-Whenever the query refers to non-existing fields, or using non-valid values
-
-- [/?query=posts.id|title|non-existant-field|is-status(status:non-existant-value)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|non-existant-field|is-status(status:non-existant-value))
-
-_**Database errors:** (Severity: high)_
-
-Errors produced when retrieving data from the database, that halt the execution of the query
-
-### Error bubbling
-
-Within nested fields, errors bubble up: Since the output from a field is the input to another one, if the output field fails, the input field may also fail:
-
-- <a href="https://nextapi.getpop.org/api/graphql/?query=post(divide(a,4)).id|title">/?query=post(divide(a,4)).id|title</a>
-
 
 <!--
 ## Architecture Design and Implementation
