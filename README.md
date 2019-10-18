@@ -78,6 +78,10 @@ To visualize all available fields, use query field `__schema` from the root:
 
 - [/?query=__schema](https://nextapi.getpop.org/api/graphql/?query=__schema)
 
+### Query syntax
+
+Please refer to the syntax from the [Field Query](https://github.com/getpop/field-query#syntax) package.
+
 ## Obtain the same advantages as provided by GraphQL and REST
 
 The API can transform the application into both a GraphQL and/or REST server, simply by installing the corresponding extension:
@@ -109,10 +113,6 @@ The PoP API provides several features that neither REST or GraphQL support:
 - ✅ Operators: `AND`, `OR`, `NOT`, etc ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|not(is-status(status:publish))))
 - ✅ Nested fields ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|or([is-status(status:publish),is-status(status:draft)])))
 - ✅ Context variables ([example](https://nextapi.getpop.org/api/graphql/?query=context), [example](https://nextapi.getpop.org/api/graphql/?query=var(name:output)))
-
-## Query syntax
-
-Please refer to the syntax from the [Field Query](https://github.com/getpop/field-query#syntax) package.
 
 <!--
 ### Examples
