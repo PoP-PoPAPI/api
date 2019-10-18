@@ -166,11 +166,13 @@ _**Overriding fields #2:**_
 - Normal vs "Try new features" behaviour:<br/>[/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
 -->
 
-## Setting-up a gateway to fetch data from different sources
+## Gateway: Fetch/aggregate data from different sources
 
-Complex query resolution without server-side coding
+Coming soon...
 
-## Fetching data from different sources already from the client
+## Client-based Gateway: Fetch/aggregate data from different sources without custom server-side coding
+
+Coming soon...
 
 <!--
 ## Comparison among APIs
