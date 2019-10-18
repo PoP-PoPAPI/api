@@ -164,76 +164,78 @@ REST, GraphQL and PoP native compare like this:
 
 ## Examples
 
+Examples below use the GraphQL API
+
 ### Queries
 
-Grouping properties: 
+_**Grouping properties:**_
 
 - [posts.id|title|url](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url)
 
-Deep nesting: 
+_**Deep nesting:**_
 
 - [posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url)
 
-Field arguments: 
+_**Field arguments:**_
 
 - [posts(searchfor:template,limit:3).id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3).id|title)
 
-Variables: 
+_**Variables:**_
 
 - [posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3&variables[search]=template)
 
-Aliases: 
+_**Aliases:**_
 
 - [posts(searchfor:template,limit:3)@searchposts.id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)@searchposts.id|title)
 
-Bookmarks: 
+_**Bookmarks:**_
 
 - [posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name)
 
-Bookmark + Alias: 
+_**Bookmark + Alias:**_
 
 - [posts(searchfor:template,limit:3)[@searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[@searchposts].id|title,[searchposts].author.id|name)
 
-Fragments: 
+_**Fragments:**_
 
 - [posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title](https://nextapi.getpop.org/api/graphql/?query=posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title)
 
-Directives:
+_**Directives:**_
 
 - [posts.id|title|url<include(if:$include)>&variables[include]=true](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=true)
 - [posts.id|title|url<skip(if:$skip)>&variables[skip]=](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<skip(if:$skip)>&variables[skip]=)
 
-Operators: 
+_**Operators:**_
 
 - [or([1, 0])](https://nextapi.getpop.org/api/graphql/?query=or([1, 0]))
 - [and([1, 0])](https://nextapi.getpop.org/api/graphql/?query=and([1, 0]))
 
-Nested fields: 
+_**Nested fields:**_
 
 - [posts.id|title|or([is-status(status:draft),is-status(status:published)])](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|or([is-status(status:draft),is-status(status:published)]))
 
-Directives with nested fields:
+_**Directives with nested fields:**_
 
 - Include: [posts.id|title|comments<include(if:has-comments())>.id|content](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|comments<include(if:has-comments())>.id|content)
 
-Overriding fields #1: 
+_**Overriding fields #1:**_
 
 - Normal behaviour: [posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt)
 - "Experimental" branch: [posts.id|title|excerpt(branch:experimental,length:30)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental,length:30))
 
-Overriding fields #2: 
+_**Overriding fields #2:**_
 
 - Normal vs "Try new features" behaviour: [posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
 
-Context: 
+_**Context:**_
 
 - [context](https://nextapi.getpop.org/api/graphql/?query=context)
 
-Context variable: 
+_**Context variable:**_
 
 - [var(name:datastructure)](https://nextapi.getpop.org/api/graphql/?query=var(name:datastructure))
 
-Operator over context variable: 
+_**Operator over context variable:**_
 
 - [equals(var(name:datastructure),graphql)|equals(var(name:datastructure),rest)](https://nextapi.getpop.org/api/graphql/?query=equals(var(name:datastructure),graphql)|equals(var(name:datastructure),rest))
 
