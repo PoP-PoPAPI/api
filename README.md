@@ -9,7 +9,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 -->
 
-API for PoP for fetching and posting data. By default, it retrieves the data using PoP's native format. Through extension packages, the API can also add compatibility for GraphQL (through [GraphQL API](https://github.com/getpop/api-graphql)) and REST (through [REST API](https://github.com/getpop/api-rest)).
+Convert the application into an all-purpose API, using either PoP's native format or, through extension packages, in other formats: [GraphQL API](https://github.com/getpop/api-graphql) converts the application into a GraphQL server, and [REST API](https://github.com/getpop/api-rest) enables to add REST endpoints.
 
 ## Install
 
@@ -53,31 +53,30 @@ RewriteRule ^api/?$ /?scheme=api [L,P,QSA]
 
 ## Usage
 
-1. Add the API endpoint to any URL:
+> Note: to enable GraphQL and/or REST endpoints, the corresponding package must be installed: [GraphQL package](https://github.com/getpop/api-graphql), [REST package](https://github.com/getpop/api-rest) 
 
-    - GraphQL: `.../api/graphql/`
-    - REST: `.../api/rest/`
-    - PoP native: `.../api/`
+1. Tansform any URL into an API endpoint by adding:
 
-2. Add your query under URL parameter `query`
+    `.../api/` (PoP native format)<br/>
+    `.../api/graphql/` (GraphQL)<br/>
+    `.../api/rest/` (REST)
+
+2. Add your query under URL parameter `query`, following [this syntax](https://github.com/getpop/field-query)
 
 In the homepage, the initial selected resource on which the query is applied is `"root"`: 
 
-- [/api/graphql/?query=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|author.id|name)
+- [/?query=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|author.id|name)
 
 Otherwise, the selected resource, or set of resources, is the corresponding one to the URL, such as a [single post](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/) or a [collection of posts](https://nextapi.getpop.org/posts/):
 
-- [/2013/01/11/markup-html-tags-and-formatting/api/graphql/?query=id|title|author.id|name](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/api/graphql/?query=id|title|author.id|name)
-- [/posts/api/graphql/?query=id|title|author.id|name](https://nextapi.getpop.org/posts/api/graphql/?query=id|title|author.id|name)
-
-> Note: to enable GraphQL and/or REST endpoints, the corresponding package must be installed: [GraphQL package](https://github.com/getpop/api-graphql), [REST package](https://github.com/getpop/api-rest) 
+- [{single-post-url}/?query=id|title|author.id|name](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/api/graphql/?query=id|title|author.id|name)
+- [{post-list-url}/?query=id|title|author.id|name](https://nextapi.getpop.org/posts/api/graphql/?query=id|title|author.id|name)
 
 ### Visualize the schema
 
 To visualize all available fields, use query field `__schema` from the root: 
 
-- [/api/graphql/?query=__schema](https://nextapi.getpop.org/api/graphql/?query=__schema)
-
+- [/?query=__schema](https://nextapi.getpop.org/api/graphql/?query=__schema)
 
 ## Features
 
