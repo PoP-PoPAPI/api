@@ -78,11 +78,14 @@ To visualize all available fields, use query field `__schema` from the root:
 
 - [/?query=__schema](https://nextapi.getpop.org/api/graphql/?query=__schema)
 
-## Features
+## Obtain the same advantages as provided by GraphQL and REST
 
-### Same advantages as both GraphQL and REST
+The API can transform the application into both a GraphQL and/or REST server, simply by installing the corresponding extension:
 
-The PoP API provides the benefits of both REST and GraphQL APIs, at the same time:
+- [GraphQL API](https://github.com/getpop/api-graphql)
+- [REST API](https://github.com/getpop/api-rest)
+
+The PoP API manages to provide the benefits of both REST and GraphQL APIs, at the same time:
 
 _From GraphQL:_
 
@@ -90,6 +93,7 @@ _From GraphQL:_
 - ✅ Shape of the response mirrors query
 - ✅ Field arguments (for filtering/pagination/formatting/etc)
 - ✅ Directives (to change the behaviour of how data is fetched)
+- ✅ Fetch all data using a single interface, from a single gateway
 
 _From REST:_
 
@@ -97,14 +101,7 @@ _From REST:_
 - ✅ Secure: Not chance of Denial of Service attacks
 - ✅ Can pre-define fields
 
-### Generate GraphQL and REST-compatible responses
-
-The response of the API can use both the REST and GraphQL formats, simply by installing the corresponding extension:
-
-- [GraphQL API](https://github.com/getpop/api-graphql)
-- [REST API](https://github.com/getpop/api-rest)
-
-### Additional features, unsupported by both GraphQL and REST
+## Additional features
 
 The PoP API provides several features that neither REST or GraphQL support:
 
