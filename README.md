@@ -101,8 +101,8 @@ _From REST:_
 
 The response of the API can use both the REST and GraphQL formats, simply by installing the corresponding extension:
 
-- [PoP GraphQL API](https://github.com/getpop/api-graphql)
-- [PoP REST API](https://github.com/getpop/api-rest)
+- [GraphQL API](https://github.com/getpop/api-graphql)
+- [REST API](https://github.com/getpop/api-rest)
 
 ### Additional features, unsupported by both GraphQL and REST
 
@@ -110,16 +110,12 @@ The PoP API provides several features that neither REST or GraphQL support:
 
 - ✅ URL-based queries ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|date|content))
 - ✅ Operators: `AND`, `OR`, `NOT`, etc ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|not(is-status(status:publish))))
-- ✅ Field composition: Query fields inside of fields ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|or([is-status(status:publish),is-status(status:draft)])))
-- ✅ Access context variables ([example](https://nextapi.getpop.org/api/graphql/?query=context), [example](https://nextapi.getpop.org/api/graphql/?query=var(name:output)))
-- ✅ Lower time complexity to execute queries (see below)
-- ✅ Complex query resolution without server-side coding (coming soon)
-- Others (coming soon)
-
+- ✅ Nested fields ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|or([is-status(status:publish),is-status(status:draft)])))
+- ✅ Context variables ([example](https://nextapi.getpop.org/api/graphql/?query=context), [example](https://nextapi.getpop.org/api/graphql/?query=var(name:output)))
 
 ## Query syntax
 
-Please refer to the [Syntax from Field Query package](https://github.com/getpop/field-query#syntax).
+Please refer to the syntax from the [Field Query](https://github.com/getpop/field-query#syntax) package.
 
 <!--
 ### Examples
