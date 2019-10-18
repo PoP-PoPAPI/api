@@ -65,18 +65,18 @@ RewriteRule ^api/?$ /?scheme=api [L,P,QSA]
 
 In the homepage, the initial selected resource on which the query is applied is `"root"`: 
 
-- [/?query=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|author.id|name)
+- [/?query=/?query=posts.id|title|author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|author.id|name)
 
 Otherwise, the selected resource, or set of resources, is the corresponding one to the URL, such as a [single post](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/) or a [collection of posts](https://nextapi.getpop.org/posts/):
 
-- [{single-post-url}/?query=id|title|author.id|name](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/api/graphql/?query=id|title|author.id|name)
-- [{post-list-url}/?query=id|title|author.id|name](https://nextapi.getpop.org/posts/api/graphql/?query=id|title|author.id|name)
+- [/?query={single-post-url}/?query=id|title|author.id|name](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/api/graphql/?query=id|title|author.id|name)
+- [/?query={post-list-url}/?query=id|title|author.id|name](https://nextapi.getpop.org/posts/api/graphql/?query=id|title|author.id|name)
 
 ### Visualize the schema
 
 To visualize all available fields, use query field `__schema` from the root: 
 
-- [/?query=__schema](https://nextapi.getpop.org/api/graphql/?query=__schema)
+- [/?query=/?query=__schema](https://nextapi.getpop.org/api/graphql/?query=__schema)
 
 ### Query syntax
 
@@ -86,8 +86,8 @@ Please refer to the syntax from the [Field Query](https://github.com/getpop/fiel
 
 The API can transform the application into both a GraphQL and/or REST server, simply by installing the corresponding extension:
 
-- [GraphQL API](https://github.com/getpop/api-graphql)
-- [REST API](https://github.com/getpop/api-rest)
+- [/?query=GraphQL API](https://github.com/getpop/api-graphql)
+- [/?query=REST API](https://github.com/getpop/api-rest)
 
 The PoP API manages to provide the benefits of both REST and GraphQL APIs, at the same time:
 
@@ -119,13 +119,13 @@ The PoP API provides several features that neither REST or GraphQL support:
 
 **REST:**
 
-- [Retrieving default data (implicit fields)](https://nextapi.getpop.org/en/posts/api/?datastructure=rest)
-- [Retrieving client-custom data (explicit fields)](https://nextapi.getpop.org/en/posts/api/?datastructure=rest&query=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url)
+- [/?query=Retrieving default data (implicit fields)](https://nextapi.getpop.org/en/posts/api/?datastructure=rest)
+- [/?query=Retrieving client-custom data (explicit fields)](https://nextapi.getpop.org/en/posts/api/?datastructure=rest&query=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url)
 
 **GraphQL:**
 
-- [Retrieving client-custom data](https://nextapi.getpop.org/en/posts/api/?datastructure=graphql&query=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url)
-- [Returning an author's posts that contain a certain string](https://nextapi.getpop.org/author/themedemos/api/?datastructure=graphql&query=id|name,posts(searchfor:template).id|title|url)
+- [/?query=Retrieving client-custom data](https://nextapi.getpop.org/en/posts/api/?datastructure=graphql&query=id|title|url|content,comments.id|content|date,comments.author.id|name|url,comments.author.posts.id|title|url)
+- [/?query=Returning an author's posts that contain a certain string](https://nextapi.getpop.org/author/themedemos/api/?datastructure=graphql&query=id|name,posts(searchfor:template).id|title|url)
 
 **Note:** Setting parameter `datastructure` to either `graphql` or `rest` formats the response for the corresponding API. If `datastructure` is left empty, the response is the native one for PoP: a relational database structure (see "Data API layer" section below).
 -->
@@ -167,98 +167,98 @@ Examples below use the GraphQL API
 
 _**Grouping properties:**_
 
-- [posts.id|title|url](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url)
+- [/?query=posts.id|title|url](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url)
 
 _**Deep nesting:**_
 
-- [posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url)
+- [/?query=posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url|comments.id|content|date|author.id|name|url|posts.id|title|url)
 
 _**Field arguments:**_
 
-- [posts(searchfor:template,limit:3).id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3).id|title)
+- [/?query=posts(searchfor:template,limit:3).id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3).id|title)
 
 _**Variables:**_
 
-- [posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3&variables[search]=template)
+- [/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3&variables[search]=template)
 
 _**Aliases:**_
 
-- [posts(searchfor:template,limit:3)@searchposts.id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)@searchposts.id|title)
+- [/?query=posts(searchfor:template,limit:3)@searchposts.id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)@searchposts.id|title)
 
 _**Bookmarks:**_
 
-- [posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name)
+- [/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name)
 
 _**Bookmark + Alias:**_
 
-- [posts(searchfor:template,limit:3)[@searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[@searchposts].id|title,[searchposts].author.id|name)
+- [/?query=posts(searchfor:template,limit:3)[@searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[@searchposts].id|title,[searchposts].author.id|name)
 
 _**Fragments:**_
 
-- [posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title](https://nextapi.getpop.org/api/graphql/?query=posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title)
+- [/?query=posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title](https://nextapi.getpop.org/api/graphql/?query=posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title)
 
 _**Directives:**_
 
-- [posts.id|title|url<include(if:$include)>&variables[include]=true](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=true)
-- [posts.id|title|url<skip(if:$skip)>&variables[skip]=](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<skip(if:$skip)>&variables[skip]=)
+- [/?query=posts.id|title|url<include(if:$include)>&variables[include]=true](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=true)
+- [/?query=posts.id|title|url<skip(if:$skip)>&variables[skip]=](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<skip(if:$skip)>&variables[skip]=)
 
 _**Operators:**_
 
-- <a href="https://nextapi.getpop.org/api/graphql/?query=or([1, 0])">/?or([1, 0])</a>
-- <a href="https://nextapi.getpop.org/api/graphql/?query=and([1, 0])">/?and([1, 0])</a>
+- <a href="https://nextapi.getpop.org/api/graphql/?query=or([1, 0])">/?query=or([1, 0])</a>
+- <a href="https://nextapi.getpop.org/api/graphql/?query=and([1, 0])">/?query=and([1, 0])</a>
 
 _**Nested fields:**_
 
-- [posts.id|title|or([is-status(status:draft),is-status(status:published)])](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|or([is-status(status:draft),is-status(status:published)]))
+- [/?query=posts.id|title|or([is-status(status:draft),is-status(status:published)])](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|or([is-status(status:draft),is-status(status:published)]))
 
 _**Directives with nested fields:**_
 
-- Include: [posts.id|title|comments<include(if:has-comments())>.id|content](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|comments<include(if:has-comments())>.id|content)
+- [/?query=posts.id|title|comments<include(if:has-comments())>.id|content](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|comments<include(if:has-comments())>.id|content)
 
 _**Overriding fields #1:**_
 
-- Normal behaviour:<br/>[posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt)
-- "Experimental" branch:<br/>[posts.id|title|excerpt(branch:experimental,length:30)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental,length:30))
+- Normal behaviour:<br/>[/?query=posts.id|title|excerpt](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt)
+- "Experimental" branch:<br/>[/?query=posts.id|title|excerpt(branch:experimental,length:30)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental,length:30))
 
 _**Overriding fields #2:**_
 
-- Normal vs "Try new features" behaviour:<br/>[posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
+- Normal vs "Try new features" behaviour:<br/>[/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
 
 _**Context:**_
 
-- [context](https://nextapi.getpop.org/api/graphql/?query=context)
+- [/?query=context](https://nextapi.getpop.org/api/graphql/?query=context)
 
 _**Context variable:**_
 
-- [var(name:datastructure)](https://nextapi.getpop.org/api/graphql/?query=var(name:datastructure))
+- [/?query=var(name:datastructure)](https://nextapi.getpop.org/api/graphql/?query=var(name:datastructure))
 
 _**Operator over context variable:**_
 
-- [equals(var(name:datastructure),graphql)|equals(var(name:datastructure),rest)](https://nextapi.getpop.org/api/graphql/?query=equals(var(name:datastructure),graphql)|equals(var(name:datastructure),rest))
+- [/?query=equals(var(name:datastructure),graphql)|equals(var(name:datastructure),rest)](https://nextapi.getpop.org/api/graphql/?query=equals(var(name:datastructure),graphql)|equals(var(name:datastructure),rest))
 
 ### Warning messages
 
 Deprecated fields: 
 
-- [posts.id|title|published](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|published)
+- [/?query=posts.id|title|published](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|published)
 
 ### Error messages
 
 Schema errors: 
 
-- [posts.id|title|non-existant-field|is-status(status:non-existant-value)|not()](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|non-existant-field|is-status(status:non-existant-value)|not())
+- [/?query=posts.id|title|non-existant-field|is-status(status:non-existant-value)|not()](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|non-existant-field|is-status(status:non-existant-value)|not())
 
 Variable errors: 
 
-- [posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3)
+- [/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3)
 
 Bookmark errors: 
 
-- [posts(searchfor:template,limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name)
+- [/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchpostswithtypo].author.id|name)
 
 Fragment errors: 
 
-- [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3withtypo&fragments[fr3]=author.id|url](https://nextapi.getpop.org/api/graphql/?query=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3withtypo&fragments[fr3]=author.id|url)
+- [/?query=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3withtypo&fragments[fr3]=author.id|url](https://nextapi.getpop.org/api/graphql/?query=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3withtypo&fragments[fr3]=author.id|url)
 
 DB errors: 
 
@@ -394,8 +394,8 @@ If you discover any security related issues, please email leo@getpop.org instead
 
 ## Credits
 
-- [Leonardo Losoviz][link-author]
-- [All Contributors][link-contributors]
+- [/?query=Leonardo Losoviz][link-author]
+- [/?query=All Contributors][link-contributors]
 
 ## License
 
@@ -460,9 +460,9 @@ _Single post:_
 
 **Examples:**
 
-_List of posts + author data:_<br/>[id|title|date|url,author.id|name|url,author.posts.id|title|url](https://nextapi.getpop.org/posts/api/?datastructure=graphql&query=id|title|date|url,author.id|name|url,author.posts.id|title|url)
+_List of posts + author data:_<br/>[/?query=id|title|date|url,author.id|name|url,author.posts.id|title|url](https://nextapi.getpop.org/posts/api/?datastructure=graphql&query=id|title|date|url,author.id|name|url,author.posts.id|title|url)
 
-_Single post + tags (ordered by slug), comments and comment author info:_<br/>[id|title|cat-slugs,tags(order:slug|asc).id|slug|count|url,comments.id|content|date,comments.author.id|name|url](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/api/?datastructure=graphql&query=id|title|cat-slugs,tags(order:slug|asc).id|slug|count|url,comments.id|content|date,comments.author.id|name|url)
+_Single post + tags (ordered by slug), comments and comment author info:_<br/>[/?query=id|title|cat-slugs,tags(order:slug|asc).id|slug|count|url,comments.id|content|date,comments.author.id|name|url](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/api/?datastructure=graphql&query=id|title|cat-slugs,tags(order:slug|asc).id|slug|count|url,comments.id|content|date,comments.author.id|name|url)
 
 ### Users
 
@@ -493,9 +493,9 @@ _Author:_
 
 **Examples:**
 
-_List of users + up to 2 posts for each, ordered by date:_<br/>[id|name|url,posts(limit:2;order:date|desc).id|title|url|date](https://nextapi.getpop.org/users/api/?datastructure=graphql&query=id|name|url,posts(limit:2,order:date|desc).id|title|url|date)
+_List of users + up to 2 posts for each, ordered by date:_<br/>[/?query=id|name|url,posts(limit:2;order:date|desc).id|title|url|date](https://nextapi.getpop.org/users/api/?datastructure=graphql&query=id|name|url,posts(limit:2,order:date|desc).id|title|url|date)
 
-_Author + all posts, with their tags and comments, and the comment author info:_<br/>[id|name|url,posts.id|title,posts.tags.id|slug|count|url,posts.comments.id|content|date,posts.comments.author.id|name](https://nextapi.getpop.org/author/themedemos/api/?datastructure=graphql&query=id|name|url,posts.id|title,posts.tags.id|slug|count|url,posts.comments.id|content|date,posts.comments.author.id|name)
+_Author + all posts, with their tags and comments, and the comment author info:_<br/>[/?query=id|name|url,posts.id|title,posts.tags.id|slug|count|url,posts.comments.id|content|date,posts.comments.author.id|name](https://nextapi.getpop.org/author/themedemos/api/?datastructure=graphql&query=id|name|url,posts.id|title,posts.tags.id|slug|count|url,posts.comments.id|content|date,posts.comments.author.id|name)
 
 ### Comments
 
@@ -512,7 +512,7 @@ _Author + all posts, with their tags and comments, and the comment author info:_
 
 **Examples:**
 
-_Single post's comments:_<br/>[comments.id|content|date|type|approved|author-name|author-url|author-email](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/api/?datastructure=graphql&query=comments.id|content|date|type|approved|author-name|author-url|author-email)
+_Single post's comments:_<br/>[/?query=comments.id|content|date|type|approved|author-name|author-url|author-email](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/api/?datastructure=graphql&query=comments.id|content|date|type|approved|author-name|author-url|author-email)
 
 ### Tags
 
@@ -543,9 +543,9 @@ _Tag:_
 
 **Examples:**
 
-_List of tags + all their posts filtered by date and ordered by title, their comments, and the comment authors:_<br/>[id|slug|count|url,posts(date-from:2009-09-15;date-to:2010-07-10;order:title|asc).id|title|url|date](https://nextapi.getpop.org/tags/api/?datastructure=graphql&query=id|slug|count|url,posts(date-from:2009-09-15,date-to:2010-07-10,order:title|asc).id|title|url|date)
+_List of tags + all their posts filtered by date and ordered by title, their comments, and the comment authors:_<br/>[/?query=id|slug|count|url,posts(date-from:2009-09-15;date-to:2010-07-10;order:title|asc).id|title|url|date](https://nextapi.getpop.org/tags/api/?datastructure=graphql&query=id|slug|count|url,posts(date-from:2009-09-15,date-to:2010-07-10,order:title|asc).id|title|url|date)
 
-_Tag + all their posts, their comments and the comment authors:_<br/>[id|slug|count|url,posts.id|title,posts.comments.content|date,posts.comments.author.id|name|url](https://nextapi.getpop.org/tag/html/api/?datastructure=graphql&query=id|slug|count|url,posts.id|title,posts.comments.content|date,posts.comments.author.id|name|url)
+_Tag + all their posts, their comments and the comment authors:_<br/>[/?query=id|slug|count|url,posts.id|title,posts.comments.content|date,posts.comments.author.id|name|url](https://nextapi.getpop.org/tag/html/api/?datastructure=graphql&query=id|slug|count|url,posts.id|title,posts.comments.content|date,posts.comments.author.id|name|url)
 
 ### Pages
 
@@ -570,5 +570,5 @@ _Page:_
 
 **Examples:**
 
-_Page:_<br/>[id|title|content|url](https://nextapi.getpop.org/about/api/?datastructure=graphql&query=id|title|content|url)
+_Page:_<br/>[/?query=id|title|content|url](https://nextapi.getpop.org/about/api/?datastructure=graphql&query=id|title|content|url)
 -->
