@@ -88,8 +88,8 @@ Please refer to the syntax from the [Field Query](https://github.com/getpop/fiel
 
 The API can transform the application into both a GraphQL and/or REST server, simply by installing the corresponding extension:
 
-- [/?query=GraphQL API](https://github.com/getpop/api-graphql)
-- [/?query=REST API](https://github.com/getpop/api-rest)
+- [GraphQL API](https://github.com/getpop/api-graphql)
+- [REST API](https://github.com/getpop/api-rest)
 
 The PoP API manages to provide all the same benefits of both REST and GraphQL APIs, **at the same time**:
 
