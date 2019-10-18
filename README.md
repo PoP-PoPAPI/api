@@ -133,9 +133,11 @@ Please refer to the syntax from the [Field Query](https://github.com/getpop/fiel
 **Note:** Setting parameter `datastructure` to either `graphql` or `rest` formats the response for the corresponding API. If `datastructure` is left empty, the response is the native one for PoP: a relational database structure (see "Data API layer" section below).
 -->
 
-## Time complexity of executing queries
+## Low time complexity to query the database
 
-PoP fetches a piece data from the database only once, even if the query fetches it several times. The query can include any number of nested relationships, and these are resolved with linear complexity time: worst case of `O(n^2)` (where `n` is the number of nodes that switch domain plus the number of retrieved results), and average case of `O(n)`.
+PoP fetches a piece data from the database only once, even if the query fetches it several times. The query can include any number of nested relationships, and these are resolved with worst case complexity time of `O(n^2)`, and average case of `O(n)` (where `n` is the number of nested properties).
+
+## Complex query resolution without server-side coding
 
 <!--
 ## Comparison among APIs
@@ -180,58 +182,39 @@ Variables:
 
 - [posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3&variables[search]=template](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:$search,limit:$limit).id|title&variables[limit]=3&variables[search]=template)
 
-Bookmarks: 
-
-- [posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name)
-
 Aliases: 
 
 - [posts(searchfor:template,limit:3)@searchposts.id|title](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)@searchposts.id|title)
+
+Bookmarks: 
+
+- [posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[searchposts].id|title,[searchposts].author.id|name)
 
 Bookmark + Alias: 
 
 - [posts(searchfor:template,limit:3)[@searchposts].id|title,[searchposts].author.id|name](https://nextapi.getpop.org/api/graphql/?query=posts(searchfor:template,limit:3)[@searchposts].id|title,[searchposts].author.id|name)
 
-Field args: 
-
-- [posts.id|title|is-status(status:draft)|is-status(status:published)](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|is-status(status:draft)|is-status(status:published))
-
-Operators: 
-
-- [posts.id|title|or([is-status(status:draft),is-status(status:published)])](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|or([is-status(status:draft),is-status(status:published)]))
-
 Fragments: 
 
 - [posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title](https://nextapi.getpop.org/api/graphql/?query=posts.--fr1&fragments[fr1]=id|author.posts(limit:1).id|title)
 
-Concatenating fragments: 
+Directives:
 
-- [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title](https://nextapi.getpop.org/api/graphql/?query=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title)
+- [posts.id|title|url<include(if:$include)>&variables[include]=true](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=true)
+- [posts.id|title|url<skip(if:$skip)>&variables[skip]=](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<skip(if:$skip)>&variables[skip]=)
 
-Fragments inside fragments: 
+Operators: 
 
-- [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3&fragments[fr3]=author.id|url](https://nextapi.getpop.org/api/graphql/?query=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)&fragments[fr2]=id|title|--fr3&fragments[fr3]=author.id|url)
+- [or([1, 0])](https://nextapi.getpop.org/api/graphql/?query=or([1, 0]))
+- [and([1, 0])](https://nextapi.getpop.org/api/graphql/?query=and([1, 0]))
 
-Fragments with aliases: 
+Nested fields: 
 
-- [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)@firstpost&fragments[fr2]=id|title](https://nextapi.getpop.org/api/graphql/?query=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:1)@firstpost&fragments[fr2]=id|title)
+- [posts.id|title|or([is-status(status:draft),is-status(status:published)])](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|or([is-status(status:draft),is-status(status:published)]))
 
-Fragments with variables: 
-
-- [posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:$limit)&fragments[fr2]=id|title&variables[limit]=1](https://nextapi.getpop.org/api/graphql/?query=posts.--fr1.--fr2&fragments[fr1]=author.posts(limit:$limit)&fragments[fr2]=id|title&variables[limit]=1)
-
-Directives (with variables):
-
-- Include: [posts.id|title|url<include(if:$include)>&variables[include]=true](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=true) and [posts.id|title|url<include(if:$include)>&variables[include]=](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<include(if:$include)>&variables[include]=)
-- Skip: [posts.id|title|url<skip(if:$skip)>&variables[skip]=true](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<skip(if:$skip)>&variables[skip]=true) and [posts.id|title|url<skip(if:$skip)>&variables[skip]=](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|url<skip(if:$skip)>&variables[skip]=)
-
-Directives with fields:
+Directives with nested fields:
 
 - Include: [posts.id|title|comments<include(if:has-comments())>.id|content](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|comments<include(if:has-comments())>.id|content)
-
-Directives with operators and fields:
-
-- Skip: [posts.id|title|comments<skip(if:not(has-comments()))>.id|content](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|comments<skip(if:not(has-comments()))>.id|content)
 
 Overriding fields #1: 
 
