@@ -110,9 +110,9 @@ _From REST:_
 The PoP API provides several features that neither REST or GraphQL support:
 
 - ✅ URL-based queries ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|date|content))
-- ✅ Operators: `AND`, `OR`, `NOT`, etc ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|not(is-status(status:publish))))
+- ✅ Operators: `and`, `or`, `not`, `if`, `isNull`, `equals`, etc ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|not(is-status(status:publish))))
+- ✅ Helper functions ([example](https://nextapi.getpop.org/api/graphql/?query=context), [example](https://nextapi.getpop.org/api/graphql/?query=var(name:output)))
 - ✅ Nested fields ([example](https://nextapi.getpop.org/api/graphql/?query=posts.id|title|or([is-status(status:publish),is-status(status:draft)])))
-- ✅ Context variables ([example](https://nextapi.getpop.org/api/graphql/?query=context), [example](https://nextapi.getpop.org/api/graphql/?query=var(name:output)))
 
 <!--
 ### Examples
@@ -130,9 +130,15 @@ The PoP API provides several features that neither REST or GraphQL support:
 **Note:** Setting parameter `datastructure` to either `graphql` or `rest` formats the response for the corresponding API. If `datastructure` is left empty, the response is the native one for PoP: a relational database structure (see "Data API layer" section below).
 -->
 
-## Low time complexity to query the database
+## Fast to resolve queries
 
-PoP fetches a piece data from the database only once, even if the query fetches it several times. The query can include any number of nested relationships, and these are resolved with worst case complexity time of `O(n^2)`, and average case of `O(n)` (where `n` is the number of nested properties).
+PoP fetches a piece data from the database only once, even if the query fetches it several times. The query can include any number of nested relationships, and these are resolved with [complexity time](https://rob-bell.net/2009/06/a-beginners-guide-to-big-o-notation/) of `O(n^2)` in worst case, and `O(n)` in average case, where `n` is the number of nodes (both branches and leaves). 
+
+(This is much better than for the <a href="https://blog.acolyer.org/2018/05/21/semantics-and-complexity-of-graphql/">typical GraphQL implementation</a>, which is `O(2^n)` in worst case, and `O(n^c)` to find out the query complexity.)
+
+As a consequence, executing a query with multiple levels of nested properties will still be executed fairly quickly:
+
+[/?query=users.posts.author.posts.comments.id|content](https://nextapi.getpop.org/api/graphql/?query=users.posts.author.posts.comments.id|content)
 
 ## Decentralized schema
 
@@ -160,7 +166,11 @@ _**Overriding fields #2:**_
 - Normal vs "Try new features" behaviour:<br/>[/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
 -->
 
-## Complex query resolution without server-side coding
+## Setting-up a gateway to fetch data from different sources
+
+Complex query resolution without server-side coding
+
+## Fetching data from different sources already from the client
 
 <!--
 ## Comparison among APIs
@@ -426,8 +436,8 @@ If you discover any security related issues, please email leo@getpop.org instead
 
 ## Credits
 
-- [/?query=Leonardo Losoviz][link-author]
-- [/?query=All Contributors][link-contributors]
+- [Leonardo Losoviz][link-author]
+- [All Contributors][link-contributors]
 
 ## License
 
