@@ -89,12 +89,13 @@ _From GraphQL:_
 - ✅ No over/under-fetching data
 - ✅ Shape of the response mirrors query
 - ✅ Field arguments (for filtering/pagination/formatting/etc)
+- ✅ Directives (to change the behaviour of how data is fetched)
 
 _From REST:_
 
 - ✅ Server-side caching
 - ✅ Secure: Not chance of Denial of Service attacks
-- ✅ Pre-define fields
+- ✅ Can pre-define fields
 
 ### Generate GraphQL and REST-compatible responses
 
