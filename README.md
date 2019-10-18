@@ -63,7 +63,7 @@ RewriteRule ^api/?$ /?scheme=api [L,P,QSA]
 
 2. Add your query under URL parameter `query`, following [this syntax](https://github.com/getpop/field-query)
 
-### Query root or URL-based resources
+### Query the root or URL-based resources
 
 In the homepage, the initial selected resource on which the query is applied is `"root"`: 
 
@@ -71,8 +71,8 @@ In the homepage, the initial selected resource on which the query is applied is 
 
 Otherwise, the selected resource, or set of resources, is the corresponding one to the URL, such as a [single post](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/) or a [collection of posts](https://nextapi.getpop.org/posts/):
 
-- [/?query={single-post-url}/?query=id|title|author.id|name](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/api/graphql/?query=id|title|author.id|name)
-- [/?query={post-list-url}/?query=id|title|author.id|name](https://nextapi.getpop.org/posts/api/graphql/?query=id|title|author.id|name)
+- [{single-post-url}/?query=id|title|author.id|name](https://nextapi.getpop.org/2013/01/11/markup-html-tags-and-formatting/api/graphql/?query=id|title|author.id|name)
+- [{post-list-url}/?query=id|title|author.id|name](https://nextapi.getpop.org/posts/api/graphql/?query=id|title|author.id|name)
 
 ### Visualize the schema
 
