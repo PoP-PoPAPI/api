@@ -1,13 +1,16 @@
 <?php
 namespace PoP\API\Hooks;
-use PoP\Hooks\Hooks\AbstractHook;
+use PoP\ComponentModel\Hooks\AbstractHookSet;
 use PoP\Hooks\Contracts\HooksAPIInterface;
+use PoP\Translation\Contracts\TranslationAPIInterface;
 
-class RoutingHooks extends AbstractHook
+class RoutingHooks extends AbstractHookSet
 {
-    public function __construct(HooksAPIInterface $hooksAPI)
-    {
-        parent::__construct($hooksAPI);
+    public function __construct(
+        HooksAPIInterface $hooksAPI,
+        TranslationAPIInterface $translationAPI
+    ) {
+        parent::__construct($hooksAPI, $translationAPI);
         $this->hooksAPI->addFilter(
             '\PoP\Routing:uri-route',
             array($this, 'getURIRoute')

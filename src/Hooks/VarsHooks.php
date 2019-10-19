@@ -1,20 +1,23 @@
 <?php
 namespace PoP\API\Hooks;
 use PoP\API\Schema\QueryInputs;
-use PoP\Hooks\Hooks\AbstractHook;
 use PoP\ComponentModel\Engine_Vars;
 use PoP\ComponentModel\Server\Utils;
 use PoP\Hooks\Contracts\HooksAPIInterface;
+use PoP\ComponentModel\Hooks\AbstractHookSet;
 use PoP\ComponentModel\DataQueryManagerFactory;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\ModelInstance\ModelInstance;
 use PoP\API\Facades\Schema\FieldQueryConvertorFacade;
+use PoP\Translation\Contracts\TranslationAPIInterface;
 
-class VarsHooks extends AbstractHook
+class VarsHooks extends AbstractHookSet
 {
-    public function __construct(HooksAPIInterface $hooksAPI)
-    {
-        parent::__construct($hooksAPI);
+    public function __construct(
+        HooksAPIInterface $hooksAPI,
+        TranslationAPIInterface $translationAPI
+    ) {
+        parent::__construct($hooksAPI, $translationAPI);
 
         // Add functions as hooks, so we allow PoP_Application to set the 'routing-state' first
         $this->hooksAPI->addAction(
