@@ -7,6 +7,7 @@ use PoP\ComponentModel\Server\Utils;
 use PoP\ComponentModel\DataQueryManagerFactory;
 use PoP\ComponentModel\Engine_Vars;
 use PoP\API\Schema\QueryInputs;
+use PoP\ComponentModel\ModelInstance\ModelInstance;
 
 class VarsHooks
 {
@@ -20,7 +21,7 @@ class VarsHooks
             1
         );
         HooksAPIFacade::getInstance()->addFilter(
-            \PoP\ComponentModel\ModelInstance\ModelInstance::HOOK_COMPONENTS_RESULT,
+            ModelInstance::HOOK_COMPONENTS_RESULT,
             array($this, 'getModelInstanceComponentsFromVars')
         );
     }

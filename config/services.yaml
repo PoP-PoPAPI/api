@@ -1,6 +1,7 @@
 services:
     _defaults:
         bind:
+            PoP\Hooks\Contracts\HooksAPIInterface: '@hooks_api'
             PoP\Translation\Contracts\TranslationAPIInterface: '@translation_api'
             PoP\ComponentModel\Schema\ErrorMessageStoreInterface: '@error_message_store'
             PoP\QueryParsing\Parsers\QueryParserInterface: '@query_parser'

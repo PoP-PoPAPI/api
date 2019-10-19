@@ -1,12 +1,14 @@
 <?php
 namespace PoP\API\Hooks;
-use PoP\Hooks\Facades\HooksAPIFacade;
+use PoP\Hooks\Hooks\AbstractHook;
+use PoP\Hooks\Contracts\HooksAPIInterface;
 
-class RoutingHooks
+class RoutingHooks extends AbstractHook
 {
-    public function __construct()
+    public function __construct(HooksAPIInterface $hooksAPI)
     {
-        HooksAPIFacade::getInstance()->addFilter(
+        parent::__construct($hooksAPI);
+        $this->hooksAPI->addFilter(
             '\PoP\Routing:uri-route',
             array($this, 'getURIRoute')
         );
