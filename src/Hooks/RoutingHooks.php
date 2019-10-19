@@ -1,6 +1,6 @@
 <?php
 namespace PoP\API\Hooks;
-use PoP\ComponentModel\Hooks\AbstractHookSet;
+use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\Hooks\Contracts\HooksAPIInterface;
 use PoP\Translation\Contracts\TranslationAPIInterface;
 

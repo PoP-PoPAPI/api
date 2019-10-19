@@ -4,7 +4,7 @@ use PoP\API\Schema\QueryInputs;
 use PoP\ComponentModel\Engine_Vars;
 use PoP\ComponentModel\Server\Utils;
 use PoP\Hooks\Contracts\HooksAPIInterface;
-use PoP\ComponentModel\Hooks\AbstractHookSet;
+use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\ComponentModel\DataQueryManagerFactory;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\ModelInstance\ModelInstance;
