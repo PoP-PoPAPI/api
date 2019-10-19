@@ -8,9 +8,9 @@ class SkipDirectiveResolver extends AbstractDirectiveResolver
     use FilterIDsSatisfyingConditionDirectiveResolverTrait;
 
     const DIRECTIVE_NAME = 'skip';
-    // public function getDirectiveName(): string {
-    //     return self::DIRECTIVE_NAME;
-    // }
+    public static function getDirectiveName(): string {
+        return self::DIRECTIVE_NAME;
+    }
 
     public function resolveDirective(FieldResolverInterface $fieldResolver, array &$resultIDItems, array &$idsDataFields, array &$dbItems, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
