@@ -1,26 +1,29 @@
 <?php
 namespace PoP\API\Hooks;
-use PoP\Translation\Facades\TranslationAPIFacade;
-use PoP\Hooks\Facades\HooksAPIFacade;
-use PoP\API\Facades\Schema\FieldQueryConvertorFacade;
-use PoP\ComponentModel\Server\Utils;
-use PoP\ComponentModel\DataQueryManagerFactory;
-use PoP\ComponentModel\Engine_Vars;
 use PoP\API\Schema\QueryInputs;
+use PoP\Hooks\Hooks\AbstractHook;
+use PoP\ComponentModel\Engine_Vars;
+use PoP\ComponentModel\Server\Utils;
+use PoP\Hooks\Contracts\HooksAPIInterface;
+use PoP\ComponentModel\DataQueryManagerFactory;
+use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\ModelInstance\ModelInstance;
+use PoP\API\Facades\Schema\FieldQueryConvertorFacade;
 
-class VarsHooks
+class VarsHooks extends AbstractHook
 {
-    public function __construct()
+    public function __construct(HooksAPIInterface $hooksAPI)
     {
+        parent::__construct($hooksAPI);
+
         // Add functions as hooks, so we allow PoP_Application to set the 'routing-state' first
-        HooksAPIFacade::getInstance()->addAction(
+        $this->hooksAPI->addAction(
             '\PoP\ComponentModel\Engine_Vars:addVars',
             array($this, 'addVars'),
             10,
             1
         );
-        HooksAPIFacade::getInstance()->addFilter(
+        $this->hooksAPI->addFilter(
             ModelInstance::HOOK_COMPONENTS_RESULT,
             array($this, 'getModelInstanceComponentsFromVars')
         );
