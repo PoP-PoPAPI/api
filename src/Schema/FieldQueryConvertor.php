@@ -346,6 +346,14 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
             ));
             return null;
         }
+        // If it has the "skip output if null" symbol, transfer it to the resolved fragments
+        $skipOutputIfNullSymbolPos = QueryHelpers::findSkipOutputIfNullSymbolPosition($fragmentName);
+        $skipOutputIfNull = false;
+        if ($skipOutputIfNullSymbolPos !== false) {
+            $skipOutputIfNull = true;
+            // Remove from the fragmentName
+            $fragmentName = substr($fragmentName, 0, $skipOutputIfNullSymbolPos).substr($fragmentName, $skipOutputIfNullSymbolPos+strlen(QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL));
+        }
         // If it has a fragment, extract it and then add it again on each component from the fragment
         $fragmentDirectives = '';
         list(
@@ -376,9 +384,16 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         }
         // If the fragment has directives, attach them again to each component from the fragment
         // But only if the component doesn't already have a directive! Otherwise, the directive at the definition level takes priority
-        if ($fragmentDirectives) {
+        // Same with adding "?" for Skip output if null
+        if ($fragmentDirectives || $skipOutputIfNull) {
             $fragmentPipeFields = $this->queryParser->splitElements($fragment, QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
-            $fragment = implode(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, array_filter(array_map(function($fragmentField) use($fragmentDirectives) {
+            $fragment = implode(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, array_filter(array_map(function($fragmentField) use($fragmentDirectives, $skipOutputIfNull) {
+                // Calculate if to add "?"
+                $addSkipOutputIfNullToFragmentField = false;
+                if ($skipOutputIfNull) {
+                    $fragmentFieldSkipOutputIfNullSymbolPos = QueryHelpers::findSkipOutputIfNullSymbolPosition($fragmentField);
+                    $addSkipOutputIfNullToFragmentField = $fragmentFieldSkipOutputIfNullSymbolPos === false;
+                }
                 list(
                     $fragmentFieldDirectivesOpeningSymbolPos,
                     $fragmentFieldDirectivesClosingSymbolPos
@@ -395,10 +410,20 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         return null;
                     }
                     // The fragmentField has directives, so prioritize these: do not attach the fragments directives
+                    if ($addSkipOutputIfNullToFragmentField) {
+                        // Add "?" after the propertyName, before the directive
+                        return
+                            substr($fragmentField, 0, $fragmentFieldDirectivesOpeningSymbolPos).
+                            QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL.
+                            substr($fragmentField, $fragmentFieldDirectivesOpeningSymbolPos);
+                    }
                     return $fragmentField;
                 }
-                // Attach the fragment resolution's directives to the field
-                return $fragmentField.$fragmentDirectives;
+                // Attach the fragment resolution's directives to the field, and maybe "?"
+                return
+                    $fragmentField.
+                    ($addSkipOutputIfNullToFragmentField ? QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL : '').
+                    $fragmentDirectives;
             }, $fragmentPipeFields)));
         }
 
