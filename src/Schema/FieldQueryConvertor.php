@@ -350,18 +350,55 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         $lastPropertyNumber = count($pipefields)-1;
         $lastLevelProperties = [];
         for ($propertyNumber=0; $propertyNumber<=$lastPropertyNumber; $propertyNumber++) {
-            // If it starts with "*", then it's a fragment
+            // If it starts with "--", then it's a fragment
             if (substr($pipefields[$propertyNumber], 0, strlen(QuerySyntax::SYMBOL_FRAGMENT_PREFIX)) == QuerySyntax::SYMBOL_FRAGMENT_PREFIX) {
                 // Replace with the actual fragment
                 $fragmentName = substr($pipefields[$propertyNumber], strlen(QuerySyntax::SYMBOL_FRAGMENT_PREFIX));
-                if ($fragment = $this->getFragment($fragmentName, $fragments)) {
-                    $lastLevelProperties[] = $fragment;
-                } else {
+                // If it has a bookmark or alias, it's an error
+                $aliasSymbolPos = QueryHelpers::findFieldAliasSymbolPosition($fragmentName);
+                if ($aliasSymbolPos !== false) {
+                    $this->errorMessageStore->addQueryError(sprintf(
+                        $this->translationAPI->__('Fragment \'%s\' cannot contain aliases, so it has been ignored', 'pop-component-model'),
+                        $fragmentName
+                    ));
+                    continue;
+                }
+                // If it has a fragment, extract it and then add it again on each component from the fragment
+                $fragmentDirectives = '';
+                list(
+                    $fieldDirectivesOpeningSymbolPos,
+                    $fieldDirectivesClosingSymbolPos
+                ) = QueryHelpers::listFieldDirectivesSymbolPositions($fragmentName);
+                if ($fieldDirectivesOpeningSymbolPos !== false || $fieldDirectivesClosingSymbolPos !== false) {
+                    // First check both "<" and ">" are present, or it's an error
+                    if ($fieldDirectivesOpeningSymbolPos === false || $fieldDirectivesClosingSymbolPos === false) {
+                        $this->errorMessageStore->addQueryError(sprintf(
+                            $this->translationAPI->__('Fragment \'%s\' must contain both \'%s\' and \'%s\' to define directives, so it has been ignored', 'pop-component-model'),
+                            $fragmentName,
+                            QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING,
+                            QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING
+                        ));
+                        continue;
+                    }
+                    $fragmentDirectives = substr($fragmentName, $fieldDirectivesOpeningSymbolPos, $fieldDirectivesClosingSymbolPos);
+                    $fragmentName = substr($fragmentName, 0, $fieldDirectivesOpeningSymbolPos);
+                }
+                $fragment = $this->getFragment($fragmentName, $fragments);
+                if (!$fragment) {
                     $this->errorMessageStore->addQueryError(sprintf(
                         $this->translationAPI->__('Fragment \'%s\' is undefined, so it has been ignored', 'pop-component-model'),
                         $fragmentName
                     ));
+                    continue;
                 }
+                // If the fragment has directives, attach them again to each component from the fragment
+                if ($fragmentDirectives) {
+                    $fragmentPipeFields = $this->queryParser->splitElements($fragment, QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
+                    $fragment = implode(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, array_map(function($pipeField) use($fragmentDirectives) {
+                        return $pipeField.$fragmentDirectives;
+                    }, $fragmentPipeFields));
+                }
+                $lastLevelProperties[] = $fragment;
             } else {
                 $lastLevelProperties[] = $pipefields[$propertyNumber];
             }
