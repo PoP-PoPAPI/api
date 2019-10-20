@@ -375,11 +375,31 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
             return null;
         }
         // If the fragment has directives, attach them again to each component from the fragment
+        // But only if the component doesn't already have a directive! Otherwise, the directive at the definition level takes priority
         if ($fragmentDirectives) {
             $fragmentPipeFields = $this->queryParser->splitElements($fragment, QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
-            $fragment = implode(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, array_map(function($pipeField) use($fragmentDirectives) {
-                return $pipeField.$fragmentDirectives;
-            }, $fragmentPipeFields));
+            $fragment = implode(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, array_filter(array_map(function($fragmentField) use($fragmentDirectives) {
+                list(
+                    $fragmentFieldDirectivesOpeningSymbolPos,
+                    $fragmentFieldDirectivesClosingSymbolPos
+                ) = QueryHelpers::listFieldDirectivesSymbolPositions($fragmentField);
+                if ($fragmentFieldDirectivesOpeningSymbolPos !== false || $fragmentFieldDirectivesClosingSymbolPos !== false) {
+                    // First check both "<" and ">" are present, or it's an error
+                    if ($fragmentFieldDirectivesOpeningSymbolPos === false || $fragmentFieldDirectivesClosingSymbolPos === false) {
+                        $this->errorMessageStore->addQueryError(sprintf(
+                            $this->translationAPI->__('Fragment field \'%s\' must contain both \'%s\' and \'%s\' to define directives, so it has been ignored', 'pop-component-model'),
+                            $fragmentField,
+                            QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING,
+                            QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING
+                        ));
+                        return null;
+                    }
+                    // The fragmentField has directives, so prioritize these: do not attach the fragments directives
+                    return $fragmentField;
+                }
+                // Attach the fragment resolution's directives to the field
+                return $fragmentField.$fragmentDirectives;
+            }, $fragmentPipeFields)));
         }
 
         return $fragment;
