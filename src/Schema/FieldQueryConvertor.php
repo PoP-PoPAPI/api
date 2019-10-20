@@ -420,22 +420,22 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
         // Now replace fragments for properties
         for ($pathLevel=$lastLevel-1; $pathLevel>=0; $pathLevel--) {
-            // If it starts with "*", then it's a fragment
-            if (substr($dotfields[$pathLevel], 0, strlen(QuerySyntax::SYMBOL_FRAGMENT_PREFIX)) == QuerySyntax::SYMBOL_FRAGMENT_PREFIX) {
+            // If it starts with "--", then it's a fragment
+            $pipeField = $dotfields[$pathLevel];
+            if (substr($pipeField, 0, strlen(QuerySyntax::SYMBOL_FRAGMENT_PREFIX)) == QuerySyntax::SYMBOL_FRAGMENT_PREFIX) {
                 // Replace with the actual fragment
-                $fragmentName = substr($dotfields[$pathLevel], strlen(QuerySyntax::SYMBOL_FRAGMENT_PREFIX));
-                if ($fragment = $this->getFragment($fragmentName, $fragments)) {
-                    $fragmentDotfields = $this->queryParser->splitElements($fragment, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
-                    array_splice($dotfields, $pathLevel, 1, $fragmentDotfields);
-                } else {
+                $resolvedFragment = $this->resolveFragmentOrAddError($pipeField, $fragments);
+                if (is_null($resolvedFragment)) {
                     $this->errorMessageStore->addQueryError(sprintf(
-                        $this->translationAPI->__('Fragment \'%s\' is undefined, so query section \'%s\' has been ignored', 'pop-component-model'),
-                        $fragmentName,
+                        $this->translationAPI->__('Because fragment \'%s\' has errors, query section \'%s\' has been ignored', 'pop-component-model'),
+                        $pipeField,
                         $commafields
                     ));
                     // Remove whole query section
                     return null;
                 }
+                $fragmentDotfields = $this->queryParser->splitElements($resolvedFragment, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
+                array_splice($dotfields, $pathLevel, 1, $fragmentDotfields);
             }
         }
 
