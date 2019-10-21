@@ -13,12 +13,8 @@ use PoP\Translation\Contracts\TranslationAPIInterface;
 
 class VarsHooks extends AbstractHookSet
 {
-    public function __construct(
-        HooksAPIInterface $hooksAPI,
-        TranslationAPIInterface $translationAPI
-    ) {
-        parent::__construct($hooksAPI, $translationAPI);
-
+    protected function init()
+    {
         // Add functions as hooks, so we allow PoP_Application to set the 'routing-state' first
         $this->hooksAPI->addAction(
             '\PoP\ComponentModel\Engine_Vars:addVars',

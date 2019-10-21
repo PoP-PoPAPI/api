@@ -6,11 +6,8 @@ use PoP\Translation\Contracts\TranslationAPIInterface;
 
 class RoutingHooks extends AbstractHookSet
 {
-    public function __construct(
-        HooksAPIInterface $hooksAPI,
-        TranslationAPIInterface $translationAPI
-    ) {
-        parent::__construct($hooksAPI, $translationAPI);
+    protected function init()
+    {
         $this->hooksAPI->addFilter(
             '\PoP\Routing:uri-route',
             array($this, 'getURIRoute')
