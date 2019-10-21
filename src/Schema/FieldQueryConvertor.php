@@ -3,7 +3,7 @@ namespace PoP\API\Schema;
 use PoP\FieldQuery\Query\QuerySyntax;
 use PoP\FieldQuery\Query\QueryHelpers;
 use PoP\Translation\Contracts\TranslationAPIInterface;
-use PoP\ComponentModel\Schema\ErrorMessageStoreInterface;
+use PoP\ComponentModel\Schema\FeedbackMessageStoreInterface;
 use PoP\QueryParsing\Parsers\QueryParserInterface;
 use function strlen;
 use function substr;
@@ -19,16 +19,16 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
     // Services
     protected $translationAPI;
-    protected $errorMessageStore;
+    protected $feedbackMessageStore;
     protected $queryParser;
 
     public function __construct(
         TranslationAPIInterface $translationAPI,
-        ErrorMessageStoreInterface $errorMessageStore,
+        FeedbackMessageStoreInterface $feedbackMessageStore,
         QueryParserInterface $queryParser
     ) {
         $this->translationAPI = $translationAPI;
-        $this->errorMessageStore = $errorMessageStore;
+        $this->feedbackMessageStore = $feedbackMessageStore;
         $this->queryParser = $queryParser;
     }
 
@@ -94,7 +94,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                                 $bookmark,
                                 $commafields
                             );
-                            $this->errorMessageStore->addQueryError($errorMessage);
+                            $this->feedbackMessageStore->addQueryError($errorMessage);
                             unset($bookmarkPaths[QueryTokens::TOKEN_BOOKMARK_PREV]);
                             continue;
                         }
@@ -117,7 +117,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         // If the validation is a string, then it's an error
                         if (is_string($errorMessageOrSymbolPositions)) {
                             $error = (string)$errorMessageOrSymbolPositions;
-                            $this->errorMessageStore->addQueryError($error);
+                            $this->feedbackMessageStore->addQueryError($error);
                             unset($bookmarkPaths[QueryTokens::TOKEN_BOOKMARK_PREV]);
                             // Exit 2 levels, so it doesn't process the whole query section, not just the property
                             continue 2;
@@ -201,7 +201,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                     // If the validation is a string, then it's an error
                     if (is_string($errorMessageOrSymbolPositions)) {
                         $error = (string)$errorMessageOrSymbolPositions;
-                        $this->errorMessageStore->addQueryError($error);
+                        $this->feedbackMessageStore->addQueryError($error);
                         // Exit 1 levels, so it ignores only this property but keeps processing the others
                         continue;
                     }
@@ -340,7 +340,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // If it has a bookmark or alias, it's an error
         $aliasSymbolPos = QueryHelpers::findFieldAliasSymbolPosition($fragmentName);
         if ($aliasSymbolPos !== false) {
-            $this->errorMessageStore->addQueryError(sprintf(
+            $this->feedbackMessageStore->addQueryError(sprintf(
                 $this->translationAPI->__('Fragment \'%s\' cannot contain aliases, so it has been ignored', 'pop-component-model'),
                 $fragmentName
             ));
@@ -363,7 +363,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         if ($fieldDirectivesOpeningSymbolPos !== false || $fieldDirectivesClosingSymbolPos !== false) {
             // First check both "<" and ">" are present, or it's an error
             if ($fieldDirectivesOpeningSymbolPos === false || $fieldDirectivesClosingSymbolPos === false) {
-                $this->errorMessageStore->addQueryError(sprintf(
+                $this->feedbackMessageStore->addQueryError(sprintf(
                     $this->translationAPI->__('Fragment \'%s\' must contain both \'%s\' and \'%s\' to define directives, so it has been ignored', 'pop-component-model'),
                     $fragmentName,
                     QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING,
@@ -376,7 +376,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         }
         $fragment = $this->getFragment($fragmentName, $fragments);
         if (!$fragment) {
-            $this->errorMessageStore->addQueryError(sprintf(
+            $this->feedbackMessageStore->addQueryError(sprintf(
                 $this->translationAPI->__('Fragment \'%s\' is undefined, so it has been ignored', 'pop-component-model'),
                 $fragmentName
             ));
@@ -401,7 +401,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 if ($fragmentFieldDirectivesOpeningSymbolPos !== false || $fragmentFieldDirectivesClosingSymbolPos !== false) {
                     // First check both "<" and ">" are present, or it's an error
                     if ($fragmentFieldDirectivesOpeningSymbolPos === false || $fragmentFieldDirectivesClosingSymbolPos === false) {
-                        $this->errorMessageStore->addQueryError(sprintf(
+                        $this->feedbackMessageStore->addQueryError(sprintf(
                             $this->translationAPI->__('Fragment field \'%s\' must contain both \'%s\' and \'%s\' to define directives, so it has been ignored', 'pop-component-model'),
                             $fragmentField,
                             QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING,
@@ -471,7 +471,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 // Replace with the actual fragment
                 $resolvedFragment = $this->resolveFragmentOrAddError($pipeField, $fragments);
                 if (is_null($resolvedFragment)) {
-                    $this->errorMessageStore->addQueryError(sprintf(
+                    $this->feedbackMessageStore->addQueryError(sprintf(
                         $this->translationAPI->__('Because fragment \'%s\' has errors, query section \'%s\' has been ignored', 'pop-component-model'),
                         $pipeField,
                         $commafields

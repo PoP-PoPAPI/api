@@ -3,7 +3,7 @@ services:
         bind:
             PoP\Hooks\Contracts\HooksAPIInterface: '@hooks_api'
             PoP\Translation\Contracts\TranslationAPIInterface: '@translation_api'
-            PoP\ComponentModel\Schema\ErrorMessageStoreInterface: '@error_message_store'
+            PoP\ComponentModel\Schema\FeedbackMessageStoreInterface: '@feedback_message_store'
             PoP\QueryParsing\Parsers\QueryParserInterface: '@query_parser'
 
     field_query_convertor:
