@@ -3,6 +3,7 @@ namespace PoP\API\ModuleProcessors;
 use PoP\FieldQuery\Query\QuerySyntax;
 use PoP\ComponentModel\Facades\Managers\ModuleProcessorManagerFacade;
 use PoP\API\Schema\QueryInputs;
+use PoP\ComponentModel\GeneralUtils;
 
 trait ModuleProcessorTrait
 {
@@ -14,8 +15,7 @@ trait ModuleProcessorTrait
             if (\PoP\ComponentModel\Server\Utils::externalSitesRunSameSoftware()) {
                 return parent::getDataloadMultidomainQuerySources($module, $props);
             }
-            $cmsenginehelpers = \PoP\Engine\HelperAPIFactory::getInstance();
-            $moduleprocessor_manager = ModuleProcessorManagerFacade::getInstance();
+                $moduleprocessor_manager = ModuleProcessorManagerFacade::getInstance();
             $flattened_datafields = $moduleprocessor_manager->getProcessor($module)->getDatasetmoduletreeSectionFlattenedDataFields($module, $props);
             $apifields = [];
             $heap = [
@@ -52,9 +52,9 @@ trait ModuleProcessorTrait
 
             if ($apifields) {
                 return array_map(
-                    function ($source) use ($cmsenginehelpers, $apifields) {
+                    function ($source) use ($apifields) {
                         return
-                            $cmsenginehelpers->addQueryArgs(
+                            GeneralUtils::addQueryArgs(
                                 [
                                     QueryInputs::QUERY => implode(
                                         QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR,
