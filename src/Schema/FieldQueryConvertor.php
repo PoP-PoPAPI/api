@@ -1,10 +1,10 @@
 <?php
 namespace PoP\API\Schema;
-use PoP\FieldQuery\Query\QuerySyntax;
-use PoP\FieldQuery\Query\QueryHelpers;
-use PoP\Translation\Contracts\TranslationAPIInterface;
+use PoP\FieldQuery\QuerySyntax;
+use PoP\FieldQuery\QueryHelpers;
+use PoP\Translation\TranslationAPIInterface;
 use PoP\ComponentModel\Schema\FeedbackMessageStoreInterface;
-use PoP\QueryParsing\Parsers\QueryParserInterface;
+use PoP\QueryParsing\QueryParserInterface;
 use function strlen;
 use function substr;
 use function count;

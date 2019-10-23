@@ -1,8 +1,8 @@
 <?php
 namespace PoP\API\Hooks;
 use PoP\Engine\Hooks\AbstractHookSet;
-use PoP\Hooks\Contracts\HooksAPIInterface;
-use PoP\Translation\Contracts\TranslationAPIInterface;
+use PoP\Hooks\HooksAPIInterface;
+use PoP\Translation\TranslationAPIInterface;
 
 class RoutingHooks extends AbstractHookSet
 {
