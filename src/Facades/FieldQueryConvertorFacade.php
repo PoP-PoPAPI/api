@@ -1,5 +1,5 @@
 <?php
-namespace PoP\API\Facades\Schema;
+namespace PoP\API\Facades;
 
 use PoP\API\Schema\FieldQueryConvertorInterface;
 use PoP\Root\Container\ContainerBuilderFactory;

@@ -7,7 +7,7 @@ use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\ComponentModel\DataQueryManagerFactory;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\ModelInstance\ModelInstance;
-use PoP\API\Facades\Schema\FieldQueryConvertorFacade;
+use PoP\API\Facades\FieldQueryConvertorFacade;
 use PoP\Routing\Natures;
 
 class VarsHooks extends AbstractHookSet
