@@ -17,3 +17,7 @@ services:
     PoP\API\DirectiveResolvers\:
         resource: '../src/DirectiveResolvers/*'
         public: true
+
+    PoP\API\RouteModuleProcessors\:
+        resource: '../src/RouteModuleProcessors/*'
+        public: true
