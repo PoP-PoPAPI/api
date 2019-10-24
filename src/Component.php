@@ -1,6 +1,7 @@
 <?php
 namespace PoP\API;
 
+use PoP\API\Config\ServiceConfiguration;
 use PoP\Root\Component\AbstractComponent;
 use PoP\Root\Component\YAMLServicesTrait;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
@@ -20,6 +21,7 @@ class Component extends AbstractComponent
     {
         parent::init();
         self::initYAMLServices(dirname(__DIR__));
+        ServiceConfiguration::init();
     }
 
     /**
