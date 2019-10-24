@@ -8,7 +8,7 @@ use PoP\ComponentModel\DataQueryManagerFactory;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\ModelInstance\ModelInstance;
 use PoP\API\Facades\FieldQueryConvertorFacade;
-use PoP\Routing\Natures;
+use PoP\Routing\RouteNatures;
 
 class VarsHooks extends AbstractHookSet
 {
@@ -34,7 +34,7 @@ class VarsHooks extends AbstractHookSet
         $vars = &$vars_in_array[0];
         if (!Utils::disableAPI() && $vars['scheme'] == POP_SCHEME_API) {
             $this->addFieldsToVars($vars);
-        } elseif ($vars['nature'] == Natures::STANDARD) {
+        } elseif ($vars['nature'] == RouteNatures::STANDARD) {
             $dataquery_manager = DataQueryManagerFactory::getInstance();
             $route = $vars['route'];
 
