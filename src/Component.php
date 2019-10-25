@@ -11,11 +11,6 @@ use PoP\ComponentModel\Container\ContainerBuilderUtils;
  */
 class Component extends AbstractComponent
 {
-    /**
-     * Indicate if the component is enabled or not. It allows to disable it through environment variables
-     *
-     * @var boolean
-     */
     protected static $enabled;
 
     use YAMLServicesTrait;
