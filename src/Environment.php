@@ -1,5 +1,5 @@
 <?php
-namespace PoP\API\Configuration;
+namespace PoP\API;
 
 class Environment
 {

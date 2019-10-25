@@ -1,7 +1,7 @@
 <?php
 namespace PoP\API\Engine;
 
-use PoP\API\Configuration\Environment;
+use PoP\API\Environment;
 
 trait RemoveEntryModuleFromOutputEngineTrait {
 

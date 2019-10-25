@@ -5,7 +5,7 @@ use PoP\API\Config\ServiceConfiguration;
 use PoP\Root\Component\AbstractComponent;
 use PoP\Root\Component\YAMLServicesTrait;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
-use PoP\API\Configuration\Environment;
+use PoP\API\Environment;
 
 /**
  * Initialize component
