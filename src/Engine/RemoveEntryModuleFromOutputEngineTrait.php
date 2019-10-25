@@ -2,6 +2,7 @@
 namespace PoP\API\Engine;
 
 use PoP\API\Component as APIComponent;
+use PoP\ComponentModel\Engine_Vars;
 
 trait RemoveEntryModuleFromOutputEngineTrait {
 
