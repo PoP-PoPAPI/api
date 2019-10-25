@@ -1,7 +1,7 @@
 <?php
 namespace PoP\API\Engine;
 
-use PoP\API\Environment;
+use PoP\API\Component as APIComponent;
 
 trait RemoveEntryModuleFromOutputEngineTrait {
 
@@ -12,7 +12,7 @@ trait RemoveEntryModuleFromOutputEngineTrait {
         // For the API: maybe remove the entry module from the output
         $vars = Engine_Vars::getVars();
         if (
-        	!Environment::disableAPI() &&
+        	APIComponent::isEnabled() &&
         	$vars['scheme'] == POP_SCHEME_API &&
         	in_array(POP_ACTION_REMOVE_ENTRYMODULE_FROM_OUTPUT, $vars['actions']) &&
 	        $vars['dataoutputmode'] == GD_URLPARAM_DATAOUTPUTMODE_COMBINED

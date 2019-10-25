@@ -13,7 +13,6 @@ class Component extends AbstractComponent
 {
     use YAMLServicesTrait;
     // const VERSION = '0.1.0';
-    public static $enabled;
 
     /**
      * Initialize services
@@ -21,11 +20,15 @@ class Component extends AbstractComponent
     public static function init()
     {
         parent::init();
-        self::$enabled = !Environment::disableAPI();
-        if (self::$enabled) {
+        if (self::isEnabled()) {
             self::initYAMLServices(dirname(__DIR__));
             ServiceConfiguration::init();
         }
+    }
+
+    protected static function initEnabled()
+    {
+        self::$enabled = !Environment::disableAPI();
     }
 
     /**
@@ -38,9 +41,7 @@ class Component extends AbstractComponent
         parent::boot();
 
         // Initialize classes
-        if (self::$enabled) {
-            ContainerBuilderUtils::instantiateNamespaceServices(__NAMESPACE__.'\\Hooks');
-            ContainerBuilderUtils::attachDirectiveResolversFromNamespace(__NAMESPACE__.'\\DirectiveResolvers');
-        }
+        ContainerBuilderUtils::instantiateNamespaceServices(__NAMESPACE__.'\\Hooks');
+        ContainerBuilderUtils::attachDirectiveResolversFromNamespace(__NAMESPACE__.'\\DirectiveResolvers');
     }
 }
