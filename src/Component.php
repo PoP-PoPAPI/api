@@ -21,8 +21,10 @@ class Component extends AbstractComponent
     public static function init()
     {
         parent::init();
-        self::initYAMLServices(dirname(__DIR__));
-        ServiceConfiguration::init();
+        if (!Environment::disableAPI()) {
+            self::initYAMLServices(dirname(__DIR__));
+            ServiceConfiguration::init();
+        }
     }
 
     /**
