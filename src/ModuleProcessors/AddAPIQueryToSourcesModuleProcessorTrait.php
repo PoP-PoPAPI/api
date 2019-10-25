@@ -5,7 +5,7 @@ use PoP\API\Schema\QueryInputs;
 use PoP\ComponentModel\GeneralUtils;
 use PoP\API\APIUtils;
 
-trait ModuleProcessorTrait
+trait AddAPIQueryToSourcesModuleProcessorTrait
 {
     public function addAPIQueryToSources(array $sources, array $module, array &$props): array
     {

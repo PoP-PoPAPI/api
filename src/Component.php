@@ -5,6 +5,7 @@ use PoP\API\Config\ServiceConfiguration;
 use PoP\Root\Component\AbstractComponent;
 use PoP\Root\Component\YAMLServicesTrait;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
+use PoP\API\Configuration\Environment;
 
 /**
  * Initialize component
@@ -34,7 +35,9 @@ class Component extends AbstractComponent
         parent::boot();
 
         // Initialize classes
-        ContainerBuilderUtils::instantiateNamespaceServices(__NAMESPACE__.'\\Hooks');
-        ContainerBuilderUtils::attachDirectiveResolversFromNamespace(__NAMESPACE__.'\\DirectiveResolvers');
+        if (!Environment::disableAPI()) {
+            ContainerBuilderUtils::instantiateNamespaceServices(__NAMESPACE__.'\\Hooks');
+            ContainerBuilderUtils::attachDirectiveResolversFromNamespace(__NAMESPACE__.'\\DirectiveResolvers');
+        }
     }
 }

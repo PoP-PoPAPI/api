@@ -2,7 +2,6 @@
 namespace PoP\API\RouteModuleProcessors;
 
 use PoP\Routing\RouteNatures;
-use PoP\ComponentModel\Server\Utils;
 use PoP\ModuleRouting\AbstractEntryRouteModuleProcessor;
 
 class EntryRouteModuleProcessor extends AbstractEntryRouteModuleProcessor
@@ -11,16 +10,12 @@ class EntryRouteModuleProcessor extends AbstractEntryRouteModuleProcessor
     {
         $ret = array();
 
-        // API
-        if (!Utils::disableAPI()) {
-            // Single endpoint (homepage)
-            $ret[RouteNatures::HOME][] = [
-                'module' => [\PoP_API_Module_Processor_FieldDataloads::class, \PoP_API_Module_Processor_FieldDataloads::MODULE_DATALOAD_DATAQUERY_ROOT_FIELDS],
-                'conditions' => [
-                    'scheme' => POP_SCHEME_API,
-                ],
-            ];
-        }
+        $ret[RouteNatures::HOME][] = [
+            'module' => [\PoP_API_Module_Processor_FieldDataloads::class, \PoP_API_Module_Processor_FieldDataloads::MODULE_DATALOAD_DATAQUERY_ROOT_FIELDS],
+            'conditions' => [
+                'scheme' => POP_SCHEME_API,
+            ],
+        ];
 
         return $ret;
     }
