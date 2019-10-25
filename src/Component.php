@@ -26,7 +26,6 @@ class Component extends AbstractComponent
      */
     public static function init()
     {
-        self::initEnabled();
         if (self::isEnabled()) {
             parent::init();
             self::initYAMLServices(dirname(__DIR__));
@@ -41,6 +40,10 @@ class Component extends AbstractComponent
 
     public static function isEnabled()
     {
+        // This is needed for if asking if this component is enabled before it has been initialized
+        if (is_null(self::$enabled)) {
+            self::initEnabled();
+        }
         return self::$enabled;
     }
 
