@@ -63,7 +63,7 @@ class VarsHooks extends AbstractHookSet
             $platformmanager = StratumManagerFactory::getInstance();
             $vars['stratum'] = POP_STRATUM_DATA;
             $vars['strata'] = $platformmanager->getStrata($vars['stratum']);
-            $vars['stratum-isdefault'] = $platformmanager->isDefaultStratum();
+            $vars['stratum-isdefault'] = $vars['stratum'] == $platformmanager->getDefaultStratum();
 
             // Do not print the entry module
             $vars['actions'][] = POP_ACTION_REMOVE_ENTRYMODULE_FROM_OUTPUT;
