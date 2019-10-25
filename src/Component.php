@@ -11,6 +11,13 @@ use PoP\ComponentModel\Container\ContainerBuilderUtils;
  */
 class Component extends AbstractComponent
 {
+    /**
+     * Indicate if the component is enabled or not. It allows to disable it through environment variables
+     *
+     * @var boolean
+     */
+    protected static $enabled;
+
     use YAMLServicesTrait;
     // const VERSION = '0.1.0';
 
@@ -19,8 +26,9 @@ class Component extends AbstractComponent
      */
     public static function init()
     {
-        parent::init();
+        self::initEnabled();
         if (self::isEnabled()) {
+            parent::init();
             self::initYAMLServices(dirname(__DIR__));
             ServiceConfiguration::init();
         }
@@ -29,6 +37,11 @@ class Component extends AbstractComponent
     protected static function initEnabled()
     {
         self::$enabled = !Environment::disableAPI();
+    }
+
+    public static function isEnabled()
+    {
+        return self::$enabled;
     }
 
     /**
