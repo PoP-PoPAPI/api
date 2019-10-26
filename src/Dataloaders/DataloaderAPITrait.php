@@ -1,6 +1,6 @@
 <?php
 namespace PoP\API\Dataloaders;
-use PoP\ComponentModel\Facades\Managers\ModuleProcessorManagerFacade;
+use PoP\ComponentModel\Facades\ModuleProcessors\ModuleProcessorManagerFacade;
 
 trait DataloaderAPITrait
 {
