@@ -90,7 +90,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         if (!isset($bookmarkPaths[$bookmark])) {
                             // Show an error and discard this element
                             $errorMessage = sprintf(
-                                $this->translationAPI->__('Query path alias \'%s\' is undefined. Query section \'%s\' has been ignored', 'pop-component-model'),
+                                $this->translationAPI->__('Query path alias \'%s\' is undefined. Query section \'%s\' has been ignored', 'api'),
                                 $bookmark,
                                 $commafields
                             );
@@ -337,34 +337,57 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
     {
         // Replace with the actual fragment
         $fragmentName = substr($fragment, strlen(QuerySyntax::SYMBOL_FRAGMENT_PREFIX));
-        // If it has a bookmark or alias, it's an error
         $aliasSymbolPos = QueryHelpers::findFieldAliasSymbolPosition($fragmentName);
-        if ($aliasSymbolPos !== false) {
-            $this->feedbackMessageStore->addQueryError(sprintf(
-                $this->translationAPI->__('Fragment \'%s\' cannot contain aliases, so it has been ignored', 'pop-component-model'),
-                $fragmentName
-            ));
-            return null;
-        }
-        // If it has the "skip output if null" symbol, transfer it to the resolved fragments
         $skipOutputIfNullSymbolPos = QueryHelpers::findSkipOutputIfNullSymbolPosition($fragmentName);
-        $skipOutputIfNull = false;
-        if ($skipOutputIfNullSymbolPos !== false) {
-            $skipOutputIfNull = true;
-            // Remove from the fragmentName
-            $fragmentName = substr($fragmentName, 0, $skipOutputIfNullSymbolPos).substr($fragmentName, $skipOutputIfNullSymbolPos+strlen(QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL));
-        }
-        // If it has a fragment, extract it and then add it again on each component from the fragment
-        $fragmentDirectives = '';
         list(
             $fieldDirectivesOpeningSymbolPos,
             $fieldDirectivesClosingSymbolPos
         ) = QueryHelpers::listFieldDirectivesSymbolPositions($fragmentName);
+        // If it has an alias, apply the alias to all the elements in the fragment, as an enumerated list
+        // Eg: --fragment@list&--fragment=title|content is resolved as title@list1|content@list2
+        $alias = '';
+        if ($aliasSymbolPos !== false) {
+            if ($aliasSymbolPos === 0) {
+                // Only there is the alias, nothing to alias to
+                $this->feedbackMessageStore->addQueryError(sprintf(
+                    $this->translationAPI->__('The fragment to be aliased in \'%s\' is missing', 'api'),
+                    $fragmentName
+                ));
+                return null;
+            } elseif ($aliasSymbolPos === strlen($fragmentName)-1) {
+                // Only the "@" was added, but the alias is missing
+                $this->feedbackMessageStore->addQueryError(sprintf(
+                    $this->translationAPI->__('Alias in \'%s\' is missing', 'api'),
+                    $fragmentName
+                ));
+                return null;
+            }
+            // If there is a "?" or "<" after the alias, remove the string from then on
+            // Everything before "?" (for "skip output if null")
+            $pos = $skipOutputIfNullSymbolPos;
+            // Everything before "<" (for the field directive)
+            if ($pos === false) {
+                $pos = $fieldDirectivesOpeningSymbolPos;
+            }
+            // Extract the alias, without the "@" symbol
+            if ($pos !== false) {
+                $alias = substr($fragmentName, $aliasSymbolPos+strlen(QuerySyntax::SYMBOL_FIELDALIAS_PREFIX), $pos-strlen($fragmentName));
+            } else {
+                $alias = substr($fragmentName, $aliasSymbolPos+strlen(QuerySyntax::SYMBOL_FIELDALIAS_PREFIX));
+            }
+        }
+        // If it has the "skip output if null" symbol, transfer it to the resolved fragments
+        $skipOutputIfNull = false;
+        if ($skipOutputIfNullSymbolPos !== false) {
+            $skipOutputIfNull = true;
+        }
+        // If it has a fragment, extract it and then add it again on each component from the fragment
+        $fragmentDirectives = '';
         if ($fieldDirectivesOpeningSymbolPos !== false || $fieldDirectivesClosingSymbolPos !== false) {
             // First check both "<" and ">" are present, or it's an error
             if ($fieldDirectivesOpeningSymbolPos === false || $fieldDirectivesClosingSymbolPos === false) {
                 $this->feedbackMessageStore->addQueryError(sprintf(
-                    $this->translationAPI->__('Fragment \'%s\' must contain both \'%s\' and \'%s\' to define directives, so it has been ignored', 'pop-component-model'),
+                    $this->translationAPI->__('Fragment \'%s\' must contain both \'%s\' and \'%s\' to define directives, so it has been ignored', 'api'),
                     $fragmentName,
                     QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING,
                     QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING
@@ -372,12 +395,19 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 return null;
             }
             $fragmentDirectives = substr($fragmentName, $fieldDirectivesOpeningSymbolPos, $fieldDirectivesClosingSymbolPos);
+        }
+        // Extract the fragment name
+        if ($aliasSymbolPos !== false) {
+            $fragmentName = substr($fragmentName, 0, $aliasSymbolPos);
+        } elseif ($skipOutputIfNullSymbolPos !== false) {
+            $fragmentName = substr($fragmentName, 0, $skipOutputIfNullSymbolPos);
+        } elseif ($aliasSymbolPos !== false) {
             $fragmentName = substr($fragmentName, 0, $fieldDirectivesOpeningSymbolPos);
         }
         $fragment = $this->getFragment($fragmentName, $fragments);
         if (!$fragment) {
             $this->feedbackMessageStore->addQueryError(sprintf(
-                $this->translationAPI->__('Fragment \'%s\' is undefined, so it has been ignored', 'pop-component-model'),
+                $this->translationAPI->__('Fragment \'%s\' is undefined, so it has been ignored', 'api'),
                 $fragmentName
             ));
             return null;
@@ -385,9 +415,18 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // If the fragment has directives, attach them again to each component from the fragment
         // But only if the component doesn't already have a directive! Otherwise, the directive at the definition level takes priority
         // Same with adding "?" for Skip output if null
-        if ($fragmentDirectives || $skipOutputIfNull) {
+        if ($fragmentDirectives || $alias || $skipOutputIfNull) {
             $fragmentPipeFields = $this->queryParser->splitElements($fragment, QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
-            $fragment = implode(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, array_filter(array_map(function($fragmentField) use($fragmentDirectives, $skipOutputIfNull) {
+            $fragment = implode(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, array_filter(array_map(function($fragmentField) use($fragmentDirectives, $alias, $skipOutputIfNull, $fragmentPipeFields) {
+                // Calculate if to add the alias
+                $addAliasToFragmentField = false;
+                if ($alias) {
+                    $fragmentAliasSymbolPos = QueryHelpers::findFieldAliasSymbolPosition($fragmentField);
+                    $addAliasToFragmentField = $fragmentAliasSymbolPos === false;
+                    if ($addAliasToFragmentField) {
+                        $fragmentFieldAliasWithSymbol = QuerySyntax::SYMBOL_FIELDALIAS_PREFIX.$alias.array_search($fragmentField, $fragmentPipeFields);
+                    }
+                }
                 // Calculate if to add "?"
                 $addSkipOutputIfNullToFragmentField = false;
                 if ($skipOutputIfNull) {
@@ -402,7 +441,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                     // First check both "<" and ">" are present, or it's an error
                     if ($fragmentFieldDirectivesOpeningSymbolPos === false || $fragmentFieldDirectivesClosingSymbolPos === false) {
                         $this->feedbackMessageStore->addQueryError(sprintf(
-                            $this->translationAPI->__('Fragment field \'%s\' must contain both \'%s\' and \'%s\' to define directives, so it has been ignored', 'pop-component-model'),
+                            $this->translationAPI->__('Fragment field \'%s\' must contain both \'%s\' and \'%s\' to define directives, so it has been ignored', 'api'),
                             $fragmentField,
                             QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING,
                             QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING
@@ -414,14 +453,35 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         // Add "?" after the propertyName, before the directive
                         return
                             substr($fragmentField, 0, $fragmentFieldDirectivesOpeningSymbolPos).
+                            ($addAliasToFragmentField ? $fragmentFieldAliasWithSymbol : '').
                             QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL.
                             substr($fragmentField, $fragmentFieldDirectivesOpeningSymbolPos);
                     }
+                    if ($addAliasToFragmentField) {
+                        // Either get everything until the already existing "?", or until "<"
+                        $delimiterPos = $fragmentFieldSkipOutputIfNullSymbolPos;
+                        if ($delimiterPos === false) {
+                            $delimiterPos = $fragmentFieldDirectivesOpeningSymbolPos;
+                        }
+                        if ($delimiterPos) {
+                            return
+                                substr($fragmentField, 0, $delimiterPos).
+                                $fragmentFieldAliasWithSymbol.
+                                substr($fragmentField, $delimiterPos);
+                        }
+                    }
                     return $fragmentField;
                 }
-                // Attach the fragment resolution's directives to the field, and maybe "?"
+                // Make sure that there is no "?" left in the field, or it may stay added before the "@" for the alias
+                $fragmentFieldName = $fragmentField;
+                if ($skipOutputIfNull && $fragmentFieldSkipOutputIfNullSymbolPos !== false) {
+                    $fragmentFieldName = substr($fragmentFieldName, 0, $fragmentFieldSkipOutputIfNullSymbolPos);
+                }
+                // Attach the fragment resolution's directives to the field, and maybe the alias and "?"
                 return
-                    $fragmentField.
+                    $fragmentFieldName.
+                    // Because the alias for elements on the fragment must be distinct, attach to them their position on the fragment
+                    ($addAliasToFragmentField ? $fragmentFieldAliasWithSymbol : '').
                     ($addSkipOutputIfNullToFragmentField ? QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL : '').
                     $fragmentDirectives;
             }, $fragmentPipeFields)));
@@ -472,7 +532,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 $resolvedFragment = $this->resolveFragmentOrAddError($pipeField, $fragments);
                 if (is_null($resolvedFragment)) {
                     $this->feedbackMessageStore->addQueryError(sprintf(
-                        $this->translationAPI->__('Because fragment \'%s\' has errors, query section \'%s\' has been ignored', 'pop-component-model'),
+                        $this->translationAPI->__('Because fragment \'%s\' has errors, query section \'%s\' has been ignored', 'api'),
                         $pipeField,
                         $commafields
                     ));
@@ -492,10 +552,10 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
     {
         $errorMessageEnd = $querySection ?
             sprintf(
-                $this->translationAPI->__('Query section \'%s\' has been ignored', 'pop-component-model'),
+                $this->translationAPI->__('Query section \'%s\' has been ignored', 'api'),
                 $querySection
             ) :
-            $this->translationAPI->__('The property has been ignored', 'pop-component-model');
+            $this->translationAPI->__('The property has been ignored', 'api');
 
         // --------------------------------------------------------
         // Validate correctness of query constituents: fieldArgs, bookmark, skipOutputIfNull, directive
@@ -509,7 +569,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // If it has "(" from the very beginning, then there's no fieldName, it's an error
         if ($fieldArgsOpeningSymbolPos === 0) {
             return sprintf(
-                $this->translationAPI->__('Property \'%s\' is missing the field name. %s', 'pop-component-model'),
+                $this->translationAPI->__('Property \'%s\' is missing the field name. %s', 'api'),
                 $property,
                 $errorMessageEnd
             );
@@ -518,7 +578,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // If it has only "(" or ")" but not the other one, it's an error
         if (($fieldArgsClosingSymbolPos === false && $fieldArgsOpeningSymbolPos !== false) || ($fieldArgsClosingSymbolPos !== false && $fieldArgsOpeningSymbolPos === false)) {
             return sprintf(
-                $this->translationAPI->__('Arguments \'%s\' must start with symbol \'%s\' and end with symbol \'%s\'. %s', 'pop-component-model'),
+                $this->translationAPI->__('Arguments \'%s\' must start with symbol \'%s\' and end with symbol \'%s\'. %s', 'api'),
                 $property,
                 QuerySyntax::SYMBOL_FIELDARGS_OPENING,
                 QuerySyntax::SYMBOL_FIELDARGS_CLOSING,
@@ -535,7 +595,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // If it has "[" from the very beginning, then there's no fieldName, it's an error
         if ($bookmarkOpeningSymbolPos === 0) {
             return sprintf(
-                $this->translationAPI->__('Property \'%s\' is missing the field name. %s', 'pop-component-model'),
+                $this->translationAPI->__('Property \'%s\' is missing the field name. %s', 'api'),
                 $property,
                 $errorMessageEnd
             );
@@ -544,7 +604,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // If it has only "[" or "]" but not the other one, it's an error
         if (($bookmarkClosingSymbolPos === false && $bookmarkOpeningSymbolPos !== false) || ($bookmarkClosingSymbolPos !== false && $bookmarkOpeningSymbolPos === false)) {
             return sprintf(
-                $this->translationAPI->__('Bookmark \'%s\' must start with symbol \'%s\' and end with symbol \'%s\'. %s', 'pop-component-model'),
+                $this->translationAPI->__('Bookmark \'%s\' must start with symbol \'%s\' and end with symbol \'%s\'. %s', 'api'),
                 $property,
                 QuerySyntax::SYMBOL_BOOKMARK_OPENING,
                 QuerySyntax::SYMBOL_BOOKMARK_CLOSING,
@@ -561,7 +621,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // If it has "<" from the very beginning, then there's no fieldName, it's an error
         if ($fieldDirectivesOpeningSymbolPos === 0) {
             return sprintf(
-                $this->translationAPI->__('Property \'%s\' is missing the field name. %s', 'pop-component-model'),
+                $this->translationAPI->__('Property \'%s\' is missing the field name. %s', 'api'),
                 $property,
                 $errorMessageEnd
             );
@@ -570,7 +630,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // If it has only "[" or "]" but not the other one, it's an error
         if (($fieldDirectivesClosingSymbolPos === false && $fieldDirectivesOpeningSymbolPos !== false) || ($fieldDirectivesClosingSymbolPos !== false && $fieldDirectivesOpeningSymbolPos === false)) {
             return sprintf(
-                $this->translationAPI->__('Directive \'%s\' must start with symbol \'%s\' and end with symbol \'%s\'. %s', 'pop-component-model'),
+                $this->translationAPI->__('Directive \'%s\' must start with symbol \'%s\' and end with symbol \'%s\'. %s', 'api'),
                 $property,
                 QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING,
                 QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING,
@@ -585,7 +645,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         if ($fieldArgsOpeningSymbolPos !== false) {
             if ($fieldArgsOpeningSymbolPos == 0) {
                 return sprintf(
-                    $this->translationAPI->__('Name is missing in property \'%s\'. %s', 'pop-component-model'),
+                    $this->translationAPI->__('Name is missing in property \'%s\'. %s', 'api'),
                     $property,
                     $errorMessageEnd
                 );
@@ -610,7 +670,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 ($fieldDirectivesOpeningSymbolPos !== false && $fieldDirectivesOpeningSymbolPos == $nextCharPos)
             )) {
                 return sprintf(
-                    $this->translationAPI->__('After \'%s\', property \'%s\' must either end or be followed by \'%s\', \'%s\', \'%s\' or \'%s\'. %s', 'pop-component-model'),
+                    $this->translationAPI->__('After \'%s\', property \'%s\' must either end or be followed by \'%s\', \'%s\', \'%s\' or \'%s\'. %s', 'api'),
                     QuerySyntax::SYMBOL_FIELDARGS_CLOSING,
                     $property,
                     QuerySyntax::SYMBOL_BOOKMARK_OPENING,
@@ -634,7 +694,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 ($fieldDirectivesOpeningSymbolPos !== false && $fieldDirectivesOpeningSymbolPos == $nextCharPos)
             )) {
                 return sprintf(
-                    $this->translationAPI->__('After \'%s\', property \'%s\' must either end or be followed by \'%s\' or \'%s\'. %s', 'pop-component-model'),
+                    $this->translationAPI->__('After \'%s\', property \'%s\' must either end or be followed by \'%s\' or \'%s\'. %s', 'api'),
                     QuerySyntax::SYMBOL_BOOKMARK_CLOSING,
                     $property,
                     QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL,
@@ -654,7 +714,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 ($fieldDirectivesOpeningSymbolPos !== false && $fieldDirectivesOpeningSymbolPos == $nextCharPos)
             )) {
                 return sprintf(
-                    $this->translationAPI->__('After \'%s\', property \'%s\' must either end or be followed by \'%s\'. %s', 'pop-component-model'),
+                    $this->translationAPI->__('After \'%s\', property \'%s\' must either end or be followed by \'%s\'. %s', 'api'),
                     QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL,
                     $property,
                     QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING,
@@ -670,7 +730,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 ($fieldDirectivesClosingSymbolPos == strlen($property)-strlen(QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING))
             )) {
                 return sprintf(
-                    $this->translationAPI->__('After \'%s\', property \'%s\' must end (there cannot be any extra character). %s', 'pop-component-model'),
+                    $this->translationAPI->__('After \'%s\', property \'%s\' must end (there cannot be any extra character). %s', 'api'),
                     QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING,
                     $property,
                     $errorMessageEnd
