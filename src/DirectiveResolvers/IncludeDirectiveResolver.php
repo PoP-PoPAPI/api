@@ -1,7 +1,9 @@
 <?php
 namespace PoP\API\DirectiveResolvers;
-use PoP\ComponentModel\DirectiveResolvers\AbstractSchemaDirectiveResolver;
+use PoP\ComponentModel\Schema\SchemaDefinition;
+use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
+use PoP\ComponentModel\DirectiveResolvers\AbstractSchemaDirectiveResolver;
 
 class IncludeDirectiveResolver extends AbstractSchemaDirectiveResolver
 {
@@ -21,5 +23,21 @@ class IncludeDirectiveResolver extends AbstractSchemaDirectiveResolver
             $idsDataFields[$id]['direct'] = [];
             $idsDataFields[$id]['conditional'] = [];
         }
+    }
+    public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
+    {
+        $translationAPI = TranslationAPIFacade::getInstance();
+        return $translationAPI->__('Include the field value in the output only if the argument \'if\' evals to `true`', 'api');
+    }
+    public function getSchemaDirectiveArgs(FieldResolverInterface $fieldResolver): array
+    {
+        $translationAPI = TranslationAPIFacade::getInstance();
+        return [
+            [
+                SchemaDefinition::ARGNAME_NAME => 'if',
+                SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Argument to evaluate to `true` to include the field value in the output', 'block-metadata'),
+            ],
+        ];
     }
 }
