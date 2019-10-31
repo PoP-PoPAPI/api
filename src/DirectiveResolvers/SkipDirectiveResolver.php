@@ -1,9 +1,9 @@
 <?php
 namespace PoP\API\DirectiveResolvers;
-use PoP\ComponentModel\DirectiveResolvers\AbstractDirectiveResolver;
+use PoP\ComponentModel\DirectiveResolvers\AbstractSchemaDirectiveResolver;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 
-class SkipDirectiveResolver extends AbstractDirectiveResolver
+class SkipDirectiveResolver extends AbstractSchemaDirectiveResolver
 {
     use FilterIDsSatisfyingConditionDirectiveResolverTrait;
 

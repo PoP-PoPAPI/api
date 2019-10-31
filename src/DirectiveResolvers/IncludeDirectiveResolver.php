@@ -1,9 +1,9 @@
 <?php
 namespace PoP\API\DirectiveResolvers;
-use PoP\ComponentModel\DirectiveResolvers\AbstractDirectiveResolver;
+use PoP\ComponentModel\DirectiveResolvers\AbstractSchemaDirectiveResolver;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 
-class IncludeDirectiveResolver extends AbstractDirectiveResolver
+class IncludeDirectiveResolver extends AbstractSchemaDirectiveResolver
 {
     use FilterIDsSatisfyingConditionDirectiveResolverTrait;
 
