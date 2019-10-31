@@ -36,7 +36,8 @@ class IncludeDirectiveResolver extends AbstractSchemaDirectiveResolver
             [
                 SchemaDefinition::ARGNAME_NAME => 'if',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Argument to evaluate to `true` to include the field value in the output', 'block-metadata'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Argument that must evaluate to `true` to include the field value in the output', 'api'),
+                SchemaDefinition::ARGNAME_MANDATORY => true,
             ],
         ];
     }
