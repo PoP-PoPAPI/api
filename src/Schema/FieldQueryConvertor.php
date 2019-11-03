@@ -401,7 +401,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
             $fragmentName = substr($fragmentName, 0, $aliasSymbolPos);
         } elseif ($skipOutputIfNullSymbolPos !== false) {
             $fragmentName = substr($fragmentName, 0, $skipOutputIfNullSymbolPos);
-        } elseif ($aliasSymbolPos !== false) {
+        } elseif ($fieldDirectivesOpeningSymbolPos !== false) {
             $fragmentName = substr($fragmentName, 0, $fieldDirectivesOpeningSymbolPos);
         }
         $fragment = $this->getFragment($fragmentName, $fragments);
