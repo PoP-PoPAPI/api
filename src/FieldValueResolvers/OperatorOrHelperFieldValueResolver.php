@@ -8,7 +8,7 @@ use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\ComponentModel\FieldValueResolvers\AbstractOperatorOrHelperFieldValueResolver;
 
-class FieldValueResolver extends AbstractOperatorOrHelperFieldValueResolver
+class OperatorOrHelperFieldValueResolver extends AbstractOperatorOrHelperFieldValueResolver
 {
     public const ERRORCODE_PATHNOTREACHABLE = 'path-not-reachable';
 
