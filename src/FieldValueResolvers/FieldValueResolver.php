@@ -6,9 +6,9 @@ use PoP\GuzzleHelpers\GuzzleHelpers;
 use PoP\ComponentModel\Schema\SchemaDefinition;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
-use PoP\ComponentModel\FieldValueResolvers\AbstractOperatorFieldValueResolver;
+use PoP\ComponentModel\FieldValueResolvers\AbstractOperatorOrHelperFieldValueResolver;
 
-class FieldValueResolver extends AbstractOperatorFieldValueResolver
+class FieldValueResolver extends AbstractOperatorOrHelperFieldValueResolver
 {
     public const ERRORCODE_PATHNOTREACHABLE = 'path-not-reachable';
 
