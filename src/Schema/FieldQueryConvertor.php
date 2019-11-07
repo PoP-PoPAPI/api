@@ -1,13 +1,14 @@
 <?php
 namespace PoP\API\Schema;
-use PoP\FieldQuery\QuerySyntax;
-use PoP\FieldQuery\QueryHelpers;
-use PoP\Translation\TranslationAPIInterface;
-use PoP\ComponentModel\Schema\FeedbackMessageStoreInterface;
-use PoP\QueryParsing\QueryParserInterface;
+use function count;
 use function strlen;
 use function substr;
-use function count;
+use PoP\FieldQuery\QueryUtils;
+use PoP\FieldQuery\QuerySyntax;
+use PoP\FieldQuery\QueryHelpers;
+use PoP\QueryParsing\QueryParserInterface;
+use PoP\Translation\TranslationAPIInterface;
+use PoP\ComponentModel\Schema\FeedbackMessageStoreInterface;
 
 class FieldQueryConvertor implements FieldQueryConvertorInterface
 {
@@ -248,7 +249,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // Strategy: continuously search for "." appearing after "|", recreate their full path, and add them as new query sections (separated by ",")
         $expandedDotNotations = [];
         foreach ($this->queryParser->splitElements($dotNotation, QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_BOOKMARK_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_BOOKMARK_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $commafields) {
-            $dotPos = strpos($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL);
+            $dotPos = QueryUtils::findFirstSymbolPosition($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
             if ($dotPos !== false) {
                 while ($dotPos !== false) {
                     // Position of the first "|". Everything before there is path + first property
@@ -272,18 +273,18 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                             $sectionRest = $commafields;
                         }
                         // If there is another "." after a "|", then it keeps going down the relational path to load other elements
-                        $sectionRestPipePos = strpos($sectionRest, QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR);
-                        $sectionRestDotPos = strpos($sectionRest, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL);
+                        $sectionRestPipePos = QueryUtils::findFirstSymbolPosition($sectionRest, QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
+                        $sectionRestDotPos = QueryUtils::findFirstSymbolPosition($sectionRest, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
                         if ($sectionRestPipePos !== false && $sectionRestDotPos !== false && $sectionRestDotPos > $sectionRestPipePos) {
                             // Extract the last property, from which further relational ElemCount are loaded, and create a new query section for it
                             // This is the subtring from the last ocurrence of "|" before the "." up to the "."
-                            $lastPipePos = strrpos(
+                            $lastPipePos = QueryUtils::findLastSymbolPosition(
                                 substr(
                                     $sectionRest,
                                     0,
                                     $sectionRestDotPos
                                 ),
-                                QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR
+                                QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING
                             );
                             // Extract the new "rest" of the query section
                             $querySectionRest = substr(
@@ -300,7 +301,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                             $expandedDotNotations[] = $sectionPath.$sectionRest;
                             $commafields = $sectionPath.$querySectionRest;
                             // Keep iterating
-                            $dotPos = strpos($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL);
+                            $dotPos = QueryUtils::findFirstSymbolPosition($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
                         } else {
                             // The element has no further relationships
                             $expandedDotNotations[] = $commafields;
