@@ -14,7 +14,7 @@ class OperatorHelpers
             json_encode($data)
         ));
     }
-    public static function getArrayItemUnderPath(array $data, string $path)
+    public static function &getPointerToArrayItemUnderPath(array $data, string $path)
     {
         $dataPointer = &$data;
 

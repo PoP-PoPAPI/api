@@ -85,7 +85,7 @@ class OperatorOrHelperFieldValueResolver extends AbstractOperatorOrHelperFieldVa
     protected function getDataFromPath(string $fieldName, array $data, string $path)
     {
         try {
-            $dataPointer = OperatorHelpers::getArrayItemUnderPath($data, $path);
+            $dataPointer = OperatorHelpers::getPointerToArrayItemUnderPath($data, $path);
         } catch (Exception $e) {
             return $this->getDataFromPathError($fieldName, $e->getMessage());
         }
