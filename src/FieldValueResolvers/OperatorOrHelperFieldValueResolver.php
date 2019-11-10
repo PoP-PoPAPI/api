@@ -7,6 +7,7 @@ use PoP\ComponentModel\Schema\SchemaDefinition;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\ComponentModel\FieldValueResolvers\AbstractOperatorOrHelperFieldValueResolver;
+use PoP\API\Misc\OperatorHelpers;
 
 class OperatorOrHelperFieldValueResolver extends AbstractOperatorOrHelperFieldValueResolver
 {
@@ -72,43 +73,21 @@ class OperatorOrHelperFieldValueResolver extends AbstractOperatorOrHelperFieldVa
         return parent::getSchemaFieldArgs($fieldResolver, $fieldName);
     }
 
-    protected function getDataFromPathError(string $fieldName, array $data, string $path)
+    protected function getDataFromPathError(string $fieldName, string $errorMessage)
     {
-        $translationAPI = TranslationAPIFacade::getInstance();
         return ErrorUtils::getError(
             $fieldName,
             self::ERRORCODE_PATHNOTREACHABLE,
-            sprintf(
-                $translationAPI->__('Path \'%s\' is not reachable for object: %s', 'pop-component-model'),
-                $path,
-                json_encode($data)
-            )
+            $errorMessage
         );
     }
 
     protected function getDataFromPath(string $fieldName, array $data, string $path)
     {
-        $dataPointer = &$data;
-
-        // Iterate the data array to the provided path.
-        foreach (explode(POP_CONSTANT_APIJSONRESPONSE_PATHDELIMITERSYMBOL, $path) as $pathLevel) {
-            if (!$dataPointer) {
-                // If we reached the end of the array and can't keep going down any level more, then it's an error
-                return $this->getDataFromPathError($fieldName, $data, $path);
-            } elseif (isset($dataPointer[$pathLevel])) {
-                // Retrieve the property under the pathLevel
-                $dataPointer = &$dataPointer[$pathLevel];
-            } elseif (is_array($dataPointer) && isset($dataPointer[0]) && is_array($dataPointer[0]) && isset($dataPointer[0][$pathLevel])) {
-                // If it is an array, then retrieve that property from each element of the array
-                $dataPointerArray = array_map(function($item) use($pathLevel) {
-                    return $item[$pathLevel];
-                }, $dataPointer);
-                $dataPointer = &$dataPointerArray;
-            } else {
-                // We are accessing a level that doesn't exist
-                // If we reached the end of the array and can't keep going down any level more, then it's an error
-                return $this->getDataFromPathError($fieldName, $data, $path);
-            }
+        try {
+            $dataPointer = OperatorHelpers::getArrayItemUnderPath($data, $path);
+        } catch (Exception $e) {
+            return $this->getDataFromPathError($fieldName, $e->getMessage());
         }
         return $dataPointer;
     }
