@@ -9,9 +9,9 @@ use PoP\ComponentModel\FieldResolvers\PipelinePositions;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\ComponentModel\DirectiveResolvers\AbstractGlobalDirectiveResolver;
 
-class SetPropertiesAsVarDirectiveResolver extends AbstractGlobalDirectiveResolver
+class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiveResolver
 {
-    const DIRECTIVE_NAME = 'setPropertiesAsVar';
+    const DIRECTIVE_NAME = 'setPropertiesAsExpressions';
     public static function getDirectiveName(): string {
         return self::DIRECTIVE_NAME;
     }
@@ -42,6 +42,12 @@ class SetPropertiesAsVarDirectiveResolver extends AbstractGlobalDirectiveResolve
         return $translationAPI->__('Extract a property from the current object, and set it as a expression, so it can be accessed by fieldValueResolvers', 'component-model');
     }
 
+    public function getSchemaDirectiveDeprecationDescription(FieldResolverInterface $fieldResolver): ?string
+    {
+        $translationAPI = TranslationAPIFacade::getInstance();
+        return $translationAPI->__('Use directive `getSelfProp` together with field `extract` instead', 'component-model');
+    }
+
     public function getSchemaDirectiveArgs(FieldResolverInterface $fieldResolver): array
     {
         $translationAPI = TranslationAPIFacade::getInstance();
@@ -55,7 +61,7 @@ class SetPropertiesAsVarDirectiveResolver extends AbstractGlobalDirectiveResolve
             [
                 SchemaDefinition::ARGNAME_NAME => 'expressions',
                 SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::combineTypes(SchemaDefinition::TYPE_ARRAY, SchemaDefinition::TYPE_STRING),
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Name of the expression. If not provided, the same name as the property is used', 'component-model'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Name of the expressions. If not provided, the same name as the property is used', 'component-model'),
             ],
         ];
     }
