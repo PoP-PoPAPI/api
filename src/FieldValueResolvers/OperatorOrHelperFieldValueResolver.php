@@ -8,6 +8,7 @@ use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\ComponentModel\FieldValueResolvers\AbstractOperatorOrHelperFieldValueResolver;
 use PoP\API\Misc\OperatorHelpers;
+use Exception;
 
 class OperatorOrHelperFieldValueResolver extends AbstractOperatorOrHelperFieldValueResolver
 {

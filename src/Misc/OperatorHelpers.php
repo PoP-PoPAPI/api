@@ -2,6 +2,7 @@
 namespace PoP\API\Misc;
 
 use Exception;
+use PoP\Translation\Facades\TranslationAPIFacade;
 
 class OperatorHelpers
 {
