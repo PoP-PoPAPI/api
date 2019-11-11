@@ -78,7 +78,7 @@ class TransformArrayItemsDirectiveResolver extends TransformPropertyDirectiveRes
         $arrayItemIdsProperties = [];
 
         // 1. Unpack all elements of the array into a property for each
-        // By making the property "propertyName:key", the "key" can be extracted and passed under variable `$key` to the function
+        // By making the property "propertyName:key", the "key" can be extracted and passed under expression `%key%` to the function
         foreach ($idsDataFields as $id => $dataFields) {
             foreach ($dataFields['direct'] as $field) {
                 $fieldOutputKey = $fieldQueryInterpreter->getFieldOutputKey($field);
