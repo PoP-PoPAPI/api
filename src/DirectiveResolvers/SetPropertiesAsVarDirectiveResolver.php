@@ -134,7 +134,7 @@ class SetPropertiesAsVarDirectiveResolver extends AbstractGlobalDirectiveResolve
                 }
                 // Check if the value already exists
                 $variableName = $variableNames[$i];
-                $existingValue = $this->getVariableValueForResultItem($id, $variableName, $messages);
+                $existingValue = $this->getExpressionForResultItem($id, $variableName, $messages);
                 if (!is_null($existingValue)) {
                     $dbWarnings[(string)$id][$this->directive][] = sprintf(
                         $translationAPI->__('The existing value for variable \'%s\' for object with ID \'%s\' has been overriden: \'%s\'', 'component-model'),
@@ -143,7 +143,7 @@ class SetPropertiesAsVarDirectiveResolver extends AbstractGlobalDirectiveResolve
                     );
                 }
                 $value = $isValueInDBItems ? $dbItems[(string)$id][$property] : $previousDBItems[$dbKey][(string)$id][$property];
-                $this->addVariableValueForResultItem($id, $variableName, $value, $messages);
+                $this->addExpressionForResultItem($id, $variableName, $value, $messages);
             }
         }
     }

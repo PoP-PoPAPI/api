@@ -272,6 +272,6 @@ class TransformArrayItemsDirectiveResolver extends TransformPropertyDirectiveRes
         $arrayItemPropertyOutputKey = $fieldQueryInterpreter->getFieldOutputKey($field);
         $arrayItemPropertyElems = $this->extractElementsFromArrayItemProperty($arrayItemPropertyOutputKey);
         $key = $arrayItemPropertyElems[1];
-        $this->addVariableValueForResultItem($id, 'key', $key, $messages);
+        $this->addExpressionForResultItem($id, 'key', $key, $messages);
     }
 }
