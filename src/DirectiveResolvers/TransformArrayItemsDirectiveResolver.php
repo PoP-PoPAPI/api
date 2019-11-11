@@ -162,7 +162,7 @@ class TransformArrayItemsDirectiveResolver extends TransformPropertyDirectiveRes
             }
         }
         // 2. Execute the function for all arrayItems
-        $this->regenerateAndExecuteFunction($dataloader, $fieldResolver, $resultIDItems, $arrayItemIdsProperties, $dbItems, $dbErrors, $dbWarnings, $schemaErrors, $schemaWarnings, $schemaDeprecations, $previousDBItems, $variables, $messages);
+        $this->regenerateAndExecuteFunction($dataloader, $fieldResolver, $resultIDItems, $arrayItemIdsProperties, $dbItems, $previousDBItems, $variables, $messages, $dbErrors, $dbWarnings, $schemaErrors, $schemaWarnings, $schemaDeprecations);
         // 3. Composer the array from the results for each array item
         foreach ($idsDataFields as $id => $dataFields) {
             foreach ($dataFields['direct'] as $field) {
@@ -266,7 +266,7 @@ class TransformArrayItemsDirectiveResolver extends TransformPropertyDirectiveRes
     protected function addVariableValuesForResultItemInContext(DataloaderInterface $dataloader, FieldResolverInterface $fieldResolver, $id, string $field, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         // First let the parent add $value, then also add $key, which can be deduced from the fieldOutputKey
-        parent::addVariableValuesForResultItemInContext($dataloader, $fieldResolver, $id, $field, $resultIDItems, $dbItems, $dbErrors, $dbWarnings, $schemaErrors, $schemaWarnings, $schemaDeprecations, $previousDBItems, $variables, $messages);
+        parent::addVariableValuesForResultItemInContext($dataloader, $fieldResolver, $id, $field, $resultIDItems, $dbItems, $previousDBItems, $variables, $messages, $dbErrors, $dbWarnings, $schemaErrors, $schemaWarnings, $schemaDeprecations);
 
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
         $arrayItemPropertyOutputKey = $fieldQueryInterpreter->getFieldOutputKey($field);
