@@ -39,7 +39,7 @@ class SetPropertiesAsVarDirectiveResolver extends AbstractGlobalDirectiveResolve
     public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
-        return $translationAPI->__('Extract a property from the current object, and set it as a variable, so it can be accessed by fieldValueResolvers', 'component-model');
+        return $translationAPI->__('Extract a property from the current object, and set it as a expression, so it can be accessed by fieldValueResolvers', 'component-model');
     }
 
     public function getSchemaDirectiveArgs(FieldResolverInterface $fieldResolver): array
@@ -49,19 +49,19 @@ class SetPropertiesAsVarDirectiveResolver extends AbstractGlobalDirectiveResolve
             [
                 SchemaDefinition::ARGNAME_NAME => 'properties',
                 SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::combineTypes(SchemaDefinition::TYPE_ARRAY, SchemaDefinition::TYPE_STRING),
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The property in the current object from which to copy the data into the variables', 'component-model'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The property in the current object from which to copy the data into the expressions', 'component-model'),
                 SchemaDefinition::ARGNAME_MANDATORY => true,
             ],
             [
-                SchemaDefinition::ARGNAME_NAME => 'variables',
+                SchemaDefinition::ARGNAME_NAME => 'expressions',
                 SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::combineTypes(SchemaDefinition::TYPE_ARRAY, SchemaDefinition::TYPE_STRING),
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Name of the variable. If not provided, the same name as the property is used', 'component-model'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Name of the expression. If not provided, the same name as the property is used', 'component-model'),
             ],
         ];
     }
 
     /**
-     * Validate that the number of elements in the fields `properties` and `variables` match one another
+     * Validate that the number of elements in the fields `properties` and `expressions` match one another
      *
      * @param FieldResolverInterface $fieldResolver
      * @param array $directiveArgs
@@ -75,22 +75,22 @@ class SetPropertiesAsVarDirectiveResolver extends AbstractGlobalDirectiveResolve
         $directiveArgs = parent::validateDirectiveArgumentsForSchema($fieldResolver, $directiveArgs, $schemaErrors, $schemaWarnings, $schemaDeprecations);
         $translationAPI = TranslationAPIFacade::getInstance();
 
-        if (isset($directiveArgs['variables'])) {
-            $variablesName = $directiveArgs['variables'];
+        if (isset($directiveArgs['expressions'])) {
+            $expressionsName = $directiveArgs['expressions'];
             $properties = $directiveArgs['properties'];
-            $variablesNameCount = count($variablesName);
+            $expressionsNameCount = count($expressionsName);
             $propertiesCount = count($properties);
 
             // Validate that both arrays have the same number of elements
-            if ($variablesNameCount > $propertiesCount) {
+            if ($expressionsNameCount > $propertiesCount) {
                 $schemaWarnings[$this->directive][] = sprintf(
-                    $translationAPI->__('Argument \'variables\' has more elements than argument \'properties\', so the following variables have been ignored: \'%s\'', 'component-model'),
-                    implode($translationAPI->__('\', \''), array_slice($variablesName, $propertiesCount))
+                    $translationAPI->__('Argument \'expressions\' has more elements than argument \'properties\', so the following expressions have been ignored: \'%s\'', 'component-model'),
+                    implode($translationAPI->__('\', \''), array_slice($expressionsName, $propertiesCount))
                 );
-            } elseif ($variablesNameCount < $propertiesCount) {
+            } elseif ($expressionsNameCount < $propertiesCount) {
                 $schemaWarnings[$this->directive][] = sprintf(
-                    $translationAPI->__('Argument \'properties\' has more elements than argument \'variables\', so the following properties will be assigned to the destination object under their same name: \'%s\'', 'component-model'),
-                    implode($translationAPI->__('\', \''), array_slice($properties, $variablesNameCount))
+                    $translationAPI->__('Argument \'properties\' has more elements than argument \'expressions\', so the following properties will be assigned to the destination object under their same name: \'%s\'', 'component-model'),
+                    implode($translationAPI->__('\', \''), array_slice($properties, $expressionsNameCount))
                 );
             }
         }
@@ -117,7 +117,7 @@ class SetPropertiesAsVarDirectiveResolver extends AbstractGlobalDirectiveResolve
         $translationAPI = TranslationAPIFacade::getInstance();
         // Send a message to the resolveAndMerge directive, indicating which properties to retrieve
         $properties = $this->directiveArgsForSchema['properties'];
-        $variableNames = $this->directiveArgsForSchema['variables'] ?? $properties;
+        $expressionNames = $this->directiveArgsForSchema['expressions'] ?? $properties;
         $dbKey = $dataloader->getDatabaseKey();
         foreach (array_keys($idsDataFields) as $id) {
             for ($i=0; $i<count($properties); $i++) {
@@ -126,24 +126,24 @@ class SetPropertiesAsVarDirectiveResolver extends AbstractGlobalDirectiveResolve
                 $isValueInDBItems = array_key_exists($property, $dbItems[(string)$id] ?? []);
                 if (!$isValueInDBItems && !array_key_exists($property, $previousDBItems[$dbKey][(string)$id] ?? [])) {
                     $dbErrors[(string)$id][$this->directive][] = sprintf(
-                        $translationAPI->__('Property \'%s\' hadn\'t been set for object with ID \'%s\', so no variable has been defined', 'component-model'),
+                        $translationAPI->__('Property \'%s\' hadn\'t been set for object with ID \'%s\', so no expression has been defined', 'component-model'),
                         $property,
                         $id
                     );
                     continue;
                 }
                 // Check if the value already exists
-                $variableName = $variableNames[$i];
-                $existingValue = $this->getExpressionForResultItem($id, $variableName, $messages);
+                $expressionName = $expressionNames[$i];
+                $existingValue = $this->getExpressionForResultItem($id, $expressionName, $messages);
                 if (!is_null($existingValue)) {
                     $dbWarnings[(string)$id][$this->directive][] = sprintf(
-                        $translationAPI->__('The existing value for variable \'%s\' for object with ID \'%s\' has been overriden: \'%s\'', 'component-model'),
-                        $variableName,
+                        $translationAPI->__('The existing value for expression \'%s\' for object with ID \'%s\' has been overriden: \'%s\'', 'component-model'),
+                        $expressionName,
                         $id
                     );
                 }
                 $value = $isValueInDBItems ? $dbItems[(string)$id][$property] : $previousDBItems[$dbKey][(string)$id][$property];
-                $this->addExpressionForResultItem($id, $variableName, $value, $messages);
+                $this->addExpressionForResultItem($id, $expressionName, $value, $messages);
             }
         }
     }
