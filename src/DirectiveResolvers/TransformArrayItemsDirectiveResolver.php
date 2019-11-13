@@ -8,9 +8,9 @@ use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\Engine\DirectiveResolvers\ForEachDirectiveResolver;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
-use PoP\Engine\DirectiveResolvers\TransformPropertyDirectiveResolver;
+use PoP\Engine\DirectiveResolvers\ApplyFunctionDirectiveResolver;
 
-class TransformArrayItemsDirectiveResolver extends TransformPropertyDirectiveResolver
+class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolver
 {
     protected const PROPERTY_SEPARATOR = ':';
     public const DIRECTIVE_NAME = 'transformArrayItems';
@@ -36,7 +36,7 @@ class TransformArrayItemsDirectiveResolver extends TransformPropertyDirectiveRes
                     '',
                     $fieldQueryInterpreter->getFieldDirectivesAsString([
                         [
-                            TransformPropertyDirectiveResolver::getDirectiveName(),
+                            ApplyFunctionDirectiveResolver::getDirectiveName(),
                         ],
                     ]),
                 ],
