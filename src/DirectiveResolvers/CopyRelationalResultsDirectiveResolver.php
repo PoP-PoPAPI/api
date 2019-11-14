@@ -151,7 +151,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     if (!array_key_exists($relationalFieldOutputKey, $previousDBItems[$dbKey][(string)$id] ?? [])) {
                         if ($relationalFieldOutputKey != $relationalField) {
                             $dbErrors[(string)$id][$this->directive][] = sprintf(
-                                $translationAPI->__('Field \'%s\' (with output key \'%s\') hadn\'t been set for object with ID \'%s\', so no data can be copied', 'component-model'),
+                                $translationAPI->__('Field \'%s\' (under property \'%s\') hadn\'t been set for object with ID \'%s\', so no data can be copied', 'component-model'),
                                 $relationalField,
                                 $relationalFieldOutputKey,
                                 $id

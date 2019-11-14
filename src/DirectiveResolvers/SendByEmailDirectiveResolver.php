@@ -71,7 +71,7 @@ class SendByEmailDirectiveResolver extends AbstractGlobalDirectiveResolver
                 if (!$isValueInDBItems && !array_key_exists($fieldOutputKey, $previousDBItems[$dbKey][(string)$id] ?? [])) {
                     if ($fieldOutputKey != $field) {
                         $dbErrors[(string)$id][$this->directive][] = sprintf(
-                            $translationAPI->__('Field \'%s\' (with output key \'%s\') hadn\'t been set for object with ID \'%s\', so it can\'t be transformed', 'component-model'),
+                            $translationAPI->__('Field \'%s\' (under property \'%s\') hadn\'t been set for object with ID \'%s\', so it can\'t be transformed', 'component-model'),
                             $field,
                             $fieldOutputKey,
                             $id
@@ -94,7 +94,7 @@ class SendByEmailDirectiveResolver extends AbstractGlobalDirectiveResolver
                 if (!is_array($value)) {
                     if ($fieldOutputKey != $field) {
                         $dbErrors[(string)$id][$this->directive][] = sprintf(
-                            $translationAPI->__('The value for field \'%s\' (with output key \'%s\') is not an array, so execution of this directive can\'t continue', 'component-model'),
+                            $translationAPI->__('The value for field \'%s\' (under property \'%s\') is not an array, so execution of this directive can\'t continue', 'component-model'),
                             $field,
                             $fieldOutputKey,
                             $id
@@ -113,7 +113,7 @@ class SendByEmailDirectiveResolver extends AbstractGlobalDirectiveResolver
                 $to = $value['to'];
                 if (!$to) {
                     $dbErrors[(string)$id][$this->directive][] = sprintf(
-                        $translationAPI->__('The \'to\' item in the array in field \'%s\' (with output key \'%s\') is empty, so the emails can\'t be sent', 'component-model'),
+                        $translationAPI->__('The \'to\' item in the array in field \'%s\' (under property \'%s\') is empty, so the emails can\'t be sent', 'component-model'),
                         $field,
                         $fieldOutputKey,
                         $id
