@@ -160,21 +160,13 @@ _**New feature not yet available:**_<br/>
 <a href="https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(length:30)">/?query=posts.id|title|excerpt(length:30)</a>
 
 _**New feature available under "experimental" branch:**_<br/>
-<a href="https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental,length:30)">[/?query=posts.id|title|excerpt(length:30,branch:experimental)</a>
+<a href="https://nextapi.getpop.org/api/graphql/?query=posts.id|title|excerpt(branch:experimental,length:30)">/?query=posts.id|title|excerpt(length:30,branch:experimental)</a>
 
 <!--
 _**Overriding fields #2:**_
 
 - Normal vs "Try new features" behaviour:<br/>[/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata)](https://nextapi.getpop.org/api/graphql/?query=posts(limit:2).id|title|content|content(branch:try-new-features,project:block-metadata))
 -->
-
-## Gateway: Fetch/aggregate data from different sources
-
-Coming soon...
-
-## Client-based Gateway: Fetch/aggregate data from different sources without custom server-side coding
-
-Coming soon...
 
 <!--
 ## Comparison among APIs
