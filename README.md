@@ -217,7 +217,7 @@ _**Query errors:** (Severity: high)_
 
 Whenever the query uses a wrong syntax, which prevents it from being parsed/interpreted properly
 
-- <a href="https://nextapi.getpop.org/api/graphql/?query=posts.id(key:value)(key:value)">/?query=posts.id(key:value)(key:value)</a>
+- <a href="https://nextapi.getpop.org/api/graphql/?query=posts.id[book](key:value))">/?query=posts.id[book](key:value)</a>
 
 _**Schema errors:** (Severity: high)_
 
