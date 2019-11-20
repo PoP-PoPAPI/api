@@ -33,10 +33,10 @@ class RenamePropertyDirectiveResolver extends DuplicatePropertyDirectiveResolver
      * @param array $schemaDeprecations
      * @return void
      */
-    public function resolveDirective(DataloaderInterface $dataloader, FieldResolverInterface $fieldResolver, array &$resultIDItems, array &$idsDataFields, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(DataloaderInterface $dataloader, FieldResolverInterface $fieldResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         // After duplicating the property, delete the original
-        parent::resolveDirective($dataloader, $fieldResolver, $resultIDItems, $idsDataFields, $dbItems, $previousDBItems, $variables, $messages, $dbErrors, $dbWarnings, $schemaErrors, $schemaWarnings, $schemaDeprecations);
+        parent::resolveDirective($dataloader, $fieldResolver, $idsDataFields, $succeedingPipelineIDsDataFields, $resultIDItems, $dbItems, $previousDBItems, $variables, $messages, $dbErrors, $dbWarnings, $schemaErrors, $schemaWarnings, $schemaDeprecations);
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
         foreach ($idsDataFields as $id => $dataFields) {
             foreach ($dataFields['direct'] as $field) {
