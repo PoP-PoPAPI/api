@@ -1,8 +1,6 @@
 <?php
 namespace PoP\API\DirectiveResolvers;
 
-use PoP\ComponentModel\DataloaderInterface;
-use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\CacheControl\DirectiveResolvers\AbstractCacheControlDirectiveResolver;
 
 class NoCacheCacheControlDirectiveResolver extends AbstractCacheControlDirectiveResolver
