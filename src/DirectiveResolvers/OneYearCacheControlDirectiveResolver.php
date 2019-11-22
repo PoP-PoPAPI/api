@@ -3,18 +3,19 @@ namespace PoP\API\DirectiveResolvers;
 
 use PoP\CacheControl\DirectiveResolvers\AbstractCacheControlDirectiveResolver;
 
-class NoCacheCacheControlDirectiveResolver extends AbstractCacheControlDirectiveResolver
+class OneYearCacheControlDirectiveResolver extends AbstractCacheControlDirectiveResolver
 {
     public static function getFieldNamesToApplyTo(): array
     {
         return [
-            'getJSON',
+            // operators and helpers...
+            'extract',
         ];
     }
 
     public function getMaxAge(): ?int
     {
-        // Do not cache
-        return 0;
+        // One year = 315360000 seconds
+        return 315360000;
     }
 }
