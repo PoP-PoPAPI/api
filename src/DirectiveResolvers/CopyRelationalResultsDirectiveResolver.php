@@ -18,16 +18,6 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
         return self::DIRECTIVE_NAME;
     }
 
-    /**
-     * This directive must go after ResolveValueAndMerge
-     *
-     * @return void
-     */
-    public function getPipelinePosition(): string
-    {
-        return PipelinePositions::BACK;
-    }
-
     public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
