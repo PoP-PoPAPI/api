@@ -26,16 +26,6 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
         return PipelinePositions::BACK;
     }
 
-    /**
-     * Can set several properties
-     *
-     * @return boolean
-     */
-    public function canExecuteMultipleTimesInField(): bool
-    {
-        return true;
-    }
-
     public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();

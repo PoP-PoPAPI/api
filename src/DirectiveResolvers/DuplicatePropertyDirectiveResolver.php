@@ -26,16 +26,6 @@ class DuplicatePropertyDirectiveResolver extends AbstractGlobalDirectiveResolver
         return PipelinePositions::BACK;
     }
 
-    /**
-     * Can copy several values
-     *
-     * @return boolean
-     */
-    public function canExecuteMultipleTimesInField(): bool
-    {
-        return true;
-    }
-
     public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
