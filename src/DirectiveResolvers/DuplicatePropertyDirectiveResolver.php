@@ -15,6 +15,16 @@ class DuplicatePropertyDirectiveResolver extends AbstractGlobalDirectiveResolver
         return self::DIRECTIVE_NAME;
     }
 
+    /**
+     * Do not allow dynamic fields
+     *
+     * @return bool
+     */
+    protected function disableDynamicFieldsFromDirectiveArgs(): bool
+    {
+        return true;
+    }
+
     public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
