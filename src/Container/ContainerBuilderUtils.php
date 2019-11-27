@@ -13,7 +13,7 @@ class ContainerBuilderUtils {
      * @param string $methodCall
      * @return void
      */
-    public static function addPredefinedFragment(
+    public static function addFragmentToCatalogueService(
         string $fragmentName,
         string $fragmentResolution
     ): void
