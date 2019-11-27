@@ -75,7 +75,7 @@ class RootFieldValueResolver extends AbstractDBDataFieldValueResolver
 
                 // Add the Fragment Catalogue
                 $fragmentCatalogueManager = FragmentCatalogueManagerFacade::getInstance();
-                $schemaDefinition[SchemaDefinition::ARGNAME_PREDEFINED_FRAGMENTS] = $fragmentCatalogueManager->getFragmentCatalogueForSchema();
+                $schemaDefinition[SchemaDefinition::ARGNAME_PERSISTED_FRAGMENTS] = $fragmentCatalogueManager->getFragmentCatalogueForSchema();
                 return $schemaDefinition;
             case 'site':
                 return $root->getSite()->getId();
