@@ -67,12 +67,15 @@ class DuplicatePropertyDirectiveResolver extends AbstractGlobalDirectiveResolver
             foreach ($dataFields['direct'] as $field) {
                 $fieldOutputKey = $fieldQueryInterpreter->getFieldOutputKey($field);
                 if (!array_key_exists($fieldOutputKey, $dbItems[(string)$id])) {
-                    $dbWarnings[(string)$id][$this->directive][] = sprintf(
-                        $translationAPI->__('Property \'%s\' doesn\'t exist in object with ID \'%s\', so it can\'t be copied to \'%s\''),
-                        $fieldOutputKey,
-                        $id,
-                        $copyTo
-                    );
+                    $dbWarnings[(string)$id][] = [
+                        'path' => $this->directive,
+                        sprintf(
+                            $translationAPI->__('Property \'%s\' doesn\'t exist in object with ID \'%s\', so it can\'t be copied to \'%s\''),
+                            $fieldOutputKey,
+                            $id,
+                            $copyTo
+                        )
+                    ];
                     continue;
                 }
                 $dbItems[(string)$id][$copyTo] = $dbItems[(string)$id][$fieldOutputKey];

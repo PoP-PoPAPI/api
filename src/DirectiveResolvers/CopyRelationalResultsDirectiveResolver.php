@@ -79,15 +79,21 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
 
             // Validate that both arrays have the same number of elements
             if ($copyToFieldsCount > $copyFromFieldsCount) {
-                $schemaWarnings[$this->directive][] = sprintf(
-                    $translationAPI->__('Argument \'copyToFields\' has more elements than argument \'copyFromFields\', so the following fields have been ignored: \'%s\'', 'component-model'),
-                    implode($translationAPI->__('\', \''), array_slice($copyToFields, $copyFromFieldsCount))
-                );
+                $schemaWarnings[] = [
+                    'path' => $this->directive,
+                    'message' => sprintf(
+                        $translationAPI->__('Argument \'copyToFields\' has more elements than argument \'copyFromFields\', so the following fields have been ignored: \'%s\'', 'component-model'),
+                        implode($translationAPI->__('\', \''), array_slice($copyToFields, $copyFromFieldsCount))
+                    )
+                ];
             } elseif ($copyToFieldsCount < $copyFromFieldsCount) {
-                $schemaWarnings[$this->directive][] = sprintf(
-                    $translationAPI->__('Argument \'copyFromFields\' has more elements than argument \'copyToFields\', so the following fields will be copied to the destination object under their same field name: \'%s\'', 'component-model'),
-                    implode($translationAPI->__('\', \''), array_slice($copyFromFields, $copyToFieldsCount))
-                );
+                $schemaWarnings[] = [
+                    'path' => $this->directive,
+                    'message' => sprintf(
+                        $translationAPI->__('Argument \'copyFromFields\' has more elements than argument \'copyToFields\', so the following fields will be copied to the destination object under their same field name: \'%s\'', 'component-model'),
+                        implode($translationAPI->__('\', \''), array_slice($copyFromFields, $copyToFieldsCount))
+                    )
+                ];
             }
         }
 
@@ -139,18 +145,24 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     // Then it must be in $previousDBItems (it can't be in $dbItems unless set by chance, because the same IDs were involved for a possibly different query)
                     if (!array_key_exists($relationalFieldOutputKey, $previousDBItems[$dbKey][(string)$id] ?? [])) {
                         if ($relationalFieldOutputKey != $relationalField) {
-                            $dbErrors[(string)$id][$this->directive][] = sprintf(
-                                $translationAPI->__('Field \'%s\' (under property \'%s\') hadn\'t been set for object with ID \'%s\', so no data can be copied', 'component-model'),
-                                $relationalField,
-                                $relationalFieldOutputKey,
-                                $id
-                            );
+                            $dbErrors[(string)$id][] = [
+                                'path' => $this->directive,
+                                'message' => sprintf(
+                                    $translationAPI->__('Field \'%s\' (under property \'%s\') hadn\'t been set for object with ID \'%s\', so no data can be copied', 'component-model'),
+                                    $relationalField,
+                                    $relationalFieldOutputKey,
+                                    $id
+                                )
+                            ];
                         } else {
-                            $dbErrors[(string)$id][$this->directive][] = sprintf(
-                                $translationAPI->__('Field \'%s\' hadn\'t been set for object with ID \'%s\', so no data can be copied', 'component-model'),
-                                $relationalField,
-                                $id
-                            );
+                            $dbErrors[(string)$id][] = [
+                                'path' => $this->directive,
+                                'message' => sprintf(
+                                    $translationAPI->__('Field \'%s\' hadn\'t been set for object with ID \'%s\', so no data can be copied', 'component-model'),
+                                    $relationalField,
+                                    $id
+                                )
+                            ];
                         }
                         continue;
                     }
@@ -158,14 +170,17 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     // If the destination field already exists, warn that it will be overriden
                     $isTargetValueInDBItems = array_key_exists($copyToField, $dbItems[(string)$id] ?? []);
                     if ($isTargetValueInDBItems || array_key_exists($copyToField, $previousDBItems[$dbKey][(string)$id] ?? [])) {
-                        $dbWarnings[(string)$id][$this->directive][] = sprintf(
-                            $translationAPI->__('The existing value for field \'%s\' from object with ID \'%s\' has been overriden: \'%s\'', 'component-model'),
-                            $copyToField,
-                            $id,
-                            $isTargetValueInDBItems ?
-                                $dbItems[(string)$id][$copyToField] :
-                                $previousDBItems[$dbKey][(string)$id][$copyToField]
-                        );
+                        $dbWarnings[(string)$id][] = [
+                            'path' => $this->directive,
+                            'message' => sprintf(
+                                $translationAPI->__('The existing value for field \'%s\' from object with ID \'%s\' has been overriden: \'%s\'', 'component-model'),
+                                $copyToField,
+                                $id,
+                                $isTargetValueInDBItems ?
+                                    $dbItems[(string)$id][$copyToField] :
+                                    $previousDBItems[$dbKey][(string)$id][$copyToField]
+                            )
+                        ];
                     }
                     // Copy the properties into the array
                     $dbItems[(string)$id][$copyToField] = [];
@@ -180,12 +195,15 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     foreach ($relationalIDs as $relationalID) {
                         // Validate that the source field has been set.
                         if (!array_key_exists($copyFromField, $previousDBItems[$relationalDBKey][(string)$relationalID] ?? [])) {
-                            $dbErrors[(string)$id][$this->directive][] = sprintf(
-                                $translationAPI->__('Field \'%s\' hadn\'t been set for object of entity \'%s\' and ID \'%s\', so no data can be copied', 'component-model'),
-                                $copyFromField,
-                                $relationalDBKey,
-                                $relationalID
-                            );
+                            $dbErrors[(string)$id][] = [
+                                'path' => $this->directive,
+                                'message' => sprintf(
+                                    $translationAPI->__('Field \'%s\' hadn\'t been set for object of entity \'%s\' and ID \'%s\', so no data can be copied', 'component-model'),
+                                    $copyFromField,
+                                    $relationalDBKey,
+                                    $relationalID
+                                )
+                            ];
                             continue;
                         }
                         if ($copyStraight) {

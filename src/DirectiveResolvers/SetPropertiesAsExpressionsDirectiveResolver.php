@@ -78,15 +78,21 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
 
             // Validate that both arrays have the same number of elements
             if ($expressionsNameCount > $propertiesCount) {
-                $schemaWarnings[$this->directive][] = sprintf(
-                    $translationAPI->__('Argument \'expressions\' has more elements than argument \'properties\', so the following expressions have been ignored: \'%s\'', 'component-model'),
-                    implode($translationAPI->__('\', \''), array_slice($expressionsName, $propertiesCount))
-                );
+                $schemaWarnings[] = [
+                    'path' => $this->directive,
+                    'message' => sprintf(
+                        $translationAPI->__('Argument \'expressions\' has more elements than argument \'properties\', so the following expressions have been ignored: \'%s\'', 'component-model'),
+                        implode($translationAPI->__('\', \''), array_slice($expressionsName, $propertiesCount))
+                    ),
+                ];
             } elseif ($expressionsNameCount < $propertiesCount) {
-                $schemaWarnings[$this->directive][] = sprintf(
-                    $translationAPI->__('Argument \'properties\' has more elements than argument \'expressions\', so the following properties will be assigned to the destination object under their same name: \'%s\'', 'component-model'),
-                    implode($translationAPI->__('\', \''), array_slice($properties, $expressionsNameCount))
-                );
+                $schemaWarnings[] = [
+                    'path' => $this->directive,
+                    'message' => sprintf(
+                        $translationAPI->__('Argument \'properties\' has more elements than argument \'expressions\', so the following properties will be assigned to the destination object under their same name: \'%s\'', 'component-model'),
+                        implode($translationAPI->__('\', \''), array_slice($properties, $expressionsNameCount))
+                    ),
+                ];
             }
         }
 
@@ -120,22 +126,28 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
                 $property = $properties[$i];
                 $isValueInDBItems = array_key_exists($property, $dbItems[(string)$id] ?? []);
                 if (!$isValueInDBItems && !array_key_exists($property, $previousDBItems[$dbKey][(string)$id] ?? [])) {
-                    $dbErrors[(string)$id][$this->directive][] = sprintf(
-                        $translationAPI->__('Property \'%s\' hadn\'t been set for object with ID \'%s\', so no expression has been defined', 'component-model'),
-                        $property,
-                        $id
-                    );
+                    $dbErrors[(string)$id][] = [
+                        'path' => $this->directive,
+                        'message' => sprintf(
+                            $translationAPI->__('Property \'%s\' hadn\'t been set for object with ID \'%s\', so no expression has been defined', 'component-model'),
+                            $property,
+                            $id
+                        ),
+                    ];
                     continue;
                 }
                 // Check if the value already exists
                 $expressionName = $expressionNames[$i];
                 $existingValue = $this->getExpressionForResultItem($id, $expressionName, $messages);
                 if (!is_null($existingValue)) {
-                    $dbWarnings[(string)$id][$this->directive][] = sprintf(
-                        $translationAPI->__('The existing value for expression \'%s\' for object with ID \'%s\' has been overriden: \'%s\'', 'component-model'),
-                        $expressionName,
-                        $id
-                    );
+                    $dbWarnings[(string)$id][] = [
+                        'path' => $this->directive,
+                        'message' => sprintf(
+                            $translationAPI->__('The existing value for expression \'%s\' for object with ID \'%s\' has been overriden: \'%s\'', 'component-model'),
+                            $expressionName,
+                            $id
+                        ),
+                    ];
                 }
                 $value = $isValueInDBItems ? $dbItems[(string)$id][$property] : $previousDBItems[$dbKey][(string)$id][$property];
                 $this->addExpressionForResultItem($id, $expressionName, $value, $messages);
