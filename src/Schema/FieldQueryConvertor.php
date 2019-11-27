@@ -8,6 +8,7 @@ use PoP\FieldQuery\QuerySyntax;
 use PoP\FieldQuery\QueryHelpers;
 use PoP\QueryParsing\QueryParserInterface;
 use PoP\Translation\TranslationAPIInterface;
+use PoP\API\Facades\FragmentCatalogueManagerFacade;
 use PoP\ComponentModel\Schema\FeedbackMessageStoreInterface;
 
 class FieldQueryConvertor implements FieldQueryConvertorInterface
@@ -16,6 +17,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
     private $expandedRelationalPropertiesCache = [];
 
     // Cache vars to take from the request
+    private $fragmentsCache;
     private $fragmentsFromRequestCache;
 
     // Services
@@ -35,7 +37,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
     public function convertAPIQuery(string $dotNotation, ?array $fragments = null): array
     {
-        $fragments = $fragments ?? $this->getFragmentsFromRequest();
+        $fragments = $fragments ?? $this->getFragments();
 
         // If it is a string, split the ElemCount with ',', the inner ElemCount with '.', and the inner fields with '|'
         $fields = [];
@@ -213,6 +215,29 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         }
 
         return $fields;
+    }
+
+    protected function getFragments(): array
+    {
+        if (is_null($this->fragmentsCache)) {
+            $this->fragmentsCache = $this->doGetFragments();
+        }
+        return $this->fragmentsCache;
+    }
+
+    protected function doGetFragments(): array
+    {
+        // Request overrides catalogue
+        return array_merge(
+            $this->getFragmentsFromCatalogue(),
+            $this->getFragmentsFromRequest()
+        );
+    }
+
+    protected function getFragmentsFromCatalogue(): array
+    {
+        $fragmentCatalogueManager = FragmentCatalogueManagerFacade::getInstance();
+        return $fragmentCatalogueManager->getFragmentCatalogue();
     }
 
     protected function getFragmentsFromRequest(): array

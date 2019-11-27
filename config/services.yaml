@@ -10,6 +10,10 @@ services:
         class: \PoP\API\Schema\FieldQueryConvertor
         public: true
 
+    fragment_catalogue_manager:
+        class: \PoP\API\FragmentCatalogue\FragmentCatalogueManager
+        public: true
+
     PoP\API\Hooks\:
         resource: '../src/Hooks/*'
         public: true
