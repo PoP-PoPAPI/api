@@ -88,7 +88,7 @@ class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolve
                 if (!$isValueInDBItems && !array_key_exists($fieldOutputKey, $previousDBItems[$dbKey][(string)$id] ?? [])) {
                     if ($fieldOutputKey != $field) {
                         $dbErrors[(string)$id][] = [
-                            'path' => $this->directive,
+                            'path' => [$this->directive],
                             'message' => sprintf(
                                 $translationAPI->__('Field \'%s\' (under property \'%s\') hadn\'t been set for object with ID \'%s\', so it can\'t be transformed', 'component-model'),
                                 $field,
@@ -98,7 +98,7 @@ class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolve
                         ];
                     } else {
                         $dbErrors[(string)$id][] = [
-                            'path' => $this->directive,
+                            'path' => [$this->directive],
                             'message' => sprintf(
                                 $translationAPI->__('Field \'%s\' hadn\'t been set for object with ID \'%s\', so it can\'t be transformed', 'component-model'),
                                 $fieldOutputKey,
@@ -122,7 +122,7 @@ class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolve
                 if (!is_array($value)) {
                     if ($fieldOutputKey != $field) {
                         $dbErrors[(string)$id][] = [
-                            'path' => $this->directive,
+                            'path' => [$this->directive],
                             'message' => sprintf(
                                 $translationAPI->__('The value for field \'%s\' (under property \'%s\') is not an array, so execution of this directive can\'t continue', 'component-model'),
                                 $field,
@@ -132,7 +132,7 @@ class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolve
                         ];
                     } else {
                         $dbErrors[(string)$id][] = [
-                            'path' => $this->directive,
+                            'path' => [$this->directive],
                             'message' => sprintf(
                                 $translationAPI->__('The value for field \'%s\' is not an array, so execution of this directive can\'t continue', 'component-model'),
                                 $fieldOutputKey,
@@ -221,7 +221,7 @@ class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolve
                     if (GeneralUtils::isError($arrayItemValue)) {
                         $error = $arrayItemValue;
                         $dbErrors[(string)$id][] = [
-                            'path' => $this->directive,
+                            'path' => [$this->directive],
                             'message' => sprintf(
                                 $translationAPI->__('Transformation of element with key \'%s\' on array from property \'%s\' on object with ID \'%s\' failed due to error: %s', 'component-model'),
                                 $key,
