@@ -18,7 +18,7 @@ class FragmentCatalogueManager implements FragmentCatalogueManagerInterface
         return array_values($this->fragmentSchema);
     }
 
-    public function add(string $fragmentName, string $fragmentResolution, ?string $description = null, ?string $schemaFragmentResolution = null): void
+    public function add(string $fragmentName, string $fragmentResolution, ?string $description = null): void
     {
         $this->fragmentCatalogue[$fragmentName] = $fragmentResolution;
         $this->fragmentSchema[$fragmentName] = [
@@ -27,6 +27,6 @@ class FragmentCatalogueManager implements FragmentCatalogueManagerInterface
         if ($description) {
             $this->fragmentSchema[$fragmentName][SchemaDefinition::ARGNAME_DESCRIPTION] = $description;
         }
-        $this->fragmentSchema[$fragmentName][SchemaDefinition::ARGNAME_FRAGMENT_RESOLUTION] = $schemaFragmentResolution ?? $fragmentResolution;
+        $this->fragmentSchema[$fragmentName][SchemaDefinition::ARGNAME_FRAGMENT_RESOLUTION] = $fragmentResolution;
     }
 }

@@ -21,8 +21,6 @@ class ContainerBuilderUtils {
     {
         // Enable using expressions, by going around an incompatibility with Symfony's DependencyInjection component
         $fragmentResolution = FragmentUtils::addSpacingToExpressions($fragmentResolution);
-        // Use this version to show in the schema
-        $schemaFragmentResolution = $fragmentResolution;
         // Format the fragment: Remove the tabs and new lines
         $fragmentResolution = FragmentUtils::removeWhitespaces($fragmentResolution);
         // Inject the values into the service
@@ -31,8 +29,7 @@ class ContainerBuilderUtils {
             'add',
             $fragmentName,
             $fragmentResolution,
-            $description,
-            $schemaFragmentResolution
+            $description
         );
     }
 }
