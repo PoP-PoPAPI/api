@@ -1,8 +1,9 @@
 <?php
 namespace PoP\API\FieldValueResolvers;
 
+use PoP\API\Facades\FragmentCatalogueManagerFacade;
 use PoP\Translation\Facades\TranslationAPIFacade;
-use PoP\ComponentModel\Schema\SchemaDefinition;
+use PoP\API\Schema\SchemaDefinition;
 use PoP\ComponentModel\FieldValueResolvers\AbstractDBDataFieldValueResolver;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\API\FieldResolvers\RootFieldResolver;
@@ -70,7 +71,12 @@ class RootFieldValueResolver extends AbstractDBDataFieldValueResolver
                 // Normalize properties in $fieldArgs with their defaults
                 // By default make it deep. To avoid it, must pass argument (deep:false)
                 $fieldArgs['deep'] = isset($fieldArgs['deep']) ? strtolower($fieldArgs['deep']) === "true" : true;
-                return $fieldResolver->getSchemaDefinition($fieldArgs, $options);
+                $schemaDefinition = $fieldResolver->getSchemaDefinition($fieldArgs, $options);
+
+                // Add the Fragment Catalogue
+                $fragmentCatalogueManager = FragmentCatalogueManagerFacade::getInstance();
+                $schemaDefinition[SchemaDefinition::ARGNAME_PREDEFINED_FRAGMENTS] = $fragmentCatalogueManager->getFragmentCatalogueForSchema();
+                return $schemaDefinition;
             case 'site':
                 return $root->getSite()->getId();
         }
