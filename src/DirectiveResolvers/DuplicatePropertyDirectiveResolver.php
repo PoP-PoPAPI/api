@@ -7,6 +7,7 @@ use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractGlobalDirectiveResolver;
+use PoP\ComponentModel\Feedback\Tokens;
 
 class DuplicatePropertyDirectiveResolver extends AbstractGlobalDirectiveResolver
 {
@@ -68,8 +69,8 @@ class DuplicatePropertyDirectiveResolver extends AbstractGlobalDirectiveResolver
                 $fieldOutputKey = $fieldQueryInterpreter->getFieldOutputKey($field);
                 if (!array_key_exists($fieldOutputKey, $dbItems[(string)$id])) {
                     $dbWarnings[(string)$id][] = [
-                        'path' => [$this->directive],
-                        'message' => sprintf(
+                        Tokens::PATH => [$this->directive],
+                        Tokens::MESSAGE => sprintf(
                             $translationAPI->__('Property \'%s\' doesn\'t exist in object with ID \'%s\', so it can\'t be copied to \'%s\''),
                             $fieldOutputKey,
                             $id,
