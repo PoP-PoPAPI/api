@@ -10,8 +10,8 @@ services:
         class: \PoP\API\Schema\FieldQueryConvertor
         public: true
 
-    fragment_catalogue_manager:
-        class: \PoP\API\FragmentCatalogue\FragmentCatalogueManager
+    persisted_fragment_manager:
+        class: \PoP\API\PersistedFragments\PersistedFragmentManager
         public: true
 
     PoP\API\Hooks\:

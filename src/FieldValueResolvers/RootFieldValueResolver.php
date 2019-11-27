@@ -1,7 +1,7 @@
 <?php
 namespace PoP\API\FieldValueResolvers;
 
-use PoP\API\Facades\FragmentCatalogueManagerFacade;
+use PoP\API\Facades\PersistedFragmentManagerFacade;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\API\Schema\SchemaDefinition;
 use PoP\ComponentModel\FieldValueResolvers\AbstractDBDataFieldValueResolver;
@@ -74,8 +74,8 @@ class RootFieldValueResolver extends AbstractDBDataFieldValueResolver
                 $schemaDefinition = $fieldResolver->getSchemaDefinition($fieldArgs, $options);
 
                 // Add the Fragment Catalogue
-                $fragmentCatalogueManager = FragmentCatalogueManagerFacade::getInstance();
-                $schemaDefinition[SchemaDefinition::ARGNAME_PERSISTED_FRAGMENTS] = $fragmentCatalogueManager->getFragmentCatalogueForSchema();
+                $fragmentCatalogueManager = PersistedFragmentManagerFacade::getInstance();
+                $schemaDefinition[SchemaDefinition::ARGNAME_PERSISTED_FRAGMENTS] = $fragmentCatalogueManager->getPersistedFragmentsForSchema();
                 return $schemaDefinition;
             case 'site':
                 return $root->getSite()->getId();

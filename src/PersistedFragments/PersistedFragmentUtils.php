@@ -1,7 +1,7 @@
 <?php
-namespace PoP\API\FragmentCatalogue;
+namespace PoP\API\PersistedFragments;
 
-class FragmentUtils
+class PersistedFragmentUtils
 {
     /**
      * Trim, and remove tabs and new lines

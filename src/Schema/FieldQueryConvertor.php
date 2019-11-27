@@ -8,7 +8,7 @@ use PoP\FieldQuery\QuerySyntax;
 use PoP\FieldQuery\QueryHelpers;
 use PoP\QueryParsing\QueryParserInterface;
 use PoP\Translation\TranslationAPIInterface;
-use PoP\API\Facades\FragmentCatalogueManagerFacade;
+use PoP\API\Facades\PersistedFragmentManagerFacade;
 use PoP\ComponentModel\Schema\FeedbackMessageStoreInterface;
 
 class FieldQueryConvertor implements FieldQueryConvertorInterface
@@ -236,8 +236,8 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
     protected function getFragmentsFromCatalogue(): array
     {
-        $fragmentCatalogueManager = FragmentCatalogueManagerFacade::getInstance();
-        return $fragmentCatalogueManager->getFragmentCatalogue();
+        $fragmentCatalogueManager = PersistedFragmentManagerFacade::getInstance();
+        return $fragmentCatalogueManager->getPersistedFragments();
     }
 
     protected function getFragmentsFromRequest(): array
