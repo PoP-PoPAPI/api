@@ -19,10 +19,10 @@ class ContainerBuilderUtils {
         ?string $description = null
     ): void
     {
-        // Enable using expressions, by going around an incompatibility with Symfony's DependencyInjection component
-        $fragmentResolution = PersistedFragmentUtils::addSpacingToExpressions($fragmentResolution);
         // Format the fragment: Remove the tabs and new lines
         $fragmentResolution = PersistedFragmentUtils::removeWhitespaces($fragmentResolution);
+        // Enable using expressions, by going around an incompatibility with Symfony's DependencyInjection component
+        $fragmentResolution = PersistedFragmentUtils::addSpacingToExpressions($fragmentResolution);
         // Inject the values into the service
         \PoP\Root\Container\ContainerBuilderUtils::injectValuesIntoService(
             'persisted_fragment_manager',
