@@ -1,14 +1,14 @@
 <?php
-namespace PoP\API\FieldValueResolvers;
+namespace PoP\API\FieldResolvers;
 
 use PoP\API\Facades\PersistedFragmentManagerFacade;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\API\Schema\SchemaDefinition;
-use PoP\ComponentModel\FieldValueResolvers\AbstractDBDataFieldValueResolver;
+use PoP\ComponentModel\FieldResolvers\AbstractDBDataFieldResolver;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\API\TypeResolvers\RootTypeResolver;
 
-class RootFieldValueResolver extends AbstractDBDataFieldValueResolver
+class RootFieldResolver extends AbstractDBDataFieldResolver
 {
     public static function getClassesToAttachTo(): array
     {
