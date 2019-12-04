@@ -5,7 +5,7 @@ use PoP\ComponentModel\DataloaderInterface;
 use PoP\ComponentModel\Schema\SchemaDefinition;
 use PoP\ComponentModel\Schema\TypeCastingHelpers;
 use PoP\Translation\Facades\TranslationAPIFacade;
-use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
+use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\DirectiveResolvers\AbstractGlobalDirectiveResolver;
 use PoP\ComponentModel\Feedback\Tokens;
 
@@ -26,19 +26,19 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
         return true;
     }
 
-    public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
+    public function getSchemaDirectiveDescription(TypeResolverInterface $typeResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         return $translationAPI->__('Extract a property from the current object, and set it as a expression, so it can be accessed by fieldValueResolvers', 'component-model');
     }
 
-    public function getSchemaDirectiveDeprecationDescription(FieldResolverInterface $fieldResolver): ?string
+    public function getSchemaDirectiveDeprecationDescription(TypeResolverInterface $typeResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         return $translationAPI->__('Use directive `getSelfProp` together with field `extract` instead', 'component-model');
     }
 
-    public function getSchemaDirectiveArgs(FieldResolverInterface $fieldResolver): array
+    public function getSchemaDirectiveArgs(TypeResolverInterface $typeResolver): array
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         return [
@@ -59,16 +59,16 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
     /**
      * Validate that the number of elements in the fields `properties` and `expressions` match one another
      *
-     * @param FieldResolverInterface $fieldResolver
+     * @param TypeResolverInterface $typeResolver
      * @param array $directiveArgs
      * @param array $schemaErrors
      * @param array $schemaWarnings
      * @param array $schemaDeprecations
      * @return array
      */
-    public function validateDirectiveArgumentsForSchema(FieldResolverInterface $fieldResolver, array $directiveArgs, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations): array
+    public function validateDirectiveArgumentsForSchema(TypeResolverInterface $typeResolver, array $directiveArgs, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations): array
     {
-        $directiveArgs = parent::validateDirectiveArgumentsForSchema($fieldResolver, $directiveArgs, $schemaErrors, $schemaWarnings, $schemaDeprecations);
+        $directiveArgs = parent::validateDirectiveArgumentsForSchema($typeResolver, $directiveArgs, $schemaErrors, $schemaWarnings, $schemaDeprecations);
         $translationAPI = TranslationAPIFacade::getInstance();
 
         if (isset($directiveArgs['expressions'])) {
@@ -103,7 +103,7 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
     /**
      * Copy the data under the relational object into the current object
      *
-     * @param FieldResolverInterface $fieldResolver
+     * @param TypeResolverInterface $typeResolver
      * @param array $resultIDItems
      * @param array $idsDataFields
      * @param array $dbItems
@@ -114,7 +114,7 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
      * @param array $schemaDeprecations
      * @return void
      */
-    public function resolveDirective(DataloaderInterface $dataloader, FieldResolverInterface $fieldResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(DataloaderInterface $dataloader, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         // Send a message to the resolveAndMerge directive, indicating which properties to retrieve

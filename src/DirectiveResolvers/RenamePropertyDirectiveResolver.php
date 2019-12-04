@@ -3,7 +3,7 @@ namespace PoP\API\DirectiveResolvers;
 
 use PoP\ComponentModel\DataloaderInterface;
 use PoP\Translation\Facades\TranslationAPIFacade;
-use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
+use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 
 class RenamePropertyDirectiveResolver extends DuplicatePropertyDirectiveResolver
@@ -13,7 +13,7 @@ class RenamePropertyDirectiveResolver extends DuplicatePropertyDirectiveResolver
         return self::DIRECTIVE_NAME;
     }
 
-    public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
+    public function getSchemaDirectiveDescription(TypeResolverInterface $typeResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         return $translationAPI->__('Rename a property in the current object', 'component-model');
@@ -22,7 +22,7 @@ class RenamePropertyDirectiveResolver extends DuplicatePropertyDirectiveResolver
     /**
      * Rename a property from the current object
      *
-     * @param FieldResolverInterface $fieldResolver
+     * @param TypeResolverInterface $typeResolver
      * @param array $resultIDItems
      * @param array $idsDataFields
      * @param array $dbItems
@@ -33,10 +33,10 @@ class RenamePropertyDirectiveResolver extends DuplicatePropertyDirectiveResolver
      * @param array $schemaDeprecations
      * @return void
      */
-    public function resolveDirective(DataloaderInterface $dataloader, FieldResolverInterface $fieldResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(DataloaderInterface $dataloader, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         // After duplicating the property, delete the original
-        parent::resolveDirective($dataloader, $fieldResolver, $idsDataFields, $succeedingPipelineIDsDataFields, $resultIDItems, $dbItems, $previousDBItems, $variables, $messages, $dbErrors, $dbWarnings, $schemaErrors, $schemaWarnings, $schemaDeprecations);
+        parent::resolveDirective($dataloader, $typeResolver, $idsDataFields, $succeedingPipelineIDsDataFields, $resultIDItems, $dbItems, $previousDBItems, $variables, $messages, $dbErrors, $dbWarnings, $schemaErrors, $schemaWarnings, $schemaDeprecations);
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
         foreach ($idsDataFields as $id => $dataFields) {
             foreach ($dataFields['direct'] as $field) {

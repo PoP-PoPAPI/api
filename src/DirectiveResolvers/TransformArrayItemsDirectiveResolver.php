@@ -6,7 +6,7 @@ use PoP\ComponentModel\GeneralUtils;
 use PoP\ComponentModel\DataloaderInterface;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\Engine\DirectiveResolvers\ForEachDirectiveResolver;
-use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
+use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\Engine\DirectiveResolvers\ApplyFunctionDirectiveResolver;
 use PoP\ComponentModel\Feedback\Tokens;
@@ -22,10 +22,10 @@ class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolve
     /**
      * No need to use this function anymore
      *
-     * @param FieldResolverInterface $fieldResolver
+     * @param TypeResolverInterface $typeResolver
      * @return string|null
      */
-    public function getSchemaDirectiveDeprecationDescription(FieldResolverInterface $fieldResolver): ?string
+    public function getSchemaDirectiveDeprecationDescription(TypeResolverInterface $typeResolver): ?string
     {
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
         $translationAPI = TranslationAPIFacade::getInstance();
@@ -53,7 +53,7 @@ class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolve
      * 3. Pack into the array, once again, and remove all temporary properties
      *
      * @param DataloaderInterface $dataloader
-     * @param FieldResolverInterface $fieldResolver
+     * @param TypeResolverInterface $typeResolver
      * @param array $resultIDItems
      * @param array $idsDataFields
      * @param array $dbItems
@@ -67,7 +67,7 @@ class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolve
      * @param array $messages
      * @return void
      */
-    public function resolveDirective(DataloaderInterface $dataloader, FieldResolverInterface $fieldResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(DataloaderInterface $dataloader, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
@@ -175,7 +175,7 @@ class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolve
             }
         }
         // 2. Execute the function for all arrayItems
-        $this->regenerateAndExecuteFunction($dataloader, $fieldResolver, $resultIDItems, $arrayItemIdsProperties, $dbItems, $previousDBItems, $variables, $messages, $dbErrors, $dbWarnings, $schemaErrors, $schemaWarnings, $schemaDeprecations);
+        $this->regenerateAndExecuteFunction($dataloader, $typeResolver, $resultIDItems, $arrayItemIdsProperties, $dbItems, $previousDBItems, $variables, $messages, $dbErrors, $dbWarnings, $schemaErrors, $schemaWarnings, $schemaDeprecations);
         // 3. Composer the array from the results for each array item
         foreach ($idsDataFields as $id => $dataFields) {
             foreach ($dataFields['direct'] as $field) {
@@ -264,7 +264,7 @@ class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolve
      * Add the $key in addition to the $value
      *
      * @param DataloaderInterface $dataloader
-     * @param FieldResolverInterface $fieldResolver
+     * @param TypeResolverInterface $typeResolver
      * @param [type] $id
      * @param string $field
      * @param array $resultIDItems
@@ -279,10 +279,10 @@ class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolve
      * @param array $messages
      * @return void
      */
-    protected function addExpressionsForResultItem(DataloaderInterface $dataloader, FieldResolverInterface $fieldResolver, $id, string $field, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    protected function addExpressionsForResultItem(DataloaderInterface $dataloader, TypeResolverInterface $typeResolver, $id, string $field, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         // First let the parent add $value, then also add $key, which can be deduced from the fieldOutputKey
-        parent::addExpressionsForResultItem($dataloader, $fieldResolver, $id, $field, $resultIDItems, $dbItems, $previousDBItems, $variables, $messages, $dbErrors, $dbWarnings, $schemaErrors, $schemaWarnings, $schemaDeprecations);
+        parent::addExpressionsForResultItem($dataloader, $typeResolver, $id, $field, $resultIDItems, $dbItems, $previousDBItems, $variables, $messages, $dbErrors, $dbWarnings, $schemaErrors, $schemaWarnings, $schemaDeprecations);
 
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
         $arrayItemPropertyOutputKey = $fieldQueryInterpreter->getFieldOutputKey($field);

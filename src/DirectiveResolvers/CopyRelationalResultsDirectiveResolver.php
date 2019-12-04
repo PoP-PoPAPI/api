@@ -5,7 +5,7 @@ use PoP\ComponentModel\DataloaderInterface;
 use PoP\ComponentModel\Schema\SchemaDefinition;
 use PoP\ComponentModel\Schema\TypeCastingHelpers;
 use PoP\Translation\Facades\TranslationAPIFacade;
-use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
+use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\Facades\Instances\InstanceManagerFacade;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractGlobalDirectiveResolver;
@@ -28,13 +28,13 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
         return true;
     }
 
-    public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
+    public function getSchemaDirectiveDescription(TypeResolverInterface $typeResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         return $translationAPI->__('Copy the data from a relational object (which is one level below) to the current object', 'component-model');
     }
 
-    public function getSchemaDirectiveArgs(FieldResolverInterface $fieldResolver): array
+    public function getSchemaDirectiveArgs(TypeResolverInterface $typeResolver): array
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         return [
@@ -60,16 +60,16 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
     /**
      * Validate that the number of elements in the fields `copyToFields` and `copyFromFields` match one another
      *
-     * @param FieldResolverInterface $fieldResolver
+     * @param TypeResolverInterface $typeResolver
      * @param array $directiveArgs
      * @param array $schemaErrors
      * @param array $schemaWarnings
      * @param array $schemaDeprecations
      * @return array
      */
-    public function validateDirectiveArgumentsForSchema(FieldResolverInterface $fieldResolver, array $directiveArgs, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations): array
+    public function validateDirectiveArgumentsForSchema(TypeResolverInterface $typeResolver, array $directiveArgs, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations): array
     {
-        $directiveArgs = parent::validateDirectiveArgumentsForSchema($fieldResolver, $directiveArgs, $schemaErrors, $schemaWarnings, $schemaDeprecations);
+        $directiveArgs = parent::validateDirectiveArgumentsForSchema($typeResolver, $directiveArgs, $schemaErrors, $schemaWarnings, $schemaDeprecations);
         $translationAPI = TranslationAPIFacade::getInstance();
 
         if (isset($directiveArgs['copyToFields'])) {
@@ -104,7 +104,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
     /**
      * Copy the data under the relational object into the current object
      *
-     * @param FieldResolverInterface $fieldResolver
+     * @param TypeResolverInterface $typeResolver
      * @param array $resultIDItems
      * @param array $idsDataFields
      * @param array $dbItems
@@ -115,7 +115,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
      * @param array $schemaDeprecations
      * @return void
      */
-    public function resolveDirective(DataloaderInterface $dataloader, FieldResolverInterface $fieldResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(DataloaderInterface $dataloader, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         $instanceManager = InstanceManagerFacade::getInstance();
@@ -137,8 +137,8 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     // The data is stored under the field's output key
                     $relationalFieldOutputKey = $fieldQueryInterpreter->getFieldOutputKey($relationalField);
                     // Obtain the DBKey under which the relationalField is stored in the database
-                    // For that, from the fieldResolver we obtain the dataloader for the `relationalField`
-                    $relationalDataloaderClass = $fieldResolver->resolveFieldDefaultDataloaderClass($relationalField);
+                    // For that, from the typeResolver we obtain the dataloader for the `relationalField`
+                    $relationalDataloaderClass = $typeResolver->resolveFieldDefaultDataloaderClass($relationalField);
                     $relationalDataloader = $instanceManager->getInstance($relationalDataloaderClass);
                     $relationalDBKey = $relationalDataloader->getDatabaseKey();
                     // Validate that the current object has `relationalField` property set

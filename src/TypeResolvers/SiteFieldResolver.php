@@ -1,10 +1,10 @@
 <?php
-namespace PoP\API\FieldResolvers;
+namespace PoP\API\TypeResolvers;
 
-use PoP\ComponentModel\FieldResolvers\AbstractFieldResolver;
+use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
 use PoP\API\Dataloader_Sites;
 
-class SiteFieldResolver extends AbstractFieldResolver
+class SiteTypeResolver extends AbstractTypeResolver
 {
     public function getId($resultItem)
     {

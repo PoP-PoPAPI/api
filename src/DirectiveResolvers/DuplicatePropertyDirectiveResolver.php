@@ -4,7 +4,7 @@ namespace PoP\API\DirectiveResolvers;
 use PoP\ComponentModel\DataloaderInterface;
 use PoP\ComponentModel\Schema\SchemaDefinition;
 use PoP\Translation\Facades\TranslationAPIFacade;
-use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
+use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractGlobalDirectiveResolver;
 use PoP\ComponentModel\Feedback\Tokens;
@@ -26,13 +26,13 @@ class DuplicatePropertyDirectiveResolver extends AbstractGlobalDirectiveResolver
         return true;
     }
 
-    public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
+    public function getSchemaDirectiveDescription(TypeResolverInterface $typeResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         return $translationAPI->__('Duplicate a property in the current object', 'component-model');
     }
 
-    public function getSchemaDirectiveArgs(FieldResolverInterface $fieldResolver): array
+    public function getSchemaDirectiveArgs(TypeResolverInterface $typeResolver): array
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         return [
@@ -48,7 +48,7 @@ class DuplicatePropertyDirectiveResolver extends AbstractGlobalDirectiveResolver
     /**
      * Duplicate a property from the current object
      *
-     * @param FieldResolverInterface $fieldResolver
+     * @param TypeResolverInterface $typeResolver
      * @param array $resultIDItems
      * @param array $idsDataFields
      * @param array $dbItems
@@ -59,7 +59,7 @@ class DuplicatePropertyDirectiveResolver extends AbstractGlobalDirectiveResolver
      * @param array $schemaDeprecations
      * @return void
      */
-    public function resolveDirective(DataloaderInterface $dataloader, FieldResolverInterface $fieldResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(DataloaderInterface $dataloader, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();

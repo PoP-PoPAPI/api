@@ -3,7 +3,7 @@ namespace PoP\API\DirectiveResolvers;
 
 use PoP\ComponentModel\DataloaderInterface;
 use PoP\Translation\Facades\TranslationAPIFacade;
-use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
+use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractGlobalDirectiveResolver;
 use PoP\ComponentModel\Feedback\Tokens;
@@ -15,7 +15,7 @@ class SendByEmailDirectiveResolver extends AbstractGlobalDirectiveResolver
         return self::DIRECTIVE_NAME;
     }
 
-    // public function getSchemaDirectiveArgs(FieldResolverInterface $fieldResolver): array
+    // public function getSchemaDirectiveArgs(TypeResolverInterface $typeResolver): array
     // {
     //     $translationAPI = TranslationAPIFacade::getInstance();
     //     return [
@@ -38,7 +38,7 @@ class SendByEmailDirectiveResolver extends AbstractGlobalDirectiveResolver
     //     ];
     // }
 
-    public function resolveDirective(DataloaderInterface $dataloader, FieldResolverInterface $fieldResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(DataloaderInterface $dataloader, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
         $translationAPI = TranslationAPIFacade::getInstance();
