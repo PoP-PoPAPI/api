@@ -26,6 +26,6 @@ services:
         resource: '../src/RouteModuleProcessors/*'
         public: true
 
-    PoP\API\FieldValueResolvers\:
-        resource: '../src/FieldValueResolvers/*'
+    PoP\API\FieldResolvers\:
+        resource: '../src/FieldResolvers/*'
         public: true
