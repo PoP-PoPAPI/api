@@ -1,7 +1,7 @@
 <?php
 namespace PoP\API\DirectiveResolvers;
 
-use PoP\ComponentModel\DataloaderInterface;
+use PoP\ComponentModel\TypeDataResolvers\TypeDataResolverInterface;
 use PoP\ComponentModel\Schema\SchemaDefinition;
 use PoP\ComponentModel\Schema\TypeCastingHelpers;
 use PoP\Translation\Facades\TranslationAPIFacade;
@@ -115,7 +115,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
      * @param array $schemaDeprecations
      * @return void
      */
-    public function resolveDirective(DataloaderInterface $dataloader, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(TypeDataResolverInterface $typeDataResolver, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         $instanceManager = InstanceManagerFacade::getInstance();
@@ -125,8 +125,8 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
         $copyToFields = $this->directiveArgsForSchema['copyToFields'] ?? $copyFromFields;
         $keepRelationalIDs = $this->directiveArgsForSchema['keepRelationalIDs'] ?? false;
 
-        // From the dataloader, obtain under what dbKey the data for the current object is stored
-        $dbKey = $dataloader->getDatabaseKey();
+        // From the typeDataResolver, obtain under what dbKey the data for the current object is stored
+        $dbKey = $typeDataResolver->getDatabaseKey();
 
         // Copy the data from each of the relational object fields to the current object
         for ($i=0; $i<count($copyFromFields); $i++) {
@@ -137,7 +137,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     // The data is stored under the field's output key
                     $relationalFieldOutputKey = $fieldQueryInterpreter->getFieldOutputKey($relationalField);
                     // Obtain the DBKey under which the relationalField is stored in the database
-                    // For that, from the typeResolver we obtain the dataloader for the `relationalField`
+                    // For that, from the typeResolver we obtain the typeDataResolver for the `relationalField`
                     $relationalDataloaderClass = $typeResolver->resolveFieldDefaultDataloaderClass($relationalField);
                     $relationalDataloader = $instanceManager->getInstance($relationalDataloaderClass);
                     $relationalDBKey = $relationalDataloader->getDatabaseKey();

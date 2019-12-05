@@ -1,7 +1,7 @@
 <?php
 namespace PoP\API\DirectiveResolvers;
 
-use PoP\ComponentModel\DataloaderInterface;
+use PoP\ComponentModel\TypeDataResolvers\TypeDataResolverInterface;
 use PoP\ComponentModel\Schema\SchemaDefinition;
 use PoP\ComponentModel\Schema\TypeCastingHelpers;
 use PoP\Translation\Facades\TranslationAPIFacade;
@@ -114,13 +114,13 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
      * @param array $schemaDeprecations
      * @return void
      */
-    public function resolveDirective(DataloaderInterface $dataloader, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(TypeDataResolverInterface $typeDataResolver, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         // Send a message to the resolveAndMerge directive, indicating which properties to retrieve
         $properties = $this->directiveArgsForSchema['properties'];
         $expressionNames = $this->directiveArgsForSchema['expressions'] ?? $properties;
-        $dbKey = $dataloader->getDatabaseKey();
+        $dbKey = $typeDataResolver->getDatabaseKey();
         foreach (array_keys($idsDataFields) as $id) {
             for ($i=0; $i<count($properties); $i++) {
                 // Validate that the property exists in the source object, either on this iteration or any previous one
