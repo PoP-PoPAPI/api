@@ -8,7 +8,7 @@ class RootTypeResolver extends AbstractTypeResolver
 {
     public const DATABASE_KEY = 'root';
 
-    public function getDatabaseKey()
+    public function getDatabaseKey(): string
     {
         return self::DATABASE_KEY;
     }
