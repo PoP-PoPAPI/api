@@ -15,9 +15,8 @@ class RootTypeResolver extends AbstractTypeResolver
 
     public function getId($resultItem)
     {
-        return 'root';
-        // $root = $resultItem;
-        // return $root->getId();
+        $root = $resultItem;
+        return $root->getId();
     }
 
     public function getIdFieldTypeDataResolverClass()
