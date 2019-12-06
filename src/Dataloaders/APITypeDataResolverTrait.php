@@ -2,7 +2,7 @@
 namespace PoP\API\Dataloaders;
 use PoP\ComponentModel\Facades\ModuleProcessors\ModuleProcessorManagerFacade;
 
-trait DataloaderAPITrait
+trait APITypeDataResolverTrait
 {
     public function maybeFilterDataloadQueryArgs(array &$query, array $options = [])
     {

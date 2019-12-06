@@ -138,9 +138,9 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     $relationalFieldOutputKey = $fieldQueryInterpreter->getFieldOutputKey($relationalField);
                     // Obtain the DBKey under which the relationalField is stored in the database
                     // For that, from the typeResolver we obtain the typeDataResolver for the `relationalField`
-                    $relationalDataloaderClass = $typeResolver->resolveFieldDefaultTypeDataResolverClass($relationalField);
-                    $relationalDataloader = $instanceManager->getInstance($relationalDataloaderClass);
-                    $relationalDBKey = $relationalDataloader->getDatabaseKey();
+                    $relationalTypeDataResolverClass = $typeResolver->resolveFieldDefaultTypeDataResolverClass($relationalField);
+                    $relationalTypeDataResolver = $instanceManager->getInstance((string)$relationalTypeDataResolverClass);
+                    $relationalDBKey = $relationalTypeDataResolver->getDatabaseKey();
                     // Validate that the current object has `relationalField` property set
                     // Since we are fetching from a relational object (placed one level below in the iteration stack), the value could've been set only in a previous iteration
                     // Then it must be in $previousDBItems (it can't be in $dbItems unless set by chance, because the same IDs were involved for a possibly different query)
