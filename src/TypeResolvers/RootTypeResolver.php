@@ -19,7 +19,7 @@ class RootTypeResolver extends AbstractTypeResolver
         return $root->getId();
     }
 
-    public function getIdFieldTypeDataResolverClass()
+    public function getIdFieldTypeDataResolverClass(): string
     {
         return Dataloader_Root::class;
     }
