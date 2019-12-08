@@ -10,6 +10,7 @@ use PoP\ComponentModel\Facades\Instances\InstanceManagerFacade;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractGlobalDirectiveResolver;
 use PoP\ComponentModel\Feedback\Tokens;
+use PoP\ComponentModel\TypeResolvers\ConvertibleTypeHelpers;
 
 class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveResolver
 {
@@ -115,7 +116,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
      * @param array $schemaDeprecations
      * @return void
      */
-    public function resolveDirective(TypeDataResolverInterface $typeDataResolver, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(TypeDataResolverInterface $typeDataResolver, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$convertibleDBKeyIDs, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         $instanceManager = InstanceManagerFacade::getInstance();
@@ -136,11 +137,6 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                 foreach ($dataFields['direct'] as $relationalField) {
                     // The data is stored under the field's output key
                     $relationalFieldOutputKey = $fieldQueryInterpreter->getFieldOutputKey($relationalField);
-                    // Obtain the DBKey under which the relationalField is stored in the database
-                    // For that, from the typeResolver we obtain the typeDataResolver for the `relationalField`
-                    $relationalTypeDataResolverClass = $typeResolver->resolveFieldDefaultTypeDataResolverClass($relationalField);
-                    $relationalTypeDataResolver = $instanceManager->getInstance((string)$relationalTypeDataResolverClass);
-                    $relationalDBKey = $relationalTypeDataResolver->getDatabaseKey();
                     // Validate that the current object has `relationalField` property set
                     // Since we are fetching from a relational object (placed one level below in the iteration stack), the value could've been set only in a previous iteration
                     // Then it must be in $previousDBItems (it can't be in $dbItems unless set by chance, because the same IDs were involved for a possibly different query)
@@ -185,15 +181,31 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     }
                     // Copy the properties into the array
                     $dbItems[(string)$id][$copyToField] = [];
-                    // It can be an array of IDs, or a single item. In the latter case, copy the property directly. In the former one, copy it under an array,
+
+                    // Obtain the DBKey under which the relationalField is stored in the database
+                    // For that, from the typeResolver we obtain the typeDataResolver for the `relationalField`
+                    $relationalTypeDataResolverClass = $typeResolver->resolveFieldDefaultTypeDataResolverClass($relationalField);
+                    $relationalTypeDataResolver = $instanceManager->getInstance((string)$relationalTypeDataResolverClass);
+                    $relationalDBKey = $relationalTypeDataResolver->getDatabaseKey();
+                    $isConvertibleRelationalDBKey = ConvertibleTypeHelpers::isConvertibleDBKey($relationalDBKey);
+                    if ($isConvertibleRelationalDBKey) {
+                        // If the relational type data resolver is convertible, we must use the corresponding IDs from $convertibleDBKeyIDs, which contain the type in addition to the ID
+                        $relationalIDs = $convertibleDBKeyIDs[$dbKey][(string)$id][$relationalFieldOutputKey];
+                    } else {
+                        // Otherwise, directly use the IDs from the object
+                        $relationalIDs = $previousDBItems[$dbKey][(string)$id][$relationalFieldOutputKey];
+                    }
+
+                    // $relationalIDs can be an array of IDs, or a single item. In the latter case, copy the property directly. In the former one, copy it under an array,
                     // either with the ID of relational object as key, or as a normal one-dimension array using no particular keys
-                    $relationalIDs = $previousDBItems[$dbKey][(string)$id][$relationalFieldOutputKey];
                     $copyStraight = false;
                     if (!is_array($relationalIDs)) {
                         $relationalIDs = [$relationalIDs];
                         $copyStraight = true;
                     }
+
                     foreach ($relationalIDs as $relationalID) {
+
                         // Validate that the source field has been set.
                         if (!array_key_exists($copyFromField, $previousDBItems[$relationalDBKey][(string)$relationalID] ?? [])) {
                             $dbErrors[(string)$id][] = [
