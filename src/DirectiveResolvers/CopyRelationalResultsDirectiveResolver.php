@@ -187,7 +187,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     $relationalTypeDataResolverClass = $typeResolver->resolveFieldDefaultTypeDataResolverClass($relationalField);
                     $relationalTypeDataResolver = $instanceManager->getInstance((string)$relationalTypeDataResolverClass);
                     $relationalDBKey = $relationalTypeDataResolver->getDatabaseKey();
-                    $isConvertibleRelationalDBKey = ConvertibleTypeHelpers::isConvertibleDBKey($relationalDBKey);
+                    $isConvertibleRelationalDBKey = ConvertibleTypeHelpers::isConvertibleType($relationalDBKey);
                     if ($isConvertibleRelationalDBKey) {
                         // If the relational type data resolver is convertible, we must use the corresponding IDs from $convertibleDBKeyIDs, which contain the type in addition to the ID
                         $relationalIDs = $convertibleDBKeyIDs[$dbKey][(string)$id][$relationalFieldOutputKey];
