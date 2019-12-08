@@ -14,6 +14,14 @@ services:
         class: \PoP\API\PersistedFragments\PersistedFragmentManager
         public: true
 
+    root_object:
+        class: \PoP\API\ObjectModels\Root
+        public: true
+
+    site_object:
+        class: \PoP\API\ObjectModels\Site
+        public: true
+
     PoP\API\Hooks\:
         resource: '../src/Hooks/*'
         public: true

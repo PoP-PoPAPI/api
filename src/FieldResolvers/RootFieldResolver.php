@@ -7,6 +7,7 @@ use PoP\API\Schema\SchemaDefinition;
 use PoP\ComponentModel\FieldResolvers\AbstractDBDataFieldResolver;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\API\TypeResolvers\RootTypeResolver;
+use PoP\API\TypeDataResolvers\SiteTypeDataResolver;
 
 class RootFieldResolver extends AbstractDBDataFieldResolver
 {
@@ -88,7 +89,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
     {
         switch ($fieldName) {
             case 'site':
-                return \PoP\API\Dataloader_Sites::class;
+                return SiteTypeDataResolver::class;
         }
 
         return parent::resolveFieldDefaultTypeDataResolverClass($typeResolver, $fieldName, $fieldArgs);

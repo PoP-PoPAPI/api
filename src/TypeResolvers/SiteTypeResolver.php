@@ -2,7 +2,7 @@
 namespace PoP\API\TypeResolvers;
 
 use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
-use PoP\API\Dataloader_Sites;
+use PoP\API\TypeDataResolvers\SiteTypeDataResolver;
 
 class SiteTypeResolver extends AbstractTypeResolver
 {
@@ -21,7 +21,7 @@ class SiteTypeResolver extends AbstractTypeResolver
 
     public function getIdFieldTypeDataResolverClass(): string
     {
-        return Dataloader_Sites::class;
+        return SiteTypeDataResolver::class;
     }
 }
 

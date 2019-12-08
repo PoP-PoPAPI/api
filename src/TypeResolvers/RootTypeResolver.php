@@ -2,7 +2,7 @@
 namespace PoP\API\TypeResolvers;
 
 use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
-use PoP\API\Dataloader_Root;
+use PoP\API\TypeDataResolvers\RootTypeDataResolver;
 
 class RootTypeResolver extends AbstractTypeResolver
 {
@@ -21,7 +21,7 @@ class RootTypeResolver extends AbstractTypeResolver
 
     public function getIdFieldTypeDataResolverClass(): string
     {
-        return Dataloader_Root::class;
+        return RootTypeDataResolver::class;
     }
 }
 
