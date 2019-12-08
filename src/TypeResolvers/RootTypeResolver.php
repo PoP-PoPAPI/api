@@ -6,11 +6,11 @@ use PoP\API\Dataloader_Root;
 
 class RootTypeResolver extends AbstractTypeResolver
 {
-    public const DATABASE_KEY = 'root';
+    public const TYPE_COLLECTION_NAME = 'root';
 
-    public function getDatabaseKey(): string
+    public function getTypeCollectionName(): string
     {
-        return self::DATABASE_KEY;
+        return self::TYPE_COLLECTION_NAME;
     }
 
     public function getId($resultItem)

@@ -6,11 +6,11 @@ use PoP\API\Dataloader_Sites;
 
 class SiteTypeResolver extends AbstractTypeResolver
 {
-    public const DATABASE_KEY = 'sites';
+    public const TYPE_COLLECTION_NAME = 'sites';
 
-    public function getDatabaseKey(): string
+    public function getTypeCollectionName(): string
     {
-        return self::DATABASE_KEY;
+        return self::TYPE_COLLECTION_NAME;
     }
 
     public function getId($resultItem)
