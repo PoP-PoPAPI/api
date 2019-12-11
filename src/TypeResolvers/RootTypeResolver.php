@@ -6,11 +6,11 @@ use PoP\API\TypeDataResolvers\RootTypeDataResolver;
 
 class RootTypeResolver extends AbstractTypeResolver
 {
-    public const TYPE_COLLECTION_NAME = 'root';
+    public const NAME = 'root';
 
-    public function getTypeCollectionName(): string
+    public function getTypeName(): string
     {
-        return self::TYPE_COLLECTION_NAME;
+        return self::NAME;
     }
 
     public function getId($resultItem)

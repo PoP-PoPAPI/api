@@ -6,11 +6,11 @@ use PoP\API\TypeDataResolvers\SiteTypeDataResolver;
 
 class SiteTypeResolver extends AbstractTypeResolver
 {
-    public const TYPE_COLLECTION_NAME = 'sites';
+    public const NAME = 'sites';
 
-    public function getTypeCollectionName(): string
+    public function getTypeName(): string
     {
-        return self::TYPE_COLLECTION_NAME;
+        return self::NAME;
     }
 
     public function getId($resultItem)
