@@ -65,14 +65,14 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
         $root = $resultItem;
         switch ($fieldName) {
             case '__schema':
-                $options = [
+                $messages = [
                     'processed' => [],
                     'is-root' => true,
                 ];
                 // Normalize properties in $fieldArgs with their defaults
                 // By default make it deep. To avoid it, must pass argument (deep:false)
                 $fieldArgs['deep'] = isset($fieldArgs['deep']) ? strtolower($fieldArgs['deep']) === "true" : true;
-                $schemaDefinition = $typeResolver->getSchemaDefinition($fieldArgs, $options);
+                $schemaDefinition = $typeResolver->getSchemaDefinition($fieldArgs, $messages);
 
                 // Add the Fragment Catalogue
                 $fragmentCatalogueManager = PersistedFragmentManagerFacade::getInstance();
