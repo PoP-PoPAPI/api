@@ -2,7 +2,7 @@
 namespace PoP\API\TypeResolvers;
 
 use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
-use PoP\API\TypeDataResolvers\RootTypeDataResolver;
+use PoP\API\TypeDataLoaders\RootTypeDataLoader;
 
 class RootTypeResolver extends AbstractTypeResolver
 {
@@ -19,9 +19,9 @@ class RootTypeResolver extends AbstractTypeResolver
         return $root->getId();
     }
 
-    public function getTypeDataResolverClass(): string
+    public function getTypeDataLoaderClass(): string
     {
-        return RootTypeDataResolver::class;
+        return RootTypeDataLoader::class;
     }
 }
 

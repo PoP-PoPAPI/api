@@ -1,10 +1,10 @@
 <?php
-namespace PoP\API\TypeDataResolvers;
+namespace PoP\API\TypeDataLoaders;
 
 use PoP\API\ObjectFacades\RootObjectFacade;
-use PoP\ComponentModel\TypeDataResolvers\AbstractTypeDataResolver;
+use PoP\ComponentModel\TypeDataLoaders\AbstractTypeDataLoader;
 
-class RootTypeDataResolver extends AbstractTypeDataResolver
+class RootTypeDataLoader extends AbstractTypeDataLoader
 {
     public function resolveObjectsFromIDs(array $ids): array
     {

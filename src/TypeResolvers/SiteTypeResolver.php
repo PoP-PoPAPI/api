@@ -2,7 +2,7 @@
 namespace PoP\API\TypeResolvers;
 
 use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
-use PoP\API\TypeDataResolvers\SiteTypeDataResolver;
+use PoP\API\TypeDataLoaders\SiteTypeDataLoader;
 
 class SiteTypeResolver extends AbstractTypeResolver
 {
@@ -19,9 +19,9 @@ class SiteTypeResolver extends AbstractTypeResolver
         return $site->getId();
     }
 
-    public function getTypeDataResolverClass(): string
+    public function getTypeDataLoaderClass(): string
     {
-        return SiteTypeDataResolver::class;
+        return SiteTypeDataLoader::class;
     }
 }
 
