@@ -54,6 +54,11 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         'type' => SchemaDefinition::TYPE_BOOL,
                         'description' => $translationAPI->__('Make a deep introspection of the fields, for all nested objects. Default is \'true\'', ''),
                     ],
+                    [
+                        'name' => 'compressed',
+                        'type' => SchemaDefinition::TYPE_BOOL,
+                        'description' => $translationAPI->__('Output each resolver\'s schema data only once to compress the output. Default is \'false\'', ''),
+                    ],
                 ];
         }
 
@@ -65,14 +70,17 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
         $root = $resultItem;
         switch ($fieldName) {
             case '__schema':
-                $messages = [
+                $stackMessages = [
                     'processed' => [],
                     'is-root' => true,
+                ];
+                $generalMessages = [
+                    'processed' => [],
                 ];
                 // Normalize properties in $fieldArgs with their defaults
                 // By default make it deep. To avoid it, must pass argument (deep:false)
                 $fieldArgs['deep'] = isset($fieldArgs['deep']) ? strtolower($fieldArgs['deep']) === "true" : true;
-                $schemaDefinition = $typeResolver->getSchemaDefinition($fieldArgs, $messages);
+                $schemaDefinition = $typeResolver->getSchemaDefinition($fieldArgs, $stackMessages, $generalMessages);
 
                 // Add the Fragment Catalogue
                 $fragmentCatalogueManager = PersistedFragmentManagerFacade::getInstance();
