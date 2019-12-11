@@ -126,8 +126,8 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
         $copyToFields = $this->directiveArgsForSchema['copyToFields'] ?? $copyFromFields;
         $keepRelationalIDs = $this->directiveArgsForSchema['keepRelationalIDs'] ?? false;
 
-        // From the typeDataResolver, obtain under what dbKey the data for the current object is stored
-        $dbKey = $typeDataResolver->getDatabaseKey();
+        // From the typeResolver, obtain under what type the data for the current object is stored
+        $dbKey = $typeResolver->getTypeName();
 
         // Copy the data from each of the relational object fields to the current object
         for ($i=0; $i<count($copyFromFields); $i++) {
@@ -183,10 +183,9 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     $dbItems[(string)$id][$copyToField] = [];
 
                     // Obtain the DBKey under which the relationalField is stored in the database
-                    // For that, from the typeResolver we obtain the typeDataResolver for the `relationalField`
-                    $relationalTypeDataResolverClass = $typeResolver->resolveFieldDefaultTypeDataResolverClass($relationalField);
-                    $relationalTypeDataResolver = $instanceManager->getInstance((string)$relationalTypeDataResolverClass);
-                    $relationalDBKey = $relationalTypeDataResolver->getDatabaseKey();
+                    $relationalTypeResolverClass = $typeResolver->resolveFieldTypeResolverClass($relationalField);
+                    $relationalTypeResolver = $instanceManager->getInstance((string)$relationalTypeResolverClass);
+                    $relationalDBKey = $relationalTypeResolver->getTypeName();
                     $isConvertibleRelationalDBKey = ConvertibleTypeHelpers::isConvertibleType($relationalDBKey);
                     if ($isConvertibleRelationalDBKey) {
                         // If the relational type data resolver is convertible, we must use the corresponding IDs from $convertibleDBKeyIDs, which contain the type in addition to the ID

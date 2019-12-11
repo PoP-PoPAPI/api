@@ -71,7 +71,7 @@ class TransformArrayItemsDirectiveResolver extends ApplyFunctionDirectiveResolve
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
-        $dbKey = $typeDataResolver->getDatabaseKey();
+        $dbKey = $typeResolver->getTypeName();
 
         /**
          * Collect all ID => dataFields for the arrayItems

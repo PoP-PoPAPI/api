@@ -19,7 +19,7 @@ class SiteTypeResolver extends AbstractTypeResolver
         return $site->getId();
     }
 
-    public function getIdFieldTypeDataResolverClass(): string
+    public function getTypeDataResolverClass(): string
     {
         return SiteTypeDataResolver::class;
     }
