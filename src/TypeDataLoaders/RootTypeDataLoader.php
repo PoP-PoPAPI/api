@@ -6,7 +6,7 @@ use PoP\ComponentModel\TypeDataLoaders\AbstractTypeDataLoader;
 
 class RootTypeDataLoader extends AbstractTypeDataLoader
 {
-    public function resolveObjectsFromIDs(array $ids): array
+    public function getObjects(array $ids): array
     {
         return [RootObjectFacade::getInstance()];
     }
