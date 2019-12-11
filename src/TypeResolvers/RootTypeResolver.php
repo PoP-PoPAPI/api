@@ -6,7 +6,7 @@ use PoP\API\TypeDataResolvers\RootTypeDataResolver;
 
 class RootTypeResolver extends AbstractTypeResolver
 {
-    public const NAME = 'root';
+    public const NAME = 'Root';
 
     public function getTypeName(): string
     {

@@ -6,7 +6,7 @@ use PoP\API\TypeDataResolvers\SiteTypeDataResolver;
 
 class SiteTypeResolver extends AbstractTypeResolver
 {
-    public const NAME = 'sites';
+    public const NAME = 'Site';
 
     public function getTypeName(): string
     {
