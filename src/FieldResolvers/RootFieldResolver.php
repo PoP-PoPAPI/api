@@ -43,6 +43,13 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
         return $descriptions[$fieldName] ?? parent::getSchemaFieldDescription($typeResolver, $fieldName);
     }
 
+    protected function getSchemaFieldShapeValues() {
+        return [
+            SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
+            SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_NESTED,
+        ];
+    }
+
     public function getSchemaFieldArgs(TypeResolverInterface $typeResolver, string $fieldName): array
     {
         $translationAPI = TranslationAPIFacade::getInstance();
@@ -50,14 +57,24 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
             case '__schema':
                 return [
                     [
-                        'name' => 'deep',
-                        'type' => SchemaDefinition::TYPE_BOOL,
-                        'description' => $translationAPI->__('Make a deep introspection of the fields, for all nested objects. Default is \'true\'', ''),
+                        SchemaDefinition::ARGNAME_NAME => 'deep',
+                        SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
+                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Make a deep introspection of the fields, for all nested objects. Default is \'true\'', ''),
                     ],
                     [
-                        'name' => 'compressed',
-                        'type' => SchemaDefinition::TYPE_BOOL,
-                        'description' => $translationAPI->__('Output each resolver\'s schema data only once to compress the output. Default is \'false\'', ''),
+                        SchemaDefinition::ARGNAME_NAME => 'shape',
+                        SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_ENUM,
+                        SchemaDefinition::ARGNAME_DESCRIPTION => sprintf(
+                            $translationAPI->__('How to shape the schema output: \'%s\', in which case all types are listed together, or \'%s\', in which the types are listed following where they appear in the graph. Default is \'flat\'', ''),
+                            SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
+                            SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_NESTED
+                        ),
+                        SchemaDefinition::ARGNAME_ENUMVALUES => $this->getSchemaFieldShapeValues(),
+                    ],
+                    [
+                        SchemaDefinition::ARGNAME_NAME => 'compressed',
+                        SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
+                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output each resolver\'s schema data only once to compress the output. Default is \'false\'', ''),
                     ],
                 ];
         }
@@ -80,7 +97,11 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 $rootType = $typeResolver->getTypeName();
                 // Normalize properties in $fieldArgs with their defaults
                 // By default make it deep. To avoid it, must pass argument (deep:false)
-                $fieldArgs['deep'] = isset($fieldArgs['deep']) ? strtolower($fieldArgs['deep']) === "true" : true;
+                if (!isset($fieldArgs['deep'])) {
+                    $fieldArgs['deep'] = true;
+                }
+                // By default, use the "flat" shape
+                $fieldArgs['shape'] = isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT;
                 $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = [
                     $rootType => $typeResolver->getSchemaDefinition($fieldArgs, $stackMessages, $generalMessages),
                 ];
