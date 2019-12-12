@@ -97,13 +97,14 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 $rootType = $typeResolver->getTypeName();
                 // Normalize properties in $fieldArgs with their defaults
                 // By default make it deep. To avoid it, must pass argument (deep:false)
-                if (!isset($fieldArgs['deep'])) {
-                    $fieldArgs['deep'] = true;
-                }
                 // By default, use the "flat" shape
-                $fieldArgs['shape'] = isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT;
+                $options = [
+                    'deep' => isset($fieldArgs['deep']) ? $fieldArgs['deep'] : true,
+                    'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : false,
+                    'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
+                ];
                 $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = [
-                    $rootType => $typeResolver->getSchemaDefinition($fieldArgs, $stackMessages, $generalMessages),
+                    $rootType => $typeResolver->getSchemaDefinition($fieldArgs, $stackMessages, $generalMessages, $options),
                 ];
 
                 // Move from under Root type to the top: globalDirectives and operatorsAndHelpers
