@@ -104,7 +104,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                 ];
                 $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = [
-                    $rootType => $typeResolver->getSchemaDefinition($fieldArgs, $stackMessages, $generalMessages, $options),
+                    $rootType => $typeResolver->getSchemaDefinition($stackMessages, $generalMessages, $options),
                 ];
 
                 // Move from under Root type to the top: globalDirectives and operatorsAndHelpers
