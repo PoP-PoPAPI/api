@@ -1,8 +1,9 @@
 <?php
 namespace PoP\API\TypeResolvers;
 
-use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
 use PoP\API\TypeDataLoaders\RootTypeDataLoader;
+use PoP\Translation\Facades\TranslationAPIFacade;
+use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
 
 class RootTypeResolver extends AbstractTypeResolver
 {
@@ -11,6 +12,12 @@ class RootTypeResolver extends AbstractTypeResolver
     public function getTypeName(): string
     {
         return self::NAME;
+    }
+
+    public function getSchemaTypeDescription(): ?string
+    {
+        $translationAPI = TranslationAPIFacade::getInstance();
+        return $translationAPI->__('Root type, starting from which the query is executed', 'api');
     }
 
     public function getId($resultItem)
