@@ -59,7 +59,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     [
                         SchemaDefinition::ARGNAME_NAME => 'deep',
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Make a deep introspection of the fields, for all nested objects. Default is \'true\'', ''),
+                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Make a deep introspection of the fields, for all nested objects. Default is `true`', ''),
                     ],
                     [
                         SchemaDefinition::ARGNAME_NAME => 'shape',
@@ -74,7 +74,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     [
                         SchemaDefinition::ARGNAME_NAME => 'compressed',
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output each resolver\'s schema data only once to compress the output. Default is \'false\'', ''),
+                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output each resolver\'s schema data only once to compress the output. Valid only when field \'deep\' is `true`. Default is `false`', ''),
                     ],
                 ];
         }
