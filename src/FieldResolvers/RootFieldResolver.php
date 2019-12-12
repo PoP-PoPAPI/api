@@ -77,10 +77,19 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 $generalMessages = [
                     'processed' => [],
                 ];
+                $rootType = $typeResolver->getTypeName();
                 // Normalize properties in $fieldArgs with their defaults
                 // By default make it deep. To avoid it, must pass argument (deep:false)
                 $fieldArgs['deep'] = isset($fieldArgs['deep']) ? strtolower($fieldArgs['deep']) === "true" : true;
-                $schemaDefinition = $typeResolver->getSchemaDefinition($fieldArgs, $stackMessages, $generalMessages);
+                $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = [
+                    $rootType => $typeResolver->getSchemaDefinition($fieldArgs, $stackMessages, $generalMessages),
+                ];
+
+                // Move from under Root type to the top: globalDirectives and operatorsAndHelpers
+                $schemaDefinition[SchemaDefinition::ARGNAME_OPERATORS_AND_HELPERS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootType][SchemaDefinition::ARGNAME_OPERATORS_AND_HELPERS];
+                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootType][SchemaDefinition::ARGNAME_OPERATORS_AND_HELPERS]);
+                $schemaDefinition[SchemaDefinition::ARGNAME_DIRECTIVES] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootType][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES];
+                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootType][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
 
                 // Add the Fragment Catalogue
                 $fragmentCatalogueManager = PersistedFragmentManagerFacade::getInstance();
