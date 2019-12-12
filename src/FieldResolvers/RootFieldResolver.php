@@ -94,7 +94,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 $generalMessages = [
                     'processed' => [],
                 ];
-                $rootType = $typeResolver->getTypeName();
+                $rootTypeName = $typeResolver->getTypeName();
                 // Normalize properties in $fieldArgs with their defaults
                 // By default make it deep. To avoid it, must pass argument (deep:false)
                 // By default, use the "flat" shape
@@ -103,15 +103,13 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : false,
                     'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                 ];
-                $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = [
-                    $rootType => $typeResolver->getSchemaDefinition($stackMessages, $generalMessages, $options),
-                ];
+                $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = $typeResolver->getSchemaDefinition($stackMessages, $generalMessages, $options);
 
                 // Move from under Root type to the top: globalDirectives and operatorsAndHelpers
-                $schemaDefinition[SchemaDefinition::ARGNAME_OPERATORS_AND_HELPERS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootType][SchemaDefinition::ARGNAME_OPERATORS_AND_HELPERS];
-                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootType][SchemaDefinition::ARGNAME_OPERATORS_AND_HELPERS]);
-                $schemaDefinition[SchemaDefinition::ARGNAME_DIRECTIVES] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootType][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES];
-                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootType][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
+                $schemaDefinition[SchemaDefinition::ARGNAME_OPERATORS_AND_HELPERS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_OPERATORS_AND_HELPERS];
+                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_OPERATORS_AND_HELPERS]);
+                $schemaDefinition[SchemaDefinition::ARGNAME_DIRECTIVES] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES];
+                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
 
                 // Add the Fragment Catalogue
                 $fragmentCatalogueManager = PersistedFragmentManagerFacade::getInstance();
