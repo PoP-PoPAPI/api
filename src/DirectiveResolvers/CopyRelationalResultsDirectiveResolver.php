@@ -47,12 +47,14 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
             [
                 SchemaDefinition::ARGNAME_NAME => 'copyToFields',
                 SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::makeArray(SchemaDefinition::TYPE_STRING),
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The fields in the current object to which copy the data. If not provided, the same fields from the \'copyFromFields\' argument are used', 'component-model'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The fields in the current object to which copy the data', 'component-model'),
+                SchemaDefinition::ARGNAME_DEFAULT_VALUE => $translationAPI->__('Same fields provided through \'copyFromFields\' argument', 'component-model'),
             ],
             [
                 SchemaDefinition::ARGNAME_NAME => 'keepRelationalIDs',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicate if the properties are placed under the relational ID as keys (`true`) or as a one-dimensional array (`false`). If not provided, it is `false`', 'component-model'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicate if the properties are placed under the relational ID as keys (`true`) or as a one-dimensional array (`false`)', 'component-model'),
+                SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'false',
             ],
         ];
     }
