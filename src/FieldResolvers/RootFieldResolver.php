@@ -59,27 +59,32 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     [
                         SchemaDefinition::ARGNAME_NAME => 'deep',
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Make a deep introspection of the fields, for all nested objects. Default is `true`', ''),
+                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Make a deep introspection of the fields, for all nested objects', ''),
+                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'true',
                     ],
                     [
                         SchemaDefinition::ARGNAME_NAME => 'shape',
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_ENUM,
                         SchemaDefinition::ARGNAME_DESCRIPTION => sprintf(
-                            $translationAPI->__('How to shape the schema output: \'%s\', in which case all types are listed together, or \'%s\', in which the types are listed following where they appear in the graph. Default is \'flat\'', ''),
+                            $translationAPI->__('How to shape the schema output: \'%s\', in which case all types are listed together, or \'%s\', in which the types are listed following where they appear in the graph', ''),
                             SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                             SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_NESTED
                         ),
                         SchemaDefinition::ARGNAME_ENUMVALUES => $this->getSchemaFieldShapeValues(),
+                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
+
                     ],
                     [
                         SchemaDefinition::ARGNAME_NAME => 'compressed',
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output each resolver\'s schema data only once to compress the output. Valid only when field \'deep\' is `true`. Default is `false`', ''),
+                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output each resolver\'s schema data only once to compress the output. Valid only when field \'deep\' is `true`', ''),
+                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'false',
                     ],
                     [
                         SchemaDefinition::ARGNAME_NAME => 'typeAsSDL',
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output the type using the GraphQL SDL notation (eg: \'[Post]\' instead of \'array:id\'). Default is `true`', ''),
+                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output the type using the GraphQL SDL notation (eg: \'[Post]\' instead of \'array:id\')', ''),
+                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'true',
                     ],
                 ];
         }
