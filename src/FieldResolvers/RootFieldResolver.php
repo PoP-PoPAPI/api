@@ -76,6 +76,11 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
                         SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output each resolver\'s schema data only once to compress the output. Valid only when field \'deep\' is `true`. Default is `false`', ''),
                     ],
+                    [
+                        SchemaDefinition::ARGNAME_NAME => 'typeAsSDL',
+                        SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
+                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output the type using the GraphQL SDL notation (eg: \'[Post]\' instead of \'array:id\'). Default is `true`', ''),
+                    ],
                 ];
         }
 
@@ -102,6 +107,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     'deep' => isset($fieldArgs['deep']) ? $fieldArgs['deep'] : true,
                     'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : false,
                     'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
+                    'typeAsSDL' => isset($fieldArgs['typeAsSDL']) ? $fieldArgs['typeAsSDL'] : true,
                 ];
                 $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = $typeResolver->getSchemaDefinition($stackMessages, $generalMessages, $options);
 
