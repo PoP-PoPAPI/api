@@ -43,13 +43,13 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
         return [
             [
                 SchemaDefinition::ARGNAME_NAME => 'properties',
-                SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::combineTypes(SchemaDefinition::TYPE_ARRAY, SchemaDefinition::TYPE_STRING),
+                SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::makeArray(SchemaDefinition::TYPE_STRING),
                 SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The property in the current object from which to copy the data into the expressions', 'component-model'),
                 SchemaDefinition::ARGNAME_MANDATORY => true,
             ],
             [
                 SchemaDefinition::ARGNAME_NAME => 'expressions',
-                SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::combineTypes(SchemaDefinition::TYPE_ARRAY, SchemaDefinition::TYPE_STRING),
+                SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::makeArray(SchemaDefinition::TYPE_STRING),
                 SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Name of the expressions. If not provided, the same name as the property is used', 'component-model'),
             ],
         ];

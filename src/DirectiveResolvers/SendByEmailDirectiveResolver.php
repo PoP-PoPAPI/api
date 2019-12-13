@@ -20,7 +20,7 @@ class SendByEmailDirectiveResolver extends AbstractGlobalDirectiveResolver
     //     return [
     //         [
     //             SchemaDefinition::ARGNAME_NAME => 'to',
-    //             SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::combineTypes(SchemaDefinition::TYPE_ARRAY, SchemaDefinition::TYPE_EMAIL),
+    //             SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::makeArray(SchemaDefinition::TYPE_EMAIL),
     //             SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Emails to send the email to', 'component-model'),
     //             SchemaDefinition::ARGNAME_MANDATORY => true,
     //         ],
