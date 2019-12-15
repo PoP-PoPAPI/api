@@ -115,13 +115,14 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 ];
                 $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = $typeResolver->getSchemaDefinition($stackMessages, $generalMessages, $options);
 
-                // Move from under Root type to the top: globalDirectives and operatorsAndHelpers
+                // Move from under Root type to the top: globalDirectives and globalFields (renamed as "functions")
                 $schemaDefinition[SchemaDefinition::ARGNAME_FUNCTIONS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS];
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
                 $schemaDefinition[SchemaDefinition::ARGNAME_CONNECTIONS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS];
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
                 $schemaDefinition[SchemaDefinition::ARGNAME_DIRECTIVES] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES];
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
+
 
                 // Add the Fragment Catalogue
                 $fragmentCatalogueManager = PersistedFragmentManagerFacade::getInstance();
