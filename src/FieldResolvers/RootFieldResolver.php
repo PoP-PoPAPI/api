@@ -99,7 +99,6 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
             case '__schema':
                 $stackMessages = [
                     'processed' => [],
-                    'is-root' => true,
                 ];
                 $generalMessages = [
                     'processed' => [],
