@@ -37,24 +37,14 @@ class RootTypeResolver extends AbstractTypeResolver
     {
         parent::addSchemaDefinition($stackMessages, $generalMessages, $options);
 
-        $instanceManager = InstanceManagerFacade::getInstance();
+        // Only in the root we output the operators and helpers
         $typeName = $this->getTypeName();
 
-        // Only in the root we output the operators and helpers
-        $directiveNameClasses = $this->getDirectiveNameClasses();
-        foreach ($directiveNameClasses as $directiveName => $directiveClasses) {
-            foreach ($directiveClasses as $directiveClass) {
-                $directiveResolverInstance = $instanceManager->getInstance($directiveClass);
-                // A directive can decide to not be added to the schema, eg: when it is repeated/implemented several times
-                if ($directiveResolverInstance->skipAddingToSchemaDefinition()) {
-                    continue;
-                }
-                $isGlobal = $directiveResolverInstance->isGlobal($this);
-                if ($isGlobal) {
-                    $directiveSchemaDefinition = $directiveResolverInstance->getSchemaDefinitionForDirective($this);
-                    $this->schemaDefinition[$typeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES][] = $directiveSchemaDefinition;
-                }
-            }
+        // Add the directives (global)
+        $directiveResolverInstances = $this->getDirectiveResolvers(true);
+        foreach ($directiveResolverInstances as $directiveResolverInstance) {
+            $directiveSchemaDefinition = $directiveResolverInstance->getSchemaDefinitionForDirective($this);
+            $this->schemaDefinition[$typeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES][] = $directiveSchemaDefinition;
         }
 
         $schemaFieldResolvers = $this->getAllFieldResolvers();
