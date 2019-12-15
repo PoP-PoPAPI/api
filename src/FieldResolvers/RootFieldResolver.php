@@ -118,8 +118,6 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 // Move from under Root type to the top: globalDirectives and operatorsAndHelpers
                 $schemaDefinition[SchemaDefinition::ARGNAME_FUNCTIONS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_FUNCTIONS];
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_FUNCTIONS]);
-                $schemaDefinition[SchemaDefinition::ARGNAME_HELPERS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_HELPERS];
-                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_HELPERS]);
                 $schemaDefinition[SchemaDefinition::ARGNAME_CONNECTIONS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS];
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
                 $schemaDefinition[SchemaDefinition::ARGNAME_DIRECTIVES] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES];
