@@ -41,20 +41,16 @@ class RootTypeResolver extends AbstractTypeResolver
         $typeName = $this->getTypeName();
 
         // Add the directives (global)
-        $directiveResolverInstances = $this->getDirectiveResolvers(true);
+        $directiveResolverInstances = $this->getSchemaDirectiveResolvers(true);
         foreach ($directiveResolverInstances as $directiveResolverInstance) {
             $directiveSchemaDefinition = $directiveResolverInstance->getSchemaDefinitionForDirective($this);
             $this->schemaDefinition[$typeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES][] = $directiveSchemaDefinition;
         }
 
-        $schemaFieldResolvers = $this->getAllFieldResolvers();
-        foreach ($schemaFieldResolvers as $fieldName => $fieldResolvers) {
-            // Get the documentation from the first element
-            $fieldResolver = $fieldResolvers[0];
-            $isOperatorOrHelper = $fieldResolver->isOperatorOrHelper($this, $fieldName);
-            if ($isOperatorOrHelper) {
-                $this->addFieldSchemaDefinition($fieldResolver, $fieldName, $stackMessages, $generalMessages, $options);
-            }
+        // Add the fields (global)
+        $schemaFieldResolvers = $this->getSchemaFieldResolvers(true);
+        foreach ($schemaFieldResolvers as $fieldName => $fieldResolver) {
+            $this->addFieldSchemaDefinition($fieldResolver, $fieldName, $stackMessages, $generalMessages, $options);
         }
     }
 }
