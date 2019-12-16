@@ -117,7 +117,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
      * @param array $schemaDeprecations
      * @return void
      */
-    public function resolveDirective(TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$convertibleDBKeyIDs, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$unionDBKeyIDs, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         $instanceManager = InstanceManagerFacade::getInstance();
@@ -189,8 +189,8 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     $relationalDBKey = $relationalTypeResolver->getTypeOutputName();
                     $isUnionRelationalDBKey = UnionTypeHelpers::isUnionType($relationalDBKey);
                     if ($isUnionRelationalDBKey) {
-                        // If the relational type data resolver is convertible, we must use the corresponding IDs from $convertibleDBKeyIDs, which contain the type in addition to the ID
-                        $relationalIDs = $convertibleDBKeyIDs[$dbKey][(string)$id][$relationalFieldOutputKey];
+                        // If the relational type data resolver is union, we must use the corresponding IDs from $unionDBKeyIDs, which contain the type in addition to the ID
+                        $relationalIDs = $unionDBKeyIDs[$dbKey][(string)$id][$relationalFieldOutputKey];
                     } else {
                         // Otherwise, directly use the IDs from the object
                         $relationalIDs = $previousDBItems[$dbKey][(string)$id][$relationalFieldOutputKey];
