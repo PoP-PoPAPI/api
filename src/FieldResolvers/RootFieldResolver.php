@@ -120,6 +120,9 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 }
                 $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = $typeResolver->getSchemaDefinition($stackMessages, $generalMessages, $options);
 
+                // Add the queryType
+                $schemaDefinition[SchemaDefinition::ARGNAME_QUERY_TYPE] = $rootTypeName;
+
                 // Move from under Root type to the top: globalDirectives and globalFields (renamed as "functions")
                 $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_FIELDS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS];
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
