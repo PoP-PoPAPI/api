@@ -41,7 +41,7 @@ class SendByEmailDirectiveResolver extends AbstractGlobalDirectiveResolver
     {
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
         $translationAPI = TranslationAPIFacade::getInstance();
-        $dbKey = $typeResolver->getTypeName();
+        $dbKey = $typeResolver->getTypeOutputName();
         foreach ($idsDataFields as $id => $dataFields) {
             foreach ($dataFields['direct'] as $field) {
                 $fieldOutputKey = $fieldQueryInterpreter->getFieldOutputKey($field);

@@ -120,7 +120,7 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
         // Send a message to the resolveAndMerge directive, indicating which properties to retrieve
         $properties = $this->directiveArgsForSchema['properties'];
         $expressionNames = $this->directiveArgsForSchema['expressions'] ?? $properties;
-        $dbKey = $typeResolver->getTypeName();
+        $dbKey = $typeResolver->getTypeOutputName();
         foreach (array_keys($idsDataFields) as $id) {
             for ($i=0; $i<count($properties); $i++) {
                 // Validate that the property exists in the source object, either on this iteration or any previous one

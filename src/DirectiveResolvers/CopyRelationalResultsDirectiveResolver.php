@@ -128,7 +128,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
         $keepRelationalIDs = $this->directiveArgsForSchema['keepRelationalIDs'] ?? false;
 
         // From the typeResolver, obtain under what type the data for the current object is stored
-        $dbKey = $typeResolver->getTypeName();
+        $dbKey = $typeResolver->getTypeOutputName();
 
         // Copy the data from each of the relational object fields to the current object
         for ($i=0; $i<count($copyFromFields); $i++) {
@@ -186,7 +186,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     // Obtain the DBKey under which the relationalField is stored in the database
                     $relationalTypeResolverClass = $typeResolver->resolveFieldTypeResolverClass($relationalField);
                     $relationalTypeResolver = $instanceManager->getInstance((string)$relationalTypeResolverClass);
-                    $relationalDBKey = $relationalTypeResolver->getTypeName();
+                    $relationalDBKey = $relationalTypeResolver->getTypeOutputName();
                     $isConvertibleRelationalDBKey = ConvertibleTypeHelpers::isConvertibleType($relationalDBKey);
                     if ($isConvertibleRelationalDBKey) {
                         // If the relational type data resolver is convertible, we must use the corresponding IDs from $convertibleDBKeyIDs, which contain the type in addition to the ID
