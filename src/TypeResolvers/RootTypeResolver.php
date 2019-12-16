@@ -5,7 +5,6 @@ use PoP\API\TypeDataLoaders\RootTypeDataLoader;
 use PoP\ComponentModel\Schema\SchemaDefinition;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
-use PoP\ComponentModel\Facades\Instances\InstanceManagerFacade;
 
 class RootTypeResolver extends AbstractTypeResolver
 {
