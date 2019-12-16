@@ -113,16 +113,33 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                     'typeAsSDL' => isset($fieldArgs['typeAsSDL']) ? $fieldArgs['typeAsSDL'] : true,
                 ];
+                // If it is flat shape, all types will be added under $generalMessages
+                $isFlatShape = $options['shape'] == SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT;
+                if ($isFlatShape) {
+                    $generalMessages[SchemaDefinition::ARGNAME_TYPES] = [];
+                }
                 $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = $typeResolver->getSchemaDefinition($stackMessages, $generalMessages, $options);
 
                 // Move from under Root type to the top: globalDirectives and globalFields (renamed as "functions")
-                $schemaDefinition[SchemaDefinition::ARGNAME_FUNCTIONS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS];
+                $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_FIELDS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS];
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
-                $schemaDefinition[SchemaDefinition::ARGNAME_CONNECTIONS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS];
+                $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS];
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
-                $schemaDefinition[SchemaDefinition::ARGNAME_DIRECTIVES] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES];
+                $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES];
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
 
+                // Retrieve the list of all types from under $generalMessages
+                if ($isFlatShape) {
+                    $typeFlatList = $generalMessages[SchemaDefinition::ARGNAME_TYPES];
+
+                    // Remove the globals from the Root
+                    unset($typeFlatList[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
+                    unset($typeFlatList[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
+                    unset($typeFlatList[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
+
+                    // Because they were added in reverse way, reverse it once again, so that the first types (eg: Root) appear first
+                    $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = array_reverse($typeFlatList);
+                }
 
                 // Add the Fragment Catalogue
                 $fragmentCatalogueManager = PersistedFragmentManagerFacade::getInstance();
