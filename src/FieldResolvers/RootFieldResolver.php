@@ -109,7 +109,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 // By default, use the "flat" shape
                 $options = [
                     'deep' => isset($fieldArgs['deep']) ? $fieldArgs['deep'] : true,
-                    'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : false,
+                    'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : true,
                     'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                     'typeAsSDL' => isset($fieldArgs['typeAsSDL']) ? $fieldArgs['typeAsSDL'] : true,
                 ];
