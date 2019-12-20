@@ -149,7 +149,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 $schemaDefinition[SchemaDefinition::ARGNAME_PERSISTED_FRAGMENTS] = $fragmentCatalogueManager->getPersistedFragmentsForSchema();
                 return $schemaDefinition;
             case 'site':
-                return $root->getSite()->getId();
+                return $root->getSite()->getID();
         }
 
         return parent::resolveValue($typeResolver, $resultItem, $fieldName, $fieldArgs, $variables, $expressions, $options);

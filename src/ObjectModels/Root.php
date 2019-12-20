@@ -17,10 +17,10 @@ class Root
         // }
         $this->site = SiteObjectFacade::getInstance();
     }
-    // public function getId() {
+    // public function getID() {
     //     return $this->id;
     // }
-    public function getId() {
+    public function getID() {
         return 'root';
     }
     public function getSite() {

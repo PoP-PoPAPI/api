@@ -21,10 +21,10 @@ class RootTypeResolver extends AbstractTypeResolver
         return $translationAPI->__('Root type, starting from which the query is executed', 'api');
     }
 
-    public function getId($resultItem)
+    public function getID($resultItem)
     {
         $root = $resultItem;
-        return $root->getId();
+        return $root->getID();
     }
 
     public function getTypeDataLoaderClass(): string

@@ -20,7 +20,7 @@ class Site
         // $this->name = $name;
         // $this->description = $description;
     }
-    public function getId() {
+    public function getID() {
         return $this->id;
     }
     public function getDomain() {
