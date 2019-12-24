@@ -90,7 +90,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         SchemaDefinition::ARGNAME_NAME => 'readable',
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
                         SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Make the output readable for humans (it doesn\'t follow spec, then it is not understood by GraphiQL)', ''),
-                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'true',
+                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'false',
                     ],
                 ];
         }
@@ -118,7 +118,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : true,
                     'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                     'typeAsSDL' => isset($fieldArgs['typeAsSDL']) ? $fieldArgs['typeAsSDL'] : true,
-                    'readable' => isset($fieldArgs['readable']) ? $fieldArgs['readable'] : true,
+                    'readable' => isset($fieldArgs['readable']) ? $fieldArgs['readable'] : false,
                 ];
                 // If it is flat shape, all types will be added under $generalMessages
                 $isFlatShape = $options['shape'] == SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT;
@@ -171,6 +171,11 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     $options['readable'] ?
                         $persistedFragments :
                         array_values($persistedFragments);
+
+                // Remove the arg name for as the key to all args in the JSON
+                if (!$options['readable']) {
+                    // TODO: Complete!
+                }
 
                 return $schemaDefinition;
             case 'site':
