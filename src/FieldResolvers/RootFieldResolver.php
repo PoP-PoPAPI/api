@@ -86,6 +86,12 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output the type using the GraphQL SDL notation (eg: \'[Post]\' instead of \'array:id\')', ''),
                         SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'true',
                     ],
+                    [
+                        SchemaDefinition::ARGNAME_NAME => 'readable',
+                        SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
+                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Make the output readable for humans (it doesn\'t follow spec, then it is not understood by GraphiQL)', ''),
+                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'true',
+                    ],
                 ];
         }
 
@@ -112,23 +118,37 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : true,
                     'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                     'typeAsSDL' => isset($fieldArgs['typeAsSDL']) ? $fieldArgs['typeAsSDL'] : true,
+                    'readable' => isset($fieldArgs['readable']) ? $fieldArgs['readable'] : true,
                 ];
                 // If it is flat shape, all types will be added under $generalMessages
                 $isFlatShape = $options['shape'] == SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT;
                 if ($isFlatShape) {
                     $generalMessages[SchemaDefinition::ARGNAME_TYPES] = [];
                 }
-                $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = $typeResolver->getSchemaDefinition($stackMessages, $generalMessages, $options);
+                $typeSchemaDefinition = $typeResolver->getSchemaDefinition($stackMessages, $generalMessages, $options);
+                $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] =
+                    $options['readable'] ?
+                        $typeSchemaDefinition :
+                        array_values($typeSchemaDefinition);
 
                 // Add the queryType
                 $schemaDefinition[SchemaDefinition::ARGNAME_QUERY_TYPE] = $rootTypeName;
 
                 // Move from under Root type to the top: globalDirectives and globalFields (renamed as "functions")
-                $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_FIELDS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS];
+                $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_FIELDS] =
+                    $options['readable'] ?
+                        $typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS] :
+                        array_values($typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
+                $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS] =
+                    $options['readable'] ?
+                        $typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS] :
+                        array_values($typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
+                $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES] =
+                    $options['readable'] ?
+                        $typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES] :
+                        array_values($typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
-                $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS];
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
-                $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES] = $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES];
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
 
                 // Retrieve the list of all types from under $generalMessages
@@ -146,7 +166,12 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
 
                 // Add the Fragment Catalogue
                 $fragmentCatalogueManager = PersistedFragmentManagerFacade::getInstance();
-                $schemaDefinition[SchemaDefinition::ARGNAME_PERSISTED_FRAGMENTS] = $fragmentCatalogueManager->getPersistedFragmentsForSchema();
+                $persistedFragments = $fragmentCatalogueManager->getPersistedFragmentsForSchema();
+                $schemaDefinition[SchemaDefinition::ARGNAME_PERSISTED_FRAGMENTS] =
+                    $options['readable'] ?
+                        $persistedFragments :
+                        array_values($persistedFragments);
+
                 return $schemaDefinition;
             case 'site':
                 return $root->getSite()->getID();

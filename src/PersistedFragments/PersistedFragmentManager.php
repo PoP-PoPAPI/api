@@ -15,7 +15,7 @@ class PersistedFragmentManager implements PersistedFragmentManagerInterface
 
     public function getPersistedFragmentsForSchema(): array
     {
-        return array_values($this->persistedFragmentsForSchema);
+        return $this->persistedFragmentsForSchema;
     }
 
     public function add(string $fragmentName, string $fragmentResolution, ?string $description = null): void
