@@ -9,7 +9,7 @@ abstract class AbstractRelationalFieldDataloadModuleProcessor extends AbstractDa
     {
         $ret = parent::getInnerSubmodules($module);
         // The fields to retrieve are passed through module atts, so simply transfer all module atts down the line
-        $ret[] = [RelationalFieldQueryDataModuleProcessor::class, RelationalFieldQueryDataModuleProcessor::MODULE_LAYOUT_DATAQUERY_RELATIONALFIELDS, $module[2]];
+        $ret[] = [RelationalFieldQueryDataModuleProcessor::class, RelationalFieldQueryDataModuleProcessor::MODULE_LAYOUT_RELATIONALFIELDS, $module[2]];
         return $ret;
     }
 

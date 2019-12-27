@@ -3,7 +3,6 @@ namespace PoP\API\Hooks;
 use PoP\API\Schema\QueryInputs;
 use PoP\ComponentModel\Engine_Vars;
 use PoP\Engine\Hooks\AbstractHookSet;
-use PoP\ComponentModel\DataQueryManagerFactory;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\ModelInstance\ModelInstance;
 use PoP\API\Facades\FieldQueryConvertorFacade;
@@ -77,15 +76,6 @@ class VarsHooks extends AbstractHookSet
         $vars = &$vars_in_array[0];
         if ($vars['scheme'] == POP_SCHEME_API) {
             $this->addFieldsToVars($vars);
-        } elseif ($vars['nature'] == RouteNatures::STANDARD) {
-            $dataquery_manager = DataQueryManagerFactory::getInstance();
-            $route = $vars['route'];
-
-            // Special pages: dataqueries' cacheablepages serve layouts, noncacheable pages serve fields.
-            // So the settings for these pages depend on the URL params
-            if (in_array($route, $dataquery_manager->getNonCacheableRoutes())) {
-                $this->addFieldsToVars($vars);
-            }
         }
     }
 
@@ -107,15 +97,6 @@ class VarsHooks extends AbstractHookSet
         $vars = Engine_Vars::getVars();
         if ($vars['scheme'] == POP_SCHEME_API) {
             $this->addFieldsToComponents($components);
-        } elseif ($vars['routing-state']['is-standard']) {
-            $dataquery_manager = DataQueryManagerFactory::getInstance();
-            $route = $vars['route'];
-
-            // Special pages: dataqueries' cacheablepages serve layouts, noncacheable pages serve fields.
-            // So the settings for these pages depend on the URL params
-            if (in_array($route, $dataquery_manager->getNonCacheableRoutes())) {
-                $this->addFieldsToComponents($components);
-            }
         }
 
         return $components;

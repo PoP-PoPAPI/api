@@ -4,12 +4,12 @@ use PoP\ComponentModel\ModuleProcessors\AbstractRelationalFieldQueryDataModulePr
 
 class RelationalFieldQueryDataModuleProcessor extends AbstractRelationalFieldQueryDataModuleProcessor
 {
-    public const MODULE_LAYOUT_DATAQUERY_RELATIONALFIELDS = 'layout-dataquery-relationalfields';
+    public const MODULE_LAYOUT_RELATIONALFIELDS = 'layout-relationalfields';
 
     public function getModulesToProcess(): array
     {
         return array(
-            [self::class, self::MODULE_LAYOUT_DATAQUERY_RELATIONALFIELDS],
+            [self::class, self::MODULE_LAYOUT_RELATIONALFIELDS],
         );
     }
 }
