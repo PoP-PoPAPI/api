@@ -3,6 +3,7 @@ namespace PoP\API\RouteModuleProcessors;
 
 use PoP\Routing\RouteNatures;
 use PoP\ModuleRouting\AbstractEntryRouteModuleProcessor;
+use PoP\API\ModuleProcessors\RootRelationalFieldDataloadModuleProcessor;
 
 class EntryRouteModuleProcessor extends AbstractEntryRouteModuleProcessor
 {
@@ -11,7 +12,7 @@ class EntryRouteModuleProcessor extends AbstractEntryRouteModuleProcessor
         $ret = array();
 
         $ret[RouteNatures::HOME][] = [
-            'module' => [\PoP_API_Module_Processor_FieldDataloads::class, \PoP_API_Module_Processor_FieldDataloads::MODULE_DATALOAD_DATAQUERY_ROOT_FIELDS],
+            'module' => [RootRelationalFieldDataloadModuleProcessor::class, RootRelationalFieldDataloadModuleProcessor::MODULE_DATALOAD_RELATIONALFIELDS_ROOT],
             'conditions' => [
                 'scheme' => POP_SCHEME_API,
             ],
