@@ -6,7 +6,6 @@ use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\ModelInstance\ModelInstance;
 use PoP\API\Facades\FieldQueryConvertorFacade;
-use PoP\Routing\RouteNatures;
 use PoP\ComponentModel\StratumManagerFactory;
 
 class VarsHooks extends AbstractHookSet
