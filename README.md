@@ -1480,7 +1480,7 @@ When executing this query on a [single post](https://nextapi.getpop.org/2013/01/
 ```javascript
 {
   "datasetmodulesettings": {
-    "dataload-dataquery-singlepost-fields": {
+    "dataload-relationalfields-singlepost": {
       "dbkeys": {
         "id": "posts",
         "comments": "comments",
@@ -1489,7 +1489,7 @@ When executing this query on a [single post](https://nextapi.getpop.org/2013/01/
     }
   },
   "datasetmoduledata": {
-    "dataload-dataquery-singlepost-fields": {
+    "dataload-relationalfields-singlepost": {
       "dbobjectids": [
         23691
       ]
