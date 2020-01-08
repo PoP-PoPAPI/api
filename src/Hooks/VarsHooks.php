@@ -1,11 +1,12 @@
 <?php
 namespace PoP\API\Hooks;
+
 use PoP\API\Schema\QueryInputs;
 use PoP\ComponentModel\Engine_Vars;
 use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\ModelInstance\ModelInstance;
-use PoP\API\Facades\FieldQueryConvertorFacade;
+use PoP\API\Schema\FieldQueryConvertorUtils;
 use PoP\ComponentModel\StratumManagerFactory;
 
 class VarsHooks extends AbstractHookSet
@@ -82,10 +83,7 @@ class VarsHooks extends AbstractHookSet
     {
         if (isset($_REQUEST[QueryInputs::QUERY])) {
             // The fields param can either be an array or a string. Convert them to array
-            $vars['query'] = $_REQUEST[QueryInputs::QUERY];
-            if (is_string($vars['query'])) {
-                $vars['query'] = FieldQueryConvertorFacade::getInstance()->convertAPIQuery($vars['query']);
-            }
+            $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($_REQUEST[QueryInputs::QUERY]);
         }
     }
 
