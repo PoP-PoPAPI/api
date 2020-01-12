@@ -20,13 +20,16 @@ class Site
         // $this->name = $name;
         // $this->description = $description;
     }
-    public function getID() {
+    public function getID()
+    {
         return $this->id;
     }
-    public function getDomain() {
+    public function getDomain(): string
+    {
         return $this->domain;
     }
-    public function getHost() {
+    public function getHost(): string
+    {
         return $this->host;
     }
     // public function getName() {
