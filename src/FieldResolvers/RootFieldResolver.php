@@ -120,21 +120,26 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 // Normalize properties in $fieldArgs with their defaults
                 // By default make it deep. To avoid it, must pass argument (deep:false)
                 // By default, use the "flat" shape
-                $options = [
+                $schemaOptions = [
                     'deep' => isset($fieldArgs['deep']) ? $fieldArgs['deep'] : true,
                     'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : true,
                     'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                     'typeAsSDL' => isset($fieldArgs['typeAsSDL']) ? $fieldArgs['typeAsSDL'] : true,
                     'readable' => isset($fieldArgs['readable']) ? $fieldArgs['readable'] : false,
                 ];
+                // These properties can't be input from the query! It's not for the end user, but for the application to set
+                // It's used by the GraphQL package to be able to create the TypeRegistry
+                if ($options['include-type-resolver-classname']) {
+                    $schemaOptions['include-type-resolver-classname'] = true;
+                }
                 // If it is flat shape, all types will be added under $generalMessages
-                $isFlatShape = $options['shape'] == SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT;
+                $isFlatShape = $schemaOptions['shape'] == SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT;
                 if ($isFlatShape) {
                     $generalMessages[SchemaDefinition::ARGNAME_TYPES] = [];
                 }
-                $typeSchemaDefinition = $typeResolver->getSchemaDefinition($stackMessages, $generalMessages, $options);
+                $typeSchemaDefinition = $typeResolver->getSchemaDefinition($stackMessages, $generalMessages, $schemaOptions);
                 $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] =
-                    $options['readable'] ?
+                    $schemaOptions['readable'] ?
                         $typeSchemaDefinition :
                         array_values($typeSchemaDefinition);
 
@@ -143,15 +148,15 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
 
                 // Move from under Root type to the top: globalDirectives and globalFields (renamed as "functions")
                 $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_FIELDS] =
-                    $options['readable'] ?
+                    $schemaOptions['readable'] ?
                         $typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS] :
                         array_values($typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
                 $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS] =
-                    $options['readable'] ?
+                    $schemaOptions['readable'] ?
                         $typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS] :
                         array_values($typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
                 $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES] =
-                    $options['readable'] ?
+                    $schemaOptions['readable'] ?
                         $typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES] :
                         array_values($typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
                 unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
@@ -175,12 +180,12 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 $fragmentCatalogueManager = PersistedFragmentManagerFacade::getInstance();
                 $persistedFragments = $fragmentCatalogueManager->getPersistedFragmentsForSchema();
                 $schemaDefinition[SchemaDefinition::ARGNAME_PERSISTED_FRAGMENTS] =
-                    $options['readable'] ?
+                    $schemaOptions['readable'] ?
                         $persistedFragments :
                         array_values($persistedFragments);
 
                 // Remove the arg name for as the key to all args in the JSON
-                if (!$options['readable']) {
+                if (!$schemaOptions['readable']) {
                     // TODO: Complete!
                 }
                 return $schemaDefinition;
