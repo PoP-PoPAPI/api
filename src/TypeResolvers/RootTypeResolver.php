@@ -37,14 +37,14 @@ class RootTypeResolver extends AbstractTypeResolver
         parent::addSchemaDefinition($stackMessages, $generalMessages, $options);
 
         // Only in the root we output the operators and helpers
-        $typeName = $this->getTypeName();
+        $typeSchemaKey = $this->getTypeSchemaKey($options);
 
         // Add the directives (global)
         $directiveResolverInstances = $this->getSchemaDirectiveResolvers(true);
         foreach ($directiveResolverInstances as $directiveResolverInstance) {
             $directiveSchemaDefinition = $directiveResolverInstance->getSchemaDefinitionForDirective($this);
             $directiveName = $directiveResolverInstance->getDirectiveName();
-            $this->schemaDefinition[$typeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES][$directiveName] = $directiveSchemaDefinition;
+            $this->schemaDefinition[$typeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES][$directiveName] = $directiveSchemaDefinition;
         }
 
         // Add the fields (global)

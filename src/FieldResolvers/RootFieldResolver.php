@@ -116,22 +116,21 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 $generalMessages = [
                     'processed' => [],
                 ];
-                $rootTypeName = $typeResolver->getTypeName();
+                $rootTypeSchemaKey = $typeResolver->getTypeSchemaKey($options);
                 // Normalize properties in $fieldArgs with their defaults
                 // By default make it deep. To avoid it, must pass argument (deep:false)
                 // By default, use the "flat" shape
-                $schemaOptions = [
-                    'deep' => isset($fieldArgs['deep']) ? $fieldArgs['deep'] : true,
-                    'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : true,
-                    'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
-                    'typeAsSDL' => isset($fieldArgs['typeAsSDL']) ? $fieldArgs['typeAsSDL'] : true,
-                    'readable' => isset($fieldArgs['readable']) ? $fieldArgs['readable'] : false,
-                ];
-                // These properties can't be input from the query! It's not for the end user, but for the application to set
-                // It's used by the GraphQL package to be able to create the TypeRegistry
-                if ($options['include-type-resolver-classname']) {
-                    $schemaOptions['include-type-resolver-classname'] = true;
-                }
+                $schemaOptions = array_merge(
+                    // $options may contain 'use-type-resolver-class-as-schema-key'
+                    $options,
+                    [
+                        'deep' => isset($fieldArgs['deep']) ? $fieldArgs['deep'] : true,
+                        'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : true,
+                        'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
+                        'typeAsSDL' => isset($fieldArgs['typeAsSDL']) ? $fieldArgs['typeAsSDL'] : true,
+                        'readable' => isset($fieldArgs['readable']) ? $fieldArgs['readable'] : false,
+                    ]
+                );
                 // If it is flat shape, all types will be added under $generalMessages
                 $isFlatShape = $schemaOptions['shape'] == SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT;
                 if ($isFlatShape) {
@@ -144,33 +143,33 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         array_values($typeSchemaDefinition);
 
                 // Add the queryType
-                $schemaDefinition[SchemaDefinition::ARGNAME_QUERY_TYPE] = $rootTypeName;
+                $schemaDefinition[SchemaDefinition::ARGNAME_QUERY_TYPE] = $rootTypeSchemaKey;
 
                 // Move from under Root type to the top: globalDirectives and globalFields (renamed as "functions")
                 $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_FIELDS] =
                     $schemaOptions['readable'] ?
-                        $typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS] :
-                        array_values($typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
+                        $typeSchemaDefinition[$rootTypeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_FIELDS] :
+                        array_values($typeSchemaDefinition[$rootTypeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
                 $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS] =
                     $schemaOptions['readable'] ?
-                        $typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS] :
-                        array_values($typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
+                        $typeSchemaDefinition[$rootTypeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS] :
+                        array_values($typeSchemaDefinition[$rootTypeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
                 $schemaDefinition[SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES] =
                     $schemaOptions['readable'] ?
-                        $typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES] :
-                        array_values($typeSchemaDefinition[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
-                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
-                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
-                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
+                        $typeSchemaDefinition[$rootTypeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES] :
+                        array_values($typeSchemaDefinition[$rootTypeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
+                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
+                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
+                unset($schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$rootTypeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
 
                 // Retrieve the list of all types from under $generalMessages
                 if ($isFlatShape) {
                     $typeFlatList = $generalMessages[SchemaDefinition::ARGNAME_TYPES];
 
                     // Remove the globals from the Root
-                    unset($typeFlatList[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
-                    unset($typeFlatList[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
-                    unset($typeFlatList[$rootTypeName][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
+                    unset($typeFlatList[$rootTypeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_FIELDS]);
+                    unset($typeFlatList[$rootTypeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_CONNECTIONS]);
+                    unset($typeFlatList[$rootTypeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES]);
 
                     // Because they were added in reverse way, reverse it once again, so that the first types (eg: Root) appear first
                     $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = array_reverse($typeFlatList);
