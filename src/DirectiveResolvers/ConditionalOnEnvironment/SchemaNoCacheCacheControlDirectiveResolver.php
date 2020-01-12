@@ -11,7 +11,7 @@ class SchemaNoCacheCacheControlDirectiveResolver extends AbstractCacheControlDir
     public static function getFieldNamesToApplyTo(): array
     {
         return [
-            '__schema',
+            // '__schema',
             '__fullSchema',
         ];
     }

@@ -20,7 +20,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
     public static function getFieldNamesToResolve(): array
     {
         return [
-            '__schema',
+            // '__schema',
             '__fullSchema',
             'site',
         ];
@@ -29,7 +29,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
     public function getSchemaFieldType(TypeResolverInterface $typeResolver, string $fieldName): ?string
     {
         $types = [
-            '__schema' => SchemaDefinition::TYPE_OBJECT,
+            // '__schema' => SchemaDefinition::TYPE_OBJECT,
             '__fullSchema' => SchemaDefinition::TYPE_OBJECT,
             'site' => SchemaDefinition::TYPE_ID,
         ];
@@ -40,7 +40,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         $descriptions = [
-            '__schema' => $translationAPI->__('The API schema, exposing what fields can be queried', ''),
+            // '__schema' => $translationAPI->__('The API schema, exposing what fields can be queried', ''),
             '__fullSchema' => $translationAPI->__('The whole API schema, exposing what fields can be queried', ''),
             'site' => $translationAPI->__('This website', ''),
         ];
@@ -106,8 +106,8 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
     {
         $root = $resultItem;
         switch ($fieldName) {
-            case '__schema':
-                return $typeResolver->resolveValue($resultItem, FieldQueryInterpreterFacade::getInstance()->getField('__fullSchema', $fieldArgs), $variables, $expressions, $options);
+            // case '__schema':
+            //     return $typeResolver->resolveValue($resultItem, FieldQueryInterpreterFacade::getInstance()->getField('__fullSchema', $fieldArgs), $variables, $expressions, $options);
 
             case '__fullSchema':
                 $stackMessages = [

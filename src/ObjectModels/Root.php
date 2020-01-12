@@ -5,6 +5,7 @@ use PoP\API\ObjectFacades\SiteObjectFacade;
 
 class Root
 {
+    public const ID = 'root';
     // private $id;
     private $site;
     public function __construct(/*$site = null*/)
@@ -21,7 +22,7 @@ class Root
     //     return $this->id;
     // }
     public function getID() {
-        return 'root';
+        return self::ID;
     }
     public function getSite() {
         return $this->site;
