@@ -76,7 +76,6 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         ),
                         SchemaDefinition::ARGNAME_ENUMVALUES => $this->getSchemaFieldShapeValues(),
                         SchemaDefinition::ARGNAME_DEFAULT_VALUE => SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
-
                     ],
                     [
                         SchemaDefinition::ARGNAME_NAME => 'compressed',
