@@ -9,6 +9,7 @@ use PoP\API\Facades\PersistedFragmentManagerFacade;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\FieldResolvers\AbstractDBDataFieldResolver;
+use PoP\ComponentModel\Schema\SchemaHelpers;
 
 class RootFieldResolver extends AbstractDBDataFieldResolver
 {
@@ -74,7 +75,9 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                             SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                             SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_NESTED
                         ),
-                        SchemaDefinition::ARGNAME_ENUMVALUES => $this->getSchemaFieldShapeValues(),
+                        SchemaDefinition::ARGNAME_ENUMVALUES => SchemaHelpers::convertToSchemaFieldArgEnumValueDefinitions(
+                            $this->getSchemaFieldShapeValues()
+                        ),
                         SchemaDefinition::ARGNAME_DEFAULT_VALUE => SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                     ],
                     [
