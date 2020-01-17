@@ -10,6 +10,10 @@ services:
         class: \PoP\API\Schema\FieldQueryConvertor
         public: true
 
+    schema_definition_registry:
+        class: \PoP\API\Registries\SchemaDefinitionRegistry
+        public: true
+
     persisted_fragment_manager:
         class: \PoP\API\PersistedFragments\PersistedFragmentManager
         public: true
