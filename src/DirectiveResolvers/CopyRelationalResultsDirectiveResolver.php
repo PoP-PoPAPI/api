@@ -54,7 +54,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                 SchemaDefinition::ARGNAME_NAME => 'keepRelationalIDs',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
                 SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicate if the properties are placed under the relational ID as keys (`true`) or as a one-dimensional array (`false`)', 'component-model'),
-                SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'false',
+                SchemaDefinition::ARGNAME_DEFAULT_VALUE => false,
             ],
         ];
     }

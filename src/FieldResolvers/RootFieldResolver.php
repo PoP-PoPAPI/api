@@ -64,7 +64,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         SchemaDefinition::ARGNAME_NAME => 'deep',
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
                         SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Make a deep introspection of the fields, for all nested objects', ''),
-                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'true',
+                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => true,
                     ],
                     [
                         SchemaDefinition::ARGNAME_NAME => 'shape',
@@ -83,19 +83,19 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         SchemaDefinition::ARGNAME_NAME => 'compressed',
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
                         SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output each resolver\'s schema data only once to compress the output. Valid only when field \'deep\' is `true`', ''),
-                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'false',
+                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => false,
                     ],
                     [
                         SchemaDefinition::ARGNAME_NAME => 'typeAsSDL',
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
                         SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output the type using the GraphQL SDL notation (eg: \'[Post]\' instead of \'array:id\')', ''),
-                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'true',
+                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => true,
                     ],
                     [
                         SchemaDefinition::ARGNAME_NAME => 'readable',
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
                         SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Make the output readable for humans (it doesn\'t follow spec, then it is not understood by GraphiQL)', ''),
-                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'false',
+                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => false,
                     ],
                 ];
         }
