@@ -7,7 +7,6 @@ use PoP\API\TypeResolvers\SiteTypeResolver;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\API\Facades\PersistedFragmentManagerFacade;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
-use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\FieldResolvers\AbstractDBDataFieldResolver;
 use PoP\ComponentModel\Schema\SchemaHelpers;
 
