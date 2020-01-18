@@ -175,6 +175,20 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
 
                     // Because they were added in reverse way, reverse it once again, so that the first types (eg: Root) appear first
                     $schemaDefinition[SchemaDefinition::ARGNAME_TYPES] = array_reverse($typeFlatList);
+
+                    // Add the interfaces to the root
+                    $interfaces = [];
+                    foreach ($schemaDefinition[SchemaDefinition::ARGNAME_TYPES] as $typeName => $typeDefinition) {
+                        if ($typeInterfaces = $typeDefinition[SchemaDefinition::ARGNAME_INTERFACES]) {
+                            $interfaces = array_merge(
+                                $interfaces,
+                                (array)$typeInterfaces
+                            );
+                            // Keep only the name of the interface under the type
+                            $schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$typeName][SchemaDefinition::ARGNAME_INTERFACES] = array_keys((array)$schemaDefinition[SchemaDefinition::ARGNAME_TYPES][$typeName][SchemaDefinition::ARGNAME_INTERFACES]);
+                        }
+                    }
+                    $schemaDefinition[SchemaDefinition::ARGNAME_INTERFACES] = $interfaces;
                 }
 
                 // Add the Fragment Catalogue
@@ -185,10 +199,6 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         $persistedFragments :
                         array_values($persistedFragments);
 
-                // Remove the arg name for as the key to all args in the JSON
-                if (!$schemaOptions['readable']) {
-                    // TODO: Complete!
-                }
                 return $schemaDefinition;
             case 'site':
                 return $root->getSite()->getID();
