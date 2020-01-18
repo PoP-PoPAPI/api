@@ -47,8 +47,8 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
             [
                 SchemaDefinition::ARGNAME_NAME => 'copyToFields',
                 SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::makeArray(SchemaDefinition::TYPE_STRING),
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The fields in the current object to which copy the data', 'component-model'),
-                SchemaDefinition::ARGNAME_DEFAULT_VALUE => $translationAPI->__('Same fields provided through \'copyFromFields\' argument', 'component-model'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The fields in the current object to which copy the data. Default value: Same fields provided through \'copyFromFields\' argument', 'component-model'),
+                // SchemaDefinition::ARGNAME_DEFAULT_VALUE => $translationAPI->__('Same fields provided through \'copyFromFields\' argument', 'component-model'),
             ],
             [
                 SchemaDefinition::ARGNAME_NAME => 'keepRelationalIDs',

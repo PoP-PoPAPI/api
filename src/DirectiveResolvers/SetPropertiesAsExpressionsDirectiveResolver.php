@@ -50,8 +50,8 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
             [
                 SchemaDefinition::ARGNAME_NAME => 'expressions',
                 SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::makeArray(SchemaDefinition::TYPE_STRING),
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Name of the expressions', 'component-model'),
-                SchemaDefinition::ARGNAME_DEFAULT_VALUE => $translationAPI->__('Same name as the properties', 'component-model'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Name of the expressions. Default value: Same name as the properties', 'component-model'),
+                // SchemaDefinition::ARGNAME_DEFAULT_VALUE => $translationAPI->__('Same name as the properties', 'component-model'),
             ],
         ];
     }
