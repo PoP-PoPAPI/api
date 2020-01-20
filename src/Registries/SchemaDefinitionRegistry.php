@@ -34,7 +34,7 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
             $root = RootObjectFacade::getInstance();
             $this->schemaInstances[$key] = $rootTypeResolver->resolveValue(
                 $root,
-                $fieldQueryInterpreter->getField('__fullSchema', $fieldArgs ?? []),
+                $fieldQueryInterpreter->getField('fullSchema', $fieldArgs ?? []),
                 null,
                 null,
                 $options

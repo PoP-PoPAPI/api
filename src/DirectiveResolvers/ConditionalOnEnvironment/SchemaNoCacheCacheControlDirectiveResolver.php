@@ -12,7 +12,7 @@ class SchemaNoCacheCacheControlDirectiveResolver extends AbstractCacheControlDir
     {
         return [
             // '__schema',
-            '__fullSchema',
+            'fullSchema',
         ];
     }
 
