@@ -1204,9 +1204,9 @@ Otherwise, the selected resource, or set of resources, is the corresponding one 
 
 ### Visualize the schema
 
-To visualize all available fields, use query field `__schema` from the root: 
+To visualize all available fields, use query field `fullSchema` from the root: 
 
-- [/?query=__schema](https://nextapi.getpop.org/api/graphql/?query=__schema)
+- [/?query=fullSchema](https://nextapi.getpop.org/api/graphql/?query=fullSchema)
 
 ### Query syntax
 
