@@ -84,9 +84,12 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         SchemaDefinition::ARGNAME_DEFAULT_VALUE => false,
                     ],
                     [
-                        SchemaDefinition::ARGNAME_NAME => 'typeAsSDL',
+                        SchemaDefinition::ARGNAME_NAME => 'useTypeName',
                         SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output the type using the GraphQL SDL notation (eg: \'[Post]\' instead of \'array:id\')', ''),
+                        SchemaDefinition::ARGNAME_DESCRIPTION => sprintf(
+                            $translationAPI->__('Replace type \'%s\' with the actual type name (such as \'Post\')', ''),
+                            SchemaDefinition::TYPE_ID
+                        ),
                         SchemaDefinition::ARGNAME_DEFAULT_VALUE => true,
                     ],
                 ];
@@ -117,7 +120,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         'deep' => isset($fieldArgs['deep']) ? $fieldArgs['deep'] : true,
                         'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : true,
                         'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
-                        'typeAsSDL' => isset($fieldArgs['typeAsSDL']) ? $fieldArgs['typeAsSDL'] : true,
+                        'useTypeName' => isset($fieldArgs['useTypeName']) ? $fieldArgs['useTypeName'] : true,
                     ]
                 );
                 // If it is flat shape, all types will be added under $generalMessages
