@@ -4,11 +4,12 @@ namespace PoP\API\FieldResolvers;
 use PoP\API\Schema\SchemaDefinition;
 use PoP\API\TypeResolvers\RootTypeResolver;
 use PoP\API\TypeResolvers\SiteTypeResolver;
+use PoP\ComponentModel\Schema\SchemaHelpers;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\API\Facades\PersistedFragmentManagerFacade;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\FieldResolvers\AbstractDBDataFieldResolver;
-use PoP\ComponentModel\Schema\SchemaHelpers;
+use PoP\ComponentModel\Facades\Schema\SchemaDefinitionServiceFacade;
 
 class RootFieldResolver extends AbstractDBDataFieldResolver
 {
@@ -111,13 +112,14 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
             //     return $typeResolver->resolveValue($resultItem, FieldQueryInterpreterFacade::getInstance()->getField('__fullSchema', $fieldArgs), $variables, $expressions, $options);
 
             case '__fullSchema':
+                $schemaDefinitionService = SchemaDefinitionServiceFacade::getInstance();
                 $stackMessages = [
                     'processed' => [],
                 ];
                 $generalMessages = [
                     'processed' => [],
                 ];
-                $rootTypeSchemaKey = $typeResolver->getTypeSchemaKey($options);
+                $rootTypeSchemaKey = $schemaDefinitionService->getTypeSchemaKey($typeResolver, $options);
                 // Normalize properties in $fieldArgs with their defaults
                 // By default make it deep. To avoid it, must pass argument (deep:false)
                 // By default, use the "flat" shape

@@ -5,6 +5,7 @@ use PoP\API\TypeDataLoaders\RootTypeDataLoader;
 use PoP\ComponentModel\Schema\SchemaDefinition;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
+use PoP\ComponentModel\Facades\Schema\SchemaDefinitionServiceFacade;
 
 class RootTypeResolver extends AbstractTypeResolver
 {
@@ -37,7 +38,8 @@ class RootTypeResolver extends AbstractTypeResolver
         parent::addSchemaDefinition($stackMessages, $generalMessages, $options);
 
         // Only in the root we output the operators and helpers
-        $typeSchemaKey = $this->getTypeSchemaKey($options);
+        $schemaDefinitionService = SchemaDefinitionServiceFacade::getInstance();
+        $typeSchemaKey = $schemaDefinitionService->getTypeSchemaKey($this, $options);
 
         // Add the directives (global)
         $this->schemaDefinition[$typeSchemaKey][SchemaDefinition::ARGNAME_GLOBAL_DIRECTIVES] = [];
