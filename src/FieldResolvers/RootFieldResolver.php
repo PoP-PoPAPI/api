@@ -122,7 +122,6 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 // By default make it deep. To avoid it, must pass argument (deep:false)
                 // By default, use the "flat" shape
                 $schemaOptions = array_merge(
-                    // $options may contain 'use-type-resolver-class-as-schema-key'
                     $options,
                     [
                         'deep' => isset($fieldArgs['deep']) ? $fieldArgs['deep'] : true,
