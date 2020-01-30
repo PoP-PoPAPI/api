@@ -15,7 +15,7 @@ Convert the application into a powerful API. Install the [GraphQL API](https://g
 
 ### Installing a fully-working API:
 
-Follow the instructions under [Bootstrap a PoP API for WordPress](https://github.com/leoloso/PoP-API-WP) (currently, the API is available for WordPress only).
+Follow the instructions under [Bootstrap a PoP API for WordPress](https://github.com/leoloso/PoP-API-WP) (even though CMS-agnostic, only the WordPress adapters have been presently implemented).
 
 ### Installing this library: 
 
