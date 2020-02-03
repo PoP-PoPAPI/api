@@ -1,6 +1,7 @@
 <?php
 namespace PoP\API\Hooks;
 
+use PoP\API\Configuration\Request;
 use PoP\API\Schema\QueryInputs;
 use PoP\ComponentModel\Engine_Vars;
 use PoP\Engine\Hooks\AbstractHookSet;
@@ -76,6 +77,11 @@ class VarsHooks extends AbstractHookSet
         $vars = &$vars_in_array[0];
         if ($vars['scheme'] == POP_SCHEME_API) {
             $this->addFieldsToVars($vars);
+        }
+
+        // Maybe enable using namespaces
+        if (Request::namespaceTypesAndInterfaces()) {
+            $vars['namespace-types-and-interfaces'] = true;
         }
     }
 
