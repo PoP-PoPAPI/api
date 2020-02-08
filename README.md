@@ -35,7 +35,7 @@ $ composer require getpop/api dev-master
     ...
 }
 ```
-<!--
+
 #### Enable pretty permalinks
 
 Add the following code in the `.htaccess` file to enable API endpoint `/api/`:
@@ -58,7 +58,7 @@ RewriteRule ^api/?$ /?scheme=api [L,P,QSA]
 ```
 
 > **Note:**<br/>Add similar code to add corresponding API endpoints `/api/graphql/`, `/api/rest`, `/api/xml`, etc
--->
+
 ## Usage
 
 > **Note:**<br/>To enable GraphQL and/or REST endpoints, the corresponding package must be installed: [GraphQL package](https://github.com/getpop/api-graphql), [REST package](https://github.com/getpop/api-rest) 
