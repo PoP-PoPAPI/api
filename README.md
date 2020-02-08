@@ -57,7 +57,26 @@ RewriteRule ^api/?$ /?scheme=api [L,P,QSA]
 </IfModule>
 ```
 
-> **Note:**<br/>Add similar code to add corresponding API endpoints `/api/graphql/`, `/api/rest`, `/api/xml`, etc
+To add pretty API endpoints for the extensions (GraphQL => `/api/graphql/`), REST => `/api/rest`), add the following code to file `.htaccess`:
+
+```apache
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# a. Resource endpoints
+# 1 and 2. GraphQL or REST: Rewrite from /some-url/api/(graphql|rest)/ to /some-url/?scheme=api&datastructure=(graphql|rest)
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteRule ^(.*)/api/(graphql|rest)/?$ /$1/?scheme=api&datastructure=$2 [L,P,QSA]
+
+# b. Homepage single endpoint (root)
+# 1 and 2. GraphQL or REST: Rewrite from api/(graphql|rest)/ to /?scheme=api&datastructure=(graphql|rest)
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteRule ^api/(graphql|rest)/?$ /?scheme=api&datastructure=$1 [L,P,QSA]
+</IfModule>
+```
 
 ## Usage
 
