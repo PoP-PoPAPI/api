@@ -57,7 +57,7 @@ RewriteRule ^api/?$ /?scheme=api [L,P,QSA]
 </IfModule>
 ```
 
-To add pretty API endpoints for the extensions (GraphQL => `/api/graphql/`), REST => `/api/rest`), add the following code to file `.htaccess`:
+To add pretty API endpoints for the extensions (GraphQL => `/api/graphql/`), REST => `/api/rest/`), add the following code to file `.htaccess`:
 
 ```apache
 <IfModule mod_rewrite.c>
