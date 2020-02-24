@@ -9,12 +9,28 @@ use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 
 abstract class AbstractMaybeDisableFieldsInPrivateSchemaHookSet extends AbstractCMSHookSet
 {
+    /**
+     * Indicate if this hook is enabled
+     *
+     * @return boolean
+     */
+    protected function enabled(): bool
+    {
+        return true;
+    }
+    protected function onlyForPrivateSchema(): bool
+    {
+        return true;
+    }
     public function cmsInit(): void
     {
+        if ($this->onlyForPrivateSchema() && !Environment::usePrivateSchemaMode()) {
+            return;
+        }
         /**
          * Check if doing privateSchemaMode, and ask if to disable the fields
          */
-        if (Environment::usePrivateSchemaMode() && $this->disableFieldsInPrivateSchemaMode()) {
+        if ($this->enabled() && $this->disableFieldsInPrivateSchemaMode()) {
             // If no field defined => it applies to any field
             if ($fieldNames = $this->getFieldNames()) {
                 foreach ($fieldNames as $fieldName) {
