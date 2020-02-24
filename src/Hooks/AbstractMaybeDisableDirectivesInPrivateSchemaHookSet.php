@@ -15,12 +15,24 @@ abstract class AbstractMaybeDisableDirectivesInPrivateSchemaHookSet extends Abst
          * Check if doing privateSchemaMode, and ask if to disable the directives
          */
         if (Environment::usePrivateSchemaMode() && $this->disableDirectivesInPrivateSchemaMode()) {
-            $this->hooksAPI->addFilter(
-                AbstractTypeResolver::HOOK_ENABLED_DIRECTIVE_NAMES,
-                array($this, 'maybeFilterDirectiveNames'),
-                10,
-                3
-            );
+            // If no directiveNames defined, apply to all of them
+            if ($directiveNames = $this->getDirectiveNames()) {
+                foreach ($directiveNames as $directiveName) {
+                    $this->hooksAPI->addFilter(
+                        AbstractTypeResolver::getHookNameToFilterDirective($directiveName),
+                        array($this, 'maybeFilterDirectiveNames'),
+                        10,
+                        3
+                    );
+                }
+            } else {
+                $this->hooksAPI->addFilter(
+                    AbstractTypeResolver::getHookNameToFilterDirective(),
+                    array($this, 'maybeFilterDirectiveNames'),
+                    10,
+                    3
+                );
+            }
         }
     }
 
@@ -41,6 +53,15 @@ abstract class AbstractMaybeDisableDirectivesInPrivateSchemaHookSet extends Abst
         return !$this->removeDirectiveNames($typeResolver,  $directiveName);
     }
     /**
+     * Affected directiveNames
+     *
+     * @param TypeResolverInterface $typeResolver
+     * @param FieldResolverInterface $directiveResolver
+     * @param string $directiveName
+     * @return boolean
+     */
+    abstract protected function getDirectiveNames(): array;
+    /**
      * Decide if to remove the directiveNames
      *
      * @param TypeResolverInterface $typeResolver
@@ -48,5 +69,8 @@ abstract class AbstractMaybeDisableDirectivesInPrivateSchemaHookSet extends Abst
      * @param string $directiveName
      * @return boolean
      */
-    abstract protected function removeDirectiveNames(TypeResolverInterface $typeResolver, string $directiveName): bool;
+    protected function removeDirectiveNames(TypeResolverInterface $typeResolver, string $directiveName): bool
+    {
+        return true;
+    }
 }

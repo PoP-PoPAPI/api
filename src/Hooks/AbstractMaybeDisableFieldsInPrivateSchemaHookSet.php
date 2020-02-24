@@ -15,12 +15,24 @@ abstract class AbstractMaybeDisableFieldsInPrivateSchemaHookSet extends Abstract
          * Check if doing privateSchemaMode, and ask if to disable the fields
          */
         if (Environment::usePrivateSchemaMode() && $this->disableFieldsInPrivateSchemaMode()) {
-            $this->hooksAPI->addFilter(
-                AbstractTypeResolver::HOOK_ENABLED_FIELD_NAMES,
-                array($this, 'maybeFilterFieldNames'),
-                10,
-                4
-            );
+            // If no field defined => it applies to any field
+            if ($fieldNames = $this->getFieldNames()) {
+                foreach ($fieldNames as $fieldName) {
+                    $this->hooksAPI->addFilter(
+                        AbstractTypeResolver::getHookNameToFilterField($fieldName),
+                        array($this, 'maybeFilterFieldNames'),
+                        10,
+                        4
+                    );
+                }
+            } else {
+                $this->hooksAPI->addFilter(
+                    AbstractTypeResolver::getHookNameToFilterField(),
+                    array($this, 'maybeFilterFieldNames'),
+                    10,
+                    4
+                );
+            }
         }
     }
 
@@ -41,6 +53,12 @@ abstract class AbstractMaybeDisableFieldsInPrivateSchemaHookSet extends Abstract
         return !$this->removeFieldNames($typeResolver, $fieldResolver, $fieldName);
     }
     /**
+     * Field names to remove
+     *
+     * @return array
+     */
+    abstract protected function getFieldNames(): array;
+    /**
      * Decide if to remove the fieldNames
      *
      * @param TypeResolverInterface $typeResolver
@@ -48,5 +66,8 @@ abstract class AbstractMaybeDisableFieldsInPrivateSchemaHookSet extends Abstract
      * @param string $fieldName
      * @return boolean
      */
-    abstract protected function removeFieldNames(TypeResolverInterface $typeResolver, FieldResolverInterface $fieldResolver, string $fieldName): bool;
+    protected function removeFieldNames(TypeResolverInterface $typeResolver, FieldResolverInterface $fieldResolver, string $fieldName): bool
+    {
+        return true;
+    }
 }
