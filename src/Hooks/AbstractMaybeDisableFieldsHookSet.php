@@ -28,7 +28,7 @@ abstract class AbstractMaybeDisableFieldsHookSet extends AbstractCMSHookSet
             foreach ($fieldNames as $fieldName) {
                 $this->hooksAPI->addFilter(
                     AbstractTypeResolver::getHookNameToFilterField($fieldName),
-                    array($this, 'maybeFilterFieldNames'),
+                    array($this, 'maybeFilterFieldName'),
                     10,
                     4
                 );
@@ -36,14 +36,14 @@ abstract class AbstractMaybeDisableFieldsHookSet extends AbstractCMSHookSet
         } else {
             $this->hooksAPI->addFilter(
                 AbstractTypeResolver::getHookNameToFilterField(),
-                array($this, 'maybeFilterFieldNames'),
+                array($this, 'maybeFilterFieldName'),
                 10,
                 4
             );
         }
     }
 
-    public function maybeFilterFieldNames(bool $include, TypeResolverInterface $typeResolver, FieldResolverInterface $fieldResolver, string $fieldName): bool
+    public function maybeFilterFieldName(bool $include, TypeResolverInterface $typeResolver, FieldResolverInterface $fieldResolver, string $fieldName): bool
     {
         // Because there may be several hooks chained, if any of them has already rejected the field, then already return that response
         if (!$include) {
@@ -51,7 +51,7 @@ abstract class AbstractMaybeDisableFieldsHookSet extends AbstractCMSHookSet
         }
 
         // Check if to remove the field
-        return !$this->removeFieldNames($typeResolver, $fieldResolver, $fieldName);
+        return !$this->removeFieldName($typeResolver, $fieldResolver, $fieldName);
     }
     /**
      * Field names to remove
@@ -67,7 +67,7 @@ abstract class AbstractMaybeDisableFieldsHookSet extends AbstractCMSHookSet
      * @param string $fieldName
      * @return boolean
      */
-    protected function removeFieldNames(TypeResolverInterface $typeResolver, FieldResolverInterface $fieldResolver, string $fieldName): bool
+    protected function removeFieldName(TypeResolverInterface $typeResolver, FieldResolverInterface $fieldResolver, string $fieldName): bool
     {
         return true;
     }
