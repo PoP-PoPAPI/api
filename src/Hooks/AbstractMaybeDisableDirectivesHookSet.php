@@ -14,7 +14,12 @@ abstract class AbstractMaybeDisableDirectivesHookSet extends AbstractCMSHookSet
             return;
         }
         // If no directiveNames defined, apply to all of them
-        if ($directiveNames = $this->getDirectiveNames()) {
+        if ($directiveNames = array_map(
+            function($directiveResolverClass) {
+                return $directiveResolverClass::getDirectiveName();
+            },
+            $this->getDirectiveResolverClasses()
+        )) {
             foreach ($directiveNames as $directiveName) {
                 $this->hooksAPI->addFilter(
                     AbstractTypeResolver::getHookNameToFilterDirective($directiveName),
@@ -53,14 +58,14 @@ abstract class AbstractMaybeDisableDirectivesHookSet extends AbstractCMSHookSet
         return !$this->removeDirectiveNames($typeResolver,  $directiveName);
     }
     /**
-     * Affected directiveNames
+     * Affected directives
      *
      * @param TypeResolverInterface $typeResolver
      * @param FieldResolverInterface $directiveResolver
      * @param string $directiveName
      * @return boolean
      */
-    abstract protected function getDirectiveNames(): array;
+    abstract protected function getDirectiveResolverClasses(): array;
     /**
      * Decide if to remove the directiveNames
      *
