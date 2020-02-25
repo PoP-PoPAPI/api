@@ -1,6 +1,7 @@
 <?php
 namespace PoP\API\Hooks;
 
+use PoP\ComponentModel\DirectiveResolvers\DirectiveResolverInterface;
 use PoP\Engine\Hooks\AbstractCMSHookSet;
 use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
@@ -25,7 +26,7 @@ abstract class AbstractMaybeDisableDirectivesHookSet extends AbstractCMSHookSet
                     AbstractTypeResolver::getHookNameToFilterDirective($directiveName),
                     array($this, 'maybeFilterDirectiveName'),
                     10,
-                    3
+                    4
                 );
             }
         } else {
@@ -33,7 +34,7 @@ abstract class AbstractMaybeDisableDirectivesHookSet extends AbstractCMSHookSet
                 AbstractTypeResolver::getHookNameToFilterDirective(),
                 array($this, 'maybeFilterDirectiveName'),
                 10,
-                3
+                4
             );
         }
     }
@@ -48,14 +49,14 @@ abstract class AbstractMaybeDisableDirectivesHookSet extends AbstractCMSHookSet
         return true;
     }
 
-    public function maybeFilterDirectiveName(bool $include, TypeResolverInterface $typeResolver,  string $directiveName): bool
+    public function maybeFilterDirectiveName(bool $include, TypeResolverInterface $typeResolver, DirectiveResolverInterface $directiveResolver, string $directiveName): bool
     {
         // Because there may be several hooks chained, if any of them has already rejected the field, then already return that response
         if (!$include) {
             return false;
         }
         // Check if to remove the directive
-        return !$this->removeDirectiveName($typeResolver,  $directiveName);
+        return !$this->removeDirectiveName($typeResolver, $directiveResolver, $directiveName);
     }
     /**
      * Affected directives
@@ -74,7 +75,7 @@ abstract class AbstractMaybeDisableDirectivesHookSet extends AbstractCMSHookSet
      * @param string $directiveName
      * @return boolean
      */
-    protected function removeDirectiveName(TypeResolverInterface $typeResolver, string $directiveName): bool
+    protected function removeDirectiveName(TypeResolverInterface $typeResolver, DirectiveResolverInterface $directiveResolver, string $directiveName): bool
     {
         return true;
     }
