@@ -1,11 +1,11 @@
 <?php
 namespace PoP\API\Hooks;
 
-use PoP\ComponentModel\DirectiveResolvers\DirectiveResolverInterface;
 use PoP\Engine\Hooks\AbstractCMSHookSet;
-use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
+use PoP\ComponentModel\TypeResolvers\HookHelpers;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
+use PoP\ComponentModel\DirectiveResolvers\DirectiveResolverInterface;
 
 abstract class AbstractMaybeDisableDirectivesHookSet extends AbstractCMSHookSet
 {
@@ -23,7 +23,7 @@ abstract class AbstractMaybeDisableDirectivesHookSet extends AbstractCMSHookSet
         )) {
             foreach ($directiveNames as $directiveName) {
                 $this->hooksAPI->addFilter(
-                    AbstractTypeResolver::getHookNameToFilterDirective($directiveName),
+                    HookHelpers::getHookNameToFilterDirective($directiveName),
                     array($this, 'maybeFilterDirectiveName'),
                     10,
                     4
@@ -31,7 +31,7 @@ abstract class AbstractMaybeDisableDirectivesHookSet extends AbstractCMSHookSet
             }
         } else {
             $this->hooksAPI->addFilter(
-                AbstractTypeResolver::getHookNameToFilterDirective(),
+                HookHelpers::getHookNameToFilterDirective(),
                 array($this, 'maybeFilterDirectiveName'),
                 10,
                 4

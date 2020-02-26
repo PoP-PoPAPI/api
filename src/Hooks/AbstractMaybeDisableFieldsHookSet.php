@@ -2,7 +2,7 @@
 namespace PoP\API\Hooks;
 
 use PoP\Engine\Hooks\AbstractCMSHookSet;
-use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
+use PoP\ComponentModel\TypeResolvers\HookHelpers;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 
@@ -27,7 +27,7 @@ abstract class AbstractMaybeDisableFieldsHookSet extends AbstractCMSHookSet
         if ($fieldNames = $this->getFieldNames()) {
             foreach ($fieldNames as $fieldName) {
                 $this->hooksAPI->addFilter(
-                    AbstractTypeResolver::getHookNameToFilterField($fieldName),
+                    HookHelpers::getHookNameToFilterField($fieldName),
                     array($this, 'maybeFilterFieldName'),
                     10,
                     4
@@ -35,7 +35,7 @@ abstract class AbstractMaybeDisableFieldsHookSet extends AbstractCMSHookSet
             }
         } else {
             $this->hooksAPI->addFilter(
-                AbstractTypeResolver::getHookNameToFilterField(),
+                HookHelpers::getHookNameToFilterField(),
                 array($this, 'maybeFilterFieldName'),
                 10,
                 4
