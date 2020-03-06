@@ -91,7 +91,7 @@ class VarsHooks extends AbstractHookSet
         if (isset($_REQUEST[QueryInputs::QUERY])) {
             $query = $_REQUEST[QueryInputs::QUERY];
 
-            // If the query starts with "@", then it is the query name to a persisted query
+            // If the query starts with "!", then it is the query name to a persisted query
             $query = PersistedQueryUtils::maybeGetPersistedQuery($query);
 
             // The fields param can either be an array or a string. Convert them to array

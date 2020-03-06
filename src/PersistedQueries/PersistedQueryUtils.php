@@ -31,7 +31,7 @@ class PersistedQueryUtils
     }
 
     /**
-     * If the query starts with "@" then it is the query name to a persisted query. Then retrieve it
+     * If the query starts with "!" then it is the query name to a persisted query. Then retrieve it
      *
      * @param string $query
      * @return string
