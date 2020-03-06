@@ -1,5 +1,5 @@
 <?php
-namespace PoP\API\PersistedFragments;
+namespace PoP\API\PersistedQueries;
 
 interface PersistedFragmentManagerInterface
 {

@@ -1,10 +1,10 @@
 <?php
-namespace PoP\API\PersistedFragments;
+namespace PoP\API\PersistedQueries;
 
 use PoP\API\Schema\QuerySymbols;
 use PoP\API\Facades\PersistedQueryManagerFacade;
 
-class PersistedFragmentUtils
+class PersistedQueryUtils
 {
     /**
      * Trim, and remove tabs and new lines

@@ -1,7 +1,7 @@
 <?php
 namespace PoP\API\Container;
 
-use PoP\API\PersistedFragments\PersistedFragmentUtils;
+use PoP\API\PersistedQueries\PersistedQueryUtils;
 
 class ContainerBuilderUtils {
 
@@ -20,9 +20,9 @@ class ContainerBuilderUtils {
     ): void
     {
         // Format the fragment: Remove the tabs and new lines
-        $fragmentResolution = PersistedFragmentUtils::removeWhitespaces($fragmentResolution);
+        $fragmentResolution = PersistedQueryUtils::removeWhitespaces($fragmentResolution);
         // Enable using expressions, by going around an incompatibility with Symfony's DependencyInjection component
-        $fragmentResolution = PersistedFragmentUtils::addSpacingToExpressions($fragmentResolution);
+        $fragmentResolution = PersistedQueryUtils::addSpacingToExpressions($fragmentResolution);
         // Inject the values into the service
         \PoP\Root\Container\ContainerBuilderUtils::injectValuesIntoService(
             'persisted_fragment_manager',
@@ -48,9 +48,9 @@ class ContainerBuilderUtils {
     ): void
     {
         // Format the query: Remove the tabs and new lines
-        $queryResolution = PersistedFragmentUtils::removeWhitespaces($queryResolution);
+        $queryResolution = PersistedQueryUtils::removeWhitespaces($queryResolution);
         // Enable using expressions, by going around an incompatibility with Symfony's DependencyInjection component
-        $queryResolution = PersistedFragmentUtils::addSpacingToExpressions($queryResolution);
+        $queryResolution = PersistedQueryUtils::addSpacingToExpressions($queryResolution);
         // Inject the values into the service
         \PoP\Root\Container\ContainerBuilderUtils::injectValuesIntoService(
             'persisted_query_manager',

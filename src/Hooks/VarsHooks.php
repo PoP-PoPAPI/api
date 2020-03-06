@@ -2,7 +2,7 @@
 namespace PoP\API\Hooks;
 
 use PoP\API\Configuration\Request;
-use PoP\API\PersistedFragments\PersistedFragmentUtils;
+use PoP\API\PersistedQueries\PersistedQueryUtils;
 use PoP\API\Schema\QueryInputs;
 use PoP\ComponentModel\Engine_Vars;
 use PoP\Engine\Hooks\AbstractHookSet;
@@ -92,7 +92,7 @@ class VarsHooks extends AbstractHookSet
             $query = $_REQUEST[QueryInputs::QUERY];
 
             // If the query starts with "@", then it is the query name to a persisted query
-            $query = PersistedFragmentUtils::maybeGetPersistedQuery($query);
+            $query = PersistedQueryUtils::maybeGetPersistedQuery($query);
 
             // The fields param can either be an array or a string. Convert them to array
             $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($query);

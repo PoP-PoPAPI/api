@@ -1,7 +1,7 @@
 <?php
 namespace PoP\API\Facades;
 
-use PoP\API\PersistedFragments\PersistedFragmentManagerInterface;
+use PoP\API\PersistedQueries\PersistedFragmentManagerInterface;
 use PoP\Root\Container\ContainerBuilderFactory;
 
 class PersistedFragmentManagerFacade
