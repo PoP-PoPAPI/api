@@ -7,6 +7,7 @@ use PoP\API\TypeResolvers\SiteTypeResolver;
 use PoP\ComponentModel\Schema\SchemaHelpers;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\API\Facades\PersistedFragmentManagerFacade;
+use PoP\API\Facades\PersistedQueryManagerFacade;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\FieldResolvers\AbstractDBDataFieldResolver;
 use PoP\ComponentModel\Facades\Schema\SchemaDefinitionServiceFacade;
@@ -173,6 +174,12 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 $fragmentCatalogueManager = PersistedFragmentManagerFacade::getInstance();
                 $persistedFragments = $fragmentCatalogueManager->getPersistedFragmentsForSchema();
                 $schemaDefinition[SchemaDefinition::ARGNAME_PERSISTED_FRAGMENTS] = $persistedFragments;
+
+                // Add the Query Catalogue
+                $queryCatalogueManager = PersistedQueryManagerFacade::getInstance();
+                $persistedQueries = $queryCatalogueManager->getPersistedQueriesForSchema();
+                $schemaDefinition[SchemaDefinition::ARGNAME_PERSISTED_QUERIES] = $persistedQueries;
+
                 return $schemaDefinition;
             case 'site':
                 return $root->getSite()->getID();

@@ -18,6 +18,10 @@ services:
         class: \PoP\API\PersistedFragments\PersistedFragmentManager
         public: true
 
+    persisted_query_manager:
+        class: \PoP\API\PersistedQueries\PersistedQueryManager
+        public: true
+
     root_object:
         class: \PoP\API\ObjectModels\Root
         public: true

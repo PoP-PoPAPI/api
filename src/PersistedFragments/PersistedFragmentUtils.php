@@ -1,6 +1,9 @@
 <?php
 namespace PoP\API\PersistedFragments;
 
+use PoP\API\Schema\QuerySymbols;
+use PoP\API\Facades\PersistedQueryManagerFacade;
+
 class PersistedFragmentUtils
 {
     /**
@@ -25,5 +28,25 @@ class PersistedFragmentUtils
     public static function addSpacingToExpressions(string $fragmentResolution): string
     {
         return preg_replace('/%([\s\S]+?)%/', '% $1 %', $fragmentResolution);
+    }
+
+    /**
+     * If the query starts and ends with "*" then it is the query name to a persisted query. Then retrieve it
+     *
+     * @param string $query
+     * @return string
+     */
+    public static function maybeGetPersistedQuery(string $query): string
+    {
+        // Check if it starts and ends with "*"
+        if (substr($query, 0, strlen(QuerySymbols::PERSISTED_QUERY)) == QuerySymbols::PERSISTED_QUERY && substr($query, -1*strlen(QuerySymbols::PERSISTED_QUERY)) == QuerySymbols::PERSISTED_QUERY) {
+            // Get the query name, and extract the query from the PersistedQueryManager
+            $queryName = substr($query, strlen(QuerySymbols::PERSISTED_QUERY), strlen($query)-2*strlen(QuerySymbols::PERSISTED_QUERY));
+            $queryCatalogueManager = PersistedQueryManagerFacade::getInstance();
+            if ($queryCatalogueManager->hasPersistedQuery($queryName)) {
+                return $queryCatalogueManager->getPersistedQuery($queryName);
+            }
+        }
+        return $query;
     }
 }

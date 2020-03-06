@@ -32,4 +32,32 @@ class ContainerBuilderUtils {
             $description
         );
     }
+
+    /**
+     * Add a predefined query to the catalogue
+     *
+     * @param string $injectableServiceId
+     * @param string $value
+     * @param string $methodCall
+     * @return void
+     */
+    public static function addQueryToCatalogueService(
+        string $queryName,
+        string $queryResolution,
+        ?string $description = null
+    ): void
+    {
+        // Format the query: Remove the tabs and new lines
+        $queryResolution = PersistedFragmentUtils::removeWhitespaces($queryResolution);
+        // Enable using expressions, by going around an incompatibility with Symfony's DependencyInjection component
+        $queryResolution = PersistedFragmentUtils::addSpacingToExpressions($queryResolution);
+        // Inject the values into the service
+        \PoP\Root\Container\ContainerBuilderUtils::injectValuesIntoService(
+            'persisted_query_manager',
+            'add',
+            $queryName,
+            $queryResolution,
+            $description
+        );
+    }
 }
