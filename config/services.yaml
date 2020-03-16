@@ -45,3 +45,7 @@ services:
     PoP\API\FieldResolvers\:
         resource: '../src/FieldResolvers/*'
         public: true
+
+    PoP\API\TypeResolvers\:
+        resource: '../src/TypeResolvers/*'
+        public: true
