@@ -55,48 +55,52 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
 
     public function getSchemaFieldArgs(TypeResolverInterface $typeResolver, string $fieldName): array
     {
+        $schemaFieldArgs = parent::getSchemaFieldArgs($typeResolver, $fieldName);
         $translationAPI = TranslationAPIFacade::getInstance();
         switch ($fieldName) {
             case 'fullSchema':
-                return [
+                return array_merge(
+                    $schemaFieldArgs,
                     [
-                        SchemaDefinition::ARGNAME_NAME => 'deep',
-                        SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Make a deep introspection of the fields, for all nested objects', ''),
-                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => true,
-                    ],
-                    [
-                        SchemaDefinition::ARGNAME_NAME => 'shape',
-                        SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_ENUM,
-                        SchemaDefinition::ARGNAME_DESCRIPTION => sprintf(
-                            $translationAPI->__('How to shape the schema output: \'%s\', in which case all types are listed together, or \'%s\', in which the types are listed following where they appear in the graph', ''),
-                            SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
-                            SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_NESTED
-                        ),
-                        SchemaDefinition::ARGNAME_ENUMVALUES => SchemaHelpers::convertToSchemaFieldArgEnumValueDefinitions(
-                            $this->getSchemaFieldShapeValues()
-                        ),
-                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
-                    ],
-                    [
-                        SchemaDefinition::ARGNAME_NAME => 'compressed',
-                        SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                        SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output each resolver\'s schema data only once to compress the output. Valid only when field \'deep\' is `true`', ''),
-                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => false,
-                    ],
-                    [
-                        SchemaDefinition::ARGNAME_NAME => 'useTypeName',
-                        SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                        SchemaDefinition::ARGNAME_DESCRIPTION => sprintf(
-                            $translationAPI->__('Replace type \'%s\' with the actual type name (such as \'Post\')', ''),
-                            SchemaDefinition::TYPE_ID
-                        ),
-                        SchemaDefinition::ARGNAME_DEFAULT_VALUE => true,
-                    ],
-                ];
+                        [
+                            SchemaDefinition::ARGNAME_NAME => 'deep',
+                            SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
+                            SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Make a deep introspection of the fields, for all nested objects', ''),
+                            SchemaDefinition::ARGNAME_DEFAULT_VALUE => true,
+                        ],
+                        [
+                            SchemaDefinition::ARGNAME_NAME => 'shape',
+                            SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_ENUM,
+                            SchemaDefinition::ARGNAME_DESCRIPTION => sprintf(
+                                $translationAPI->__('How to shape the schema output: \'%s\', in which case all types are listed together, or \'%s\', in which the types are listed following where they appear in the graph', ''),
+                                SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
+                                SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_NESTED
+                            ),
+                            SchemaDefinition::ARGNAME_ENUMVALUES => SchemaHelpers::convertToSchemaFieldArgEnumValueDefinitions(
+                                $this->getSchemaFieldShapeValues()
+                            ),
+                            SchemaDefinition::ARGNAME_DEFAULT_VALUE => SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
+                        ],
+                        [
+                            SchemaDefinition::ARGNAME_NAME => 'compressed',
+                            SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
+                            SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Output each resolver\'s schema data only once to compress the output. Valid only when field \'deep\' is `true`', ''),
+                            SchemaDefinition::ARGNAME_DEFAULT_VALUE => false,
+                        ],
+                        [
+                            SchemaDefinition::ARGNAME_NAME => 'useTypeName',
+                            SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
+                            SchemaDefinition::ARGNAME_DESCRIPTION => sprintf(
+                                $translationAPI->__('Replace type \'%s\' with the actual type name (such as \'Post\')', ''),
+                                SchemaDefinition::TYPE_ID
+                            ),
+                            SchemaDefinition::ARGNAME_DEFAULT_VALUE => true,
+                        ],
+                    ]
+                );
         }
 
-        return parent::getSchemaFieldArgs($typeResolver, $fieldName);
+        return $schemaFieldArgs;
     }
 
     public function resolveValue(TypeResolverInterface $typeResolver, $resultItem, string $fieldName, array $fieldArgs = [], ?array $variables = null, ?array $expressions = null, array $options = [])
