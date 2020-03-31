@@ -11,7 +11,8 @@ use PoP\ComponentModel\Feedback\Tokens;
 class DuplicatePropertyDirectiveResolver extends AbstractGlobalDirectiveResolver
 {
     const DIRECTIVE_NAME = 'duplicateProperty';
-    public static function getDirectiveName(): string {
+    public static function getDirectiveName(): string
+    {
         return self::DIRECTIVE_NAME;
     }
 

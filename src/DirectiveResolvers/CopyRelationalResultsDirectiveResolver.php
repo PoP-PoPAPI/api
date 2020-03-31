@@ -14,7 +14,8 @@ use PoP\ComponentModel\TypeResolvers\UnionTypeHelpers;
 class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveResolver
 {
     const DIRECTIVE_NAME = 'copyRelationalResults';
-    public static function getDirectiveName(): string {
+    public static function getDirectiveName(): string
+    {
         return self::DIRECTIVE_NAME;
     }
 

@@ -11,7 +11,8 @@ use PoP\ComponentModel\Feedback\Tokens;
 class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiveResolver
 {
     const DIRECTIVE_NAME = 'setPropertiesAsExpressions';
-    public static function getDirectiveName(): string {
+    public static function getDirectiveName(): string
+    {
         return self::DIRECTIVE_NAME;
     }
 

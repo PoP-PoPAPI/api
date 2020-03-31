@@ -8,7 +8,8 @@ use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 class RenamePropertyDirectiveResolver extends DuplicatePropertyDirectiveResolver
 {
     const DIRECTIVE_NAME = 'renameProperty';
-    public static function getDirectiveName(): string {
+    public static function getDirectiveName(): string
+    {
         return self::DIRECTIVE_NAME;
     }
 
