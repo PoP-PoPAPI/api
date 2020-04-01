@@ -1,15 +1,26 @@
 <?php
 namespace PoP\API\Conditional\AccessControl;
 
+use PoP\API\Component;
 use PoP\AccessControl\Environment;
+use PoP\Root\Component\YAMLServicesTrait;
+use PoP\ComponentModel\Container\ContainerBuilderUtils;
 use PoP\ComponentModel\AttachableExtensions\AttachableExtensionGroups;
 use PoP\API\DirectiveResolvers\ConditionalOnEnvironment\SchemaNoCacheCacheControlDirectiveResolver;
+
 
 /**
  * Initialize component
  */
-class ComponentBoot
+class ConditionalComponent
 {
+    use YAMLServicesTrait;
+
+    public static function init()
+    {
+        self::initYAMLServices(Component::$COMPONENT_DIR, '/Conditional/AccessControl');
+    }
+
     /**
      * Boot component
      *
@@ -18,6 +29,7 @@ class ComponentBoot
     public static function beforeBoot()
     {
         // Initialize classes
+        ContainerBuilderUtils::instantiateNamespaceServices(__NAMESPACE__.'\\Hooks');
         self::attachDynamicDirectiveResolvers();
     }
 

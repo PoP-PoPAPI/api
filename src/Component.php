@@ -12,6 +12,7 @@ use PoP\ComponentModel\Container\ContainerBuilderUtils;
  */
 class Component extends AbstractComponent
 {
+    public static $COMPONENT_DIR;
     use YAMLServicesTrait, CanDisableComponentTrait;
     // const VERSION = '0.1.0';
 
@@ -22,8 +23,13 @@ class Component extends AbstractComponent
     {
         if (self::isEnabled()) {
             parent::init();
-            self::initYAMLServices(dirname(__DIR__));
+            self::$COMPONENT_DIR = dirname(__DIR__);
+            self::initYAMLServices(self::$COMPONENT_DIR);
             ServiceConfiguration::init();
+
+            if (class_exists('\PoP\AccessControl\Component')) {
+                \PoP\API\Conditional\AccessControl\ConditionalComponent::init();
+            }
         }
     }
 
@@ -49,7 +55,7 @@ class Component extends AbstractComponent
 
         // Boot conditional on API package being installed
         if (class_exists('\PoP\AccessControl\Component')) {
-            \PoP\API\Conditional\AccessControl\ComponentBoot::beforeBoot();
+            \PoP\API\Conditional\AccessControl\ConditionalComponent::beforeBoot();
         }
     }
 }
