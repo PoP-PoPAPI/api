@@ -8,7 +8,7 @@ class ComponentConfiguration extends AbstractComponentConfiguration
 {
     private static $useSchemaDefinitionCache;
 
-    public static function useSchemaDefinitionCache(): ?string
+    public static function useSchemaDefinitionCache(): bool
     {
         // First check that the Component Model cache is enabled
         if (!ComponentModelComponentConfiguration::useComponentModelCache()) {
