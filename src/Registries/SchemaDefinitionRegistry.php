@@ -9,6 +9,7 @@ use PoP\API\Registries\SchemaDefinitionRegistryInterface;
 use PoP\ComponentModel\Facades\Cache\PersistentCacheFacade;
 use PoP\ComponentModel\Facades\Instances\InstanceManagerFacade;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
+use PoP\ComponentModel\Engine_Vars;
 
 class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
 
@@ -45,10 +46,16 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
             // Attempt to retrieve from the cache, if enabled
             if ($useCache = ComponentConfiguration::useSchemaDefinitionCache()) {
                 $persistentCache = PersistentCacheFacade::getInstance();
+                // Use different caches for the normal and namespaced schemas,
+                // or it throws exception if switching without deleting the cache (eg: when passing ?use_namespace=1)
+                $vars = Engine_Vars::getVars();
+                $cacheType = $vars['namespace-types-and-interfaces'] ?
+                    CacheTypes::NAMESPACED_SCHEMA_DEFINITION :
+                    CacheTypes::SCHEMA_DEFINITION;
             }
             if ($useCache) {
-                if ($persistentCache->hasCache($key, CacheTypes::SCHEMA_DEFINITION)) {
-                    $schemaDefinition = $persistentCache->getCache($key, CacheTypes::SCHEMA_DEFINITION);
+                if ($persistentCache->hasCache($key, $cacheType)) {
+                    $schemaDefinition = $persistentCache->getCache($key, $cacheType);
                 }
             }
             // If either not using cache, or using but the value had not been cached, then calculate the value
@@ -67,7 +74,7 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
 
                 // Store in the cache
                 if ($useCache) {
-                    $persistentCache->storeCache($key, CacheTypes::SCHEMA_DEFINITION, $schemaDefinition);
+                    $persistentCache->storeCache($key, $cacheType, $schemaDefinition);
                 }
             }
             // Assign to in-memory cache

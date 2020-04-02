@@ -108,6 +108,9 @@ class VarsHooks extends AbstractHookSet
             $this->addFieldsToComponents($components);
         }
 
+        // Namespaces change the configuration
+        $components[] = TranslationAPIFacade::getInstance()->__('namespaced:', 'pop-engine').($vars['namespace-types-and-interfaces'] ?? false);
+
         return $components;
     }
 
