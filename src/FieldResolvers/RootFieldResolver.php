@@ -115,7 +115,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 $generalMessages = [
                     'processed' => [],
                 ];
-                $rootTypeSchemaKey = $schemaDefinitionService->getTypeSchemaKey($typeResolver, $options);
+                $rootTypeSchemaKey = $schemaDefinitionService->getTypeSchemaKey($typeResolver);
                 // Normalize properties in $fieldArgs with their defaults
                 // By default make it deep. To avoid it, must pass argument (deep:false)
                 // By default, use the "flat" shape
