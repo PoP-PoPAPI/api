@@ -2,7 +2,7 @@
 namespace PoP\API\ModuleProcessors;
 use PoP\FieldQuery\QuerySyntax;
 use PoP\API\Schema\QueryInputs;
-use PoP\ComponentModel\GeneralUtils;
+use PoP\ComponentModel\Misc\GeneralUtils;
 use PoP\API\APIUtils;
 
 trait AddAPIQueryToSourcesModuleProcessorTrait

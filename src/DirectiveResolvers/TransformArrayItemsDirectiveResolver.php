@@ -2,7 +2,7 @@
 namespace PoP\API\DirectiveResolvers;
 
 use PoP\FieldQuery\QuerySyntax;
-use PoP\ComponentModel\GeneralUtils;
+use PoP\ComponentModel\Misc\GeneralUtils;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\Engine\DirectiveResolvers\ForEachDirectiveResolver;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
