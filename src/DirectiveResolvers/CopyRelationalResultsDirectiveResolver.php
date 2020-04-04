@@ -1,15 +1,16 @@
 <?php
 namespace PoP\API\DirectiveResolvers;
 
+use PoP\ComponentModel\Feedback\Tokens;
 use PoP\ComponentModel\Schema\SchemaDefinition;
+use PoP\ComponentModel\Directives\DirectiveTypes;
 use PoP\ComponentModel\Schema\TypeCastingHelpers;
 use PoP\Translation\Facades\TranslationAPIFacade;
+use PoP\ComponentModel\TypeResolvers\UnionTypeHelpers;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\Facades\Instances\InstanceManagerFacade;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractGlobalDirectiveResolver;
-use PoP\ComponentModel\Feedback\Tokens;
-use PoP\ComponentModel\TypeResolvers\UnionTypeHelpers;
 
 class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveResolver
 {
@@ -17,6 +18,16 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
     public static function getDirectiveName(): string
     {
         return self::DIRECTIVE_NAME;
+    }
+
+    /**
+     * This is a "Scripting" type directive
+     *
+     * @return string
+     */
+    public function getDirectiveType(): string
+    {
+        return DirectiveTypes::SCRIPTING;
     }
 
     /**

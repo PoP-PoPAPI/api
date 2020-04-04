@@ -1,6 +1,7 @@
 <?php
 namespace PoP\API\DirectiveResolvers;
 
+use PoP\ComponentModel\Directives\DirectiveTypes;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
@@ -11,6 +12,16 @@ class RenamePropertyDirectiveResolver extends DuplicatePropertyDirectiveResolver
     public static function getDirectiveName(): string
     {
         return self::DIRECTIVE_NAME;
+    }
+
+    /**
+     * This is a "Scripting" type directive
+     *
+     * @return string
+     */
+    public function getDirectiveType(): string
+    {
+        return DirectiveTypes::SCRIPTING;
     }
 
     public function getSchemaDirectiveDescription(TypeResolverInterface $typeResolver): ?string
