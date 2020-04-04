@@ -1,6 +1,8 @@
 <?php
 namespace PoP\API\Hooks;
+
 use PoP\Engine\Hooks\AbstractHookSet;
+use PoP\ComponentModel\Misc\RequestUtils;
 
 class RoutingHooks extends AbstractHookSet
 {
@@ -16,6 +18,6 @@ class RoutingHooks extends AbstractHookSet
     {
         $cmsengineapi = \PoP\Engine\FunctionAPIFactory::getInstance();
         $homeurl = $cmsengineapi->getHomeURL();
-        return substr(\PoP\ComponentModel\Utils::getCurrentUrl(), strlen($homeurl));
+        return substr(RequestUtils::getCurrentUrl(), strlen($homeurl));
     }
 }
