@@ -3,7 +3,7 @@ namespace PoP\API\FieldResolvers;
 
 use PoP\API\Cache\CacheTypes;
 use PoP\API\ComponentConfiguration;
-use PoP\ComponentModel\Engine_Vars;
+use PoP\ComponentModel\State\ApplicationState;
 use PoP\API\Schema\SchemaDefinition;
 use PoP\API\TypeResolvers\RootTypeResolver;
 use PoP\API\TypeResolvers\SiteTypeResolver;
@@ -117,7 +117,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     $persistentCache = PersistentCacheFacade::getInstance();
                     // Use different caches for the normal and namespaced schemas,
                     // or it throws exception if switching without deleting the cache (eg: when passing ?use_namespace=1)
-                    $vars = Engine_Vars::getVars();
+                    $vars = ApplicationState::getVars();
                     $cacheType = $vars['namespace-types-and-interfaces'] ?
                         CacheTypes::NAMESPACED_FULLSCHEMA_DEFINITION :
                         CacheTypes::FULLSCHEMA_DEFINITION;

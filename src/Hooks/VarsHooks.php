@@ -4,7 +4,7 @@ namespace PoP\API\Hooks;
 use PoP\API\Configuration\Request;
 use PoP\API\PersistedQueries\PersistedQueryUtils;
 use PoP\API\Schema\QueryInputs;
-use PoP\ComponentModel\Engine_Vars;
+use PoP\ComponentModel\State\ApplicationState;
 use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\ModelInstance\ModelInstance;
@@ -17,14 +17,14 @@ class VarsHooks extends AbstractHookSet
     {
         // Execute early, since others (eg: SPA) will be based on these updated values
         $this->hooksAPI->addAction(
-            '\PoP\ComponentModel\Engine_Vars:addVars',
+            'ApplicationState:addVars',
             array($this, 'addVars'),
             5,
             1
         );
         // Add functions as hooks, so we allow PoP_Application to set the 'routing-state' first
         $this->hooksAPI->addAction(
-            '\PoP\ComponentModel\Engine_Vars:addVars',
+            'ApplicationState:addVars',
             array($this, 'addURLParamVars'),
             10,
             1
@@ -103,7 +103,7 @@ class VarsHooks extends AbstractHookSet
     {
         // Allow WP API to set the "routing-state" first
         // Each page is an independent configuration
-        $vars = Engine_Vars::getVars();
+        $vars = ApplicationState::getVars();
         if ($vars['scheme'] == \POP_SCHEME_API) {
             $this->addFieldsToComponents($components);
         }
@@ -116,7 +116,7 @@ class VarsHooks extends AbstractHookSet
 
     private function addFieldsToComponents(&$components)
     {
-        $vars = Engine_Vars::getVars();
+        $vars = ApplicationState::getVars();
         if ($fields = $vars['query']) {
             // Serialize instead of implode, because $fields can contain $key => $value
             $components[] = TranslationAPIFacade::getInstance()->__('fields:', 'pop-engine').serialize($fields);

@@ -9,7 +9,7 @@ use PoP\API\Registries\SchemaDefinitionRegistryInterface;
 use PoP\ComponentModel\Facades\Cache\PersistentCacheFacade;
 use PoP\ComponentModel\Facades\Instances\InstanceManagerFacade;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
-use PoP\ComponentModel\Engine_Vars;
+use PoP\ComponentModel\State\ApplicationState;
 
 class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
 
@@ -48,7 +48,7 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
                 $persistentCache = PersistentCacheFacade::getInstance();
                 // Use different caches for the normal and namespaced schemas,
                 // or it throws exception if switching without deleting the cache (eg: when passing ?use_namespace=1)
-                $vars = Engine_Vars::getVars();
+                $vars = ApplicationState::getVars();
                 $cacheType = $vars['namespace-types-and-interfaces'] ?
                     CacheTypes::NAMESPACED_SCHEMA_DEFINITION :
                     CacheTypes::SCHEMA_DEFINITION;

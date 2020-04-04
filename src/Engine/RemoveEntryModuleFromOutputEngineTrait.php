@@ -2,7 +2,7 @@
 namespace PoP\API\Engine;
 
 use PoP\API\Component as APIComponent;
-use PoP\ComponentModel\Engine_Vars;
+use PoP\ComponentModel\State\ApplicationState;
 
 trait RemoveEntryModuleFromOutputEngineTrait {
 
@@ -11,7 +11,7 @@ trait RemoveEntryModuleFromOutputEngineTrait {
     	$data = parent::getEncodedDataObject($data);
 
         // For the API: maybe remove the entry module from the output
-        $vars = Engine_Vars::getVars();
+        $vars = ApplicationState::getVars();
         if (
         	APIComponent::isEnabled() &&
         	$vars['scheme'] == POP_SCHEME_API &&
