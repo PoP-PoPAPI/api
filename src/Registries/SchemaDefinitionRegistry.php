@@ -24,9 +24,7 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
      */
     protected function getArgumentKey(?array $fieldArgs, ?array $options): string
     {
-        // For the persistentCache (no need for in-memory cache), use a hash to remove invalid characters (such as "()")
-        $key = json_encode($fieldArgs ?? []).json_encode($options ?? []);
-        return hash('md5', $key);
+        return json_encode($fieldArgs ?? []).json_encode($options ?? []);
     }
 
     /**
@@ -49,13 +47,16 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
                 // Use different caches for the normal and namespaced schemas,
                 // or it throws exception if switching without deleting the cache (eg: when passing ?use_namespace=1)
                 $vars = ApplicationState::getVars();
-                $cacheType = $vars['namespace-types-and-interfaces'] ?
-                    CacheTypes::NAMESPACED_SCHEMA_DEFINITION :
-                    CacheTypes::SCHEMA_DEFINITION;
+                $cacheType = CacheTypes::SCHEMA_DEFINITION;
+                $cacheKeyComponents = [
+                    'namespaced' => $vars['namespace-types-and-interfaces'],
+                ];
+                // For the persistentCache, use a hash to remove invalid characters (such as "()")
+                $cacheKey = hash('md5', $key.'|'.json_encode($cacheKeyComponents));
             }
             if ($useCache) {
-                if ($persistentCache->hasCache($key, $cacheType)) {
-                    $schemaDefinition = $persistentCache->getCache($key, $cacheType);
+                if ($persistentCache->hasCache($cacheKey, $cacheType)) {
+                    $schemaDefinition = $persistentCache->getCache($cacheKey, $cacheType);
                 }
             }
             // If either not using cache, or using but the value had not been cached, then calculate the value
@@ -74,7 +75,7 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
 
                 // Store in the cache
                 if ($useCache) {
-                    $persistentCache->storeCache($key, $cacheType, $schemaDefinition);
+                    $persistentCache->storeCache($cacheKey, $cacheType, $schemaDefinition);
                 }
             }
             // Assign to in-memory cache
