@@ -118,10 +118,12 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     // Use different caches for the normal and namespaced schemas,
                     // or it throws exception if switching without deleting the cache (eg: when passing ?use_namespace=1)
                     $vars = ApplicationState::getVars();
-                    $cacheType = $vars['namespace-types-and-interfaces'] ?
-                        CacheTypes::NAMESPACED_FULLSCHEMA_DEFINITION :
-                        CacheTypes::FULLSCHEMA_DEFINITION;
-                    $cacheKey = 'fullSchema';
+                    $cacheType = CacheTypes::FULLSCHEMA_DEFINITION;
+                    $cacheKeyComponents = [
+                        'namespaced' => $vars['namespace-types-and-interfaces'],
+                    ];
+                    // For the persistentCache, use a hash to remove invalid characters (such as "()")
+                    $cacheKey = hash('md5', json_encode($cacheKeyComponents));
                 }
                 if ($useCache) {
                     if ($persistentCache->hasCache($cacheKey, $cacheType)) {
