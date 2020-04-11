@@ -22,10 +22,6 @@ services:
         class: \PoP\API\PersistedQueries\PersistedQueryManager
         public: true
 
-    root_object:
-        class: \PoP\API\ObjectModels\Root
-        public: true
-
     PoP\API\Hooks\:
         resource: '../src/Hooks/*'
         public: true

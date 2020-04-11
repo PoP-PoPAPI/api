@@ -3,7 +3,7 @@ namespace PoP\API\Registries;
 
 use PoP\API\Cache\CacheTypes;
 use PoP\API\ComponentConfiguration;
-use PoP\API\ObjectFacades\RootObjectFacade;
+use PoP\Engine\ObjectFacades\RootObjectFacade;
 use PoP\API\TypeResolvers\RootTypeResolver;
 use PoP\API\Registries\SchemaDefinitionRegistryInterface;
 use PoP\ComponentModel\Facades\Cache\PersistentCacheFacade;
