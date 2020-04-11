@@ -6,7 +6,6 @@ use PoP\API\ComponentConfiguration;
 use PoP\ComponentModel\State\ApplicationState;
 use PoP\API\Schema\SchemaDefinition;
 use PoP\API\TypeResolvers\RootTypeResolver;
-use PoP\API\TypeResolvers\SiteTypeResolver;
 use PoP\ComponentModel\Schema\SchemaHelpers;
 use PoP\API\Facades\PersistedQueryManagerFacade;
 use PoP\Translation\Facades\TranslationAPIFacade;
@@ -27,7 +26,6 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
     {
         return [
             'fullSchema',
-            'site',
         ];
     }
 
@@ -35,7 +33,6 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
     {
         $types = [
             'fullSchema' => SchemaDefinition::TYPE_OBJECT,
-            'site' => SchemaDefinition::TYPE_ID,
         ];
         return $types[$fieldName] ?? parent::getSchemaFieldType($typeResolver, $fieldName);
     }
@@ -45,7 +42,6 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
         $translationAPI = TranslationAPIFacade::getInstance();
         $descriptions = [
             'fullSchema' => $translationAPI->__('The whole API schema, exposing what fields can be queried', ''),
-            'site' => $translationAPI->__('This website', ''),
         ];
         return $descriptions[$fieldName] ?? parent::getSchemaFieldDescription($typeResolver, $fieldName);
     }
@@ -214,20 +210,8 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                 }
 
                 return $schemaDefinition;
-            case 'site':
-                return $root->getSite()->getID();
         }
 
         return parent::resolveValue($typeResolver, $resultItem, $fieldName, $fieldArgs, $variables, $expressions, $options);
-    }
-
-    public function resolveFieldTypeResolverClass(TypeResolverInterface $typeResolver, string $fieldName, array $fieldArgs = []): ?string
-    {
-        switch ($fieldName) {
-            case 'site':
-                return SiteTypeResolver::class;
-        }
-
-        return parent::resolveFieldTypeResolverClass($typeResolver, $fieldName, $fieldArgs);
     }
 }

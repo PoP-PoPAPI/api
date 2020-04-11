@@ -26,10 +26,6 @@ services:
         class: \PoP\API\ObjectModels\Root
         public: true
 
-    site_object:
-        class: \PoP\API\ObjectModels\Site
-        public: true
-
     PoP\API\Hooks\:
         resource: '../src/Hooks/*'
         public: true
@@ -44,8 +40,4 @@ services:
 
     PoP\API\FieldResolvers\:
         resource: '../src/FieldResolvers/*'
-        public: true
-
-    PoP\API\TypeResolvers\:
-        resource: '../src/TypeResolvers/*'
         public: true
