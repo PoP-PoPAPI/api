@@ -3,7 +3,7 @@ namespace PoP\API\RouteModuleProcessors;
 
 use PoP\Routing\RouteNatures;
 use PoP\ModuleRouting\AbstractEntryRouteModuleProcessor;
-use PoP\Engine\ModuleProcessors\RootRelationalFieldDataloadModuleProcessor;
+use PoP\API\ModuleProcessors\RootRelationalFieldDataloadModuleProcessor;
 
 class EntryRouteModuleProcessor extends AbstractEntryRouteModuleProcessor
 {
