@@ -3,6 +3,7 @@ namespace PoP\API\ModuleProcessors;
 
 use PoP\API\ModuleProcessors\AbstractRelationalFieldDataloadModuleProcessor;
 use PoP\Engine\TypeResolvers\RootTypeResolver;
+use PoP\Engine\ObjectModels\Root;
 
 class RootRelationalFieldDataloadModuleProcessor extends AbstractRelationalFieldDataloadModuleProcessor
 {
@@ -19,7 +20,7 @@ class RootRelationalFieldDataloadModuleProcessor extends AbstractRelationalField
     {
         switch ($module[1]) {
             case self::MODULE_DATALOAD_RELATIONALFIELDS_ROOT:
-                return 'root';
+                return Root::ID;
         }
         return parent::getDBObjectIDOrIDs($module, $props, $data_properties);
     }
