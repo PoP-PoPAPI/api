@@ -4,7 +4,7 @@ namespace PoP\API\Registries;
 use PoP\API\Cache\CacheTypes;
 use PoP\API\ComponentConfiguration;
 use PoP\Engine\ObjectFacades\RootObjectFacade;
-use PoP\API\TypeResolvers\RootTypeResolver;
+use PoP\Engine\TypeResolvers\RootTypeResolver;
 use PoP\API\Registries\SchemaDefinitionRegistryInterface;
 use PoP\ComponentModel\Facades\Cache\PersistentCacheFacade;
 use PoP\ComponentModel\Facades\Instances\InstanceManagerFacade;

@@ -5,7 +5,7 @@ use PoP\API\Cache\CacheTypes;
 use PoP\API\ComponentConfiguration;
 use PoP\ComponentModel\State\ApplicationState;
 use PoP\API\Schema\SchemaDefinition;
-use PoP\API\TypeResolvers\RootTypeResolver;
+use PoP\Engine\TypeResolvers\RootTypeResolver;
 use PoP\ComponentModel\Schema\SchemaHelpers;
 use PoP\API\Facades\PersistedQueryManagerFacade;
 use PoP\Translation\Facades\TranslationAPIFacade;
