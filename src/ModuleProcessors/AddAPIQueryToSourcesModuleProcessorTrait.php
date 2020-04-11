@@ -1,5 +1,6 @@
 <?php
 namespace PoP\API\ModuleProcessors;
+
 use PoP\FieldQuery\QuerySyntax;
 use PoP\API\Schema\QueryInputs;
 use PoP\ComponentModel\Misc\GeneralUtils;
