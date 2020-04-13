@@ -22,7 +22,7 @@ Follow the instructions under [Bootstrap a PoP API for WordPress](https://github
 Via Composer
 
 ``` bash
-$ composer require getpop/api dev-master
+composer require getpop/api dev-master
 ```
 
 **Note:** Your `composer.json` file must have the configuration below to accept minimum stability `"dev"` (there are no releases for PoP yet, and the code is installed directly from the `master` branch):
@@ -267,7 +267,6 @@ Within composable fields, errors bubble up: Since the output from a field is the
 
 - <a href="https://nextapi.getpop.org/api/graphql/?query=post(divide(a,4)).id|title">/?query=post(divide(a,4)).id|title</a>
 
-
 ## Examples
 
 Examples below use the GraphQL API. More examples can be found on the [Field Query](https://github.com/getpop/field-query) package.
@@ -452,7 +451,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## Testing
 
 ``` bash
-$ composer test
+composer test
 ```
 
 ## Contributing
