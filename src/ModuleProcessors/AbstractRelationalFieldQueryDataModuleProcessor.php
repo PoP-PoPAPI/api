@@ -70,7 +70,7 @@ abstract class AbstractRelationalFieldQueryDataModuleProcessor extends AbstractQ
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
         // Convert the field into its "not is null" version
         if ($fieldAlias = $fieldQueryInterpreter->getFieldAlias($field)) {
-            $conditionFieldAlias = 'not-isnull-'.$fieldAlias;
+            $conditionFieldAlias = 'not-isnull-' . $fieldAlias;
         }
         return $fieldQueryInterpreter->getField(
             'not',

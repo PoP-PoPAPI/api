@@ -134,7 +134,7 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
         $expressionNames = $this->directiveArgsForSchema['expressions'] ?? $properties;
         $dbKey = $typeResolver->getTypeOutputName();
         foreach (array_keys($idsDataFields) as $id) {
-            for ($i=0; $i<count($properties); $i++) {
+            for ($i = 0; $i < count($properties); $i++) {
                 // Validate that the property exists in the source object, either on this iteration or any previous one
                 $property = $properties[$i];
                 $isValueInDBItems = array_key_exists($property, $dbItems[(string)$id] ?? []);

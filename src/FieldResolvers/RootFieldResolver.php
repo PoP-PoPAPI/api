@@ -46,7 +46,8 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
         return $descriptions[$fieldName] ?? parent::getSchemaFieldDescription($typeResolver, $fieldName);
     }
 
-    protected function getSchemaFieldShapeValues() {
+    protected function getSchemaFieldShapeValues()
+    {
         return [
             SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
             SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_NESTED,

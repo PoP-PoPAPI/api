@@ -143,7 +143,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
         $dbKey = $typeResolver->getTypeOutputName();
 
         // Copy the data from each of the relational object fields to the current object
-        for ($i=0; $i<count($copyFromFields); $i++) {
+        for ($i = 0; $i < count($copyFromFields); $i++) {
             $copyFromField = $copyFromFields[$i];
             $copyToField = $copyToFields[$i] ?? $copyFromFields[$i];
             foreach ($idsDataFields as $id => $dataFields) {
@@ -217,7 +217,6 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                     }
 
                     foreach ($relationalIDs as $relationalID) {
-
                         // Validate that the source field has been set.
                         if (!array_key_exists($copyFromField, $previousDBItems[$relationalDBKey][(string)$relationalID] ?? [])) {
                             $dbErrors[(string)$id][] = [

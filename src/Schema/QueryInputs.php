@@ -1,6 +1,7 @@
 <?php
 namespace PoP\API\Schema;
 
-class QueryInputs {
+class QueryInputs
+{
     const QUERY = 'query';
 }

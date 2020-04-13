@@ -4,20 +4,20 @@ namespace PoP\API\Engine;
 use PoP\API\Component as APIComponent;
 use PoP\ComponentModel\State\ApplicationState;
 
-trait RemoveEntryModuleFromOutputEngineTrait {
+trait RemoveEntryModuleFromOutputEngineTrait
+{
 
     protected function getEncodedDataObject($data)
     {
-    	$data = parent::getEncodedDataObject($data);
+        $data = parent::getEncodedDataObject($data);
 
         // For the API: maybe remove the entry module from the output
         $vars = ApplicationState::getVars();
-        if (
-        	APIComponent::isEnabled() &&
-        	$vars['scheme'] == POP_SCHEME_API &&
-        	in_array(POP_ACTION_REMOVE_ENTRYMODULE_FROM_OUTPUT, $vars['actions']) &&
-	        $vars['dataoutputmode'] == GD_URLPARAM_DATAOUTPUTMODE_COMBINED
-	    ) {
+        if (APIComponent::isEnabled() &&
+            $vars['scheme'] == POP_SCHEME_API &&
+            in_array(POP_ACTION_REMOVE_ENTRYMODULE_FROM_OUTPUT, $vars['actions']) &&
+            $vars['dataoutputmode'] == GD_URLPARAM_DATAOUTPUTMODE_COMBINED
+        ) {
             if ($data['datasetmodulesettings']) {
                 $data['datasetmodulesettings'] = $this->removeEntryModuleFromOutput($data['datasetmodulesettings']);
             }

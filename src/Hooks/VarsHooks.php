@@ -109,7 +109,7 @@ class VarsHooks extends AbstractHookSet
         }
 
         // Namespaces change the configuration
-        $components[] = TranslationAPIFacade::getInstance()->__('namespaced:', 'pop-engine').($vars['namespace-types-and-interfaces'] ?? false);
+        $components[] = TranslationAPIFacade::getInstance()->__('namespaced:', 'pop-engine') . ($vars['namespace-types-and-interfaces'] ?? false);
 
         return $components;
     }
@@ -119,7 +119,7 @@ class VarsHooks extends AbstractHookSet
         $vars = ApplicationState::getVars();
         if ($fields = $vars['query']) {
             // Serialize instead of implode, because $fields can contain $key => $value
-            $components[] = TranslationAPIFacade::getInstance()->__('fields:', 'pop-engine').serialize($fields);
+            $components[] = TranslationAPIFacade::getInstance()->__('fields:', 'pop-engine') . serialize($fields);
         }
     }
 }

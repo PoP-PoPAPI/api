@@ -1,6 +1,7 @@
 <?php
 namespace PoP\API\Registries;
 
-interface SchemaDefinitionRegistryInterface {
+interface SchemaDefinitionRegistryInterface
+{
     public function &getSchemaDefinition(?array $fieldArgs = [], ?array $options = []): array;
 }

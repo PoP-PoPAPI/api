@@ -56,7 +56,6 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
             }
         }
         if ($dotNotation = implode(QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR, $replacedDotNotation)) {
-
             // After replacing the fragments, expand relational properties once again, since any such string could have been provided through a fragment
             // Eg: a fragment can contain strings such as "id|author.id"
             $dotNotation = $this->expandRelationalProperties($dotNotation);
@@ -83,11 +82,10 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                     if ($fieldDirectiveSplit = $this->queryParser->splitElements($firstPathLevel, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING, QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING)) {
                         $firstPathLevel = $fieldDirectiveSplit[0];
                     }
-                    if (
-                        (substr($firstPathLevel, 0, strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING)) == QuerySyntax::SYMBOL_BOOKMARK_OPENING) &&
-                        (substr($firstPathLevel, -1*strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING)) == QuerySyntax::SYMBOL_BOOKMARK_CLOSING)
+                    if ((substr($firstPathLevel, 0, strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING)) == QuerySyntax::SYMBOL_BOOKMARK_OPENING) &&
+                        (substr($firstPathLevel, -1 * strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING)) == QuerySyntax::SYMBOL_BOOKMARK_CLOSING)
                     ) {
-                        $bookmark = substr($firstPathLevel, strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING), strlen($firstPathLevel)-1-strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING));
+                        $bookmark = substr($firstPathLevel, strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING), strlen($firstPathLevel) - 1 - strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING));
 
                         // If this bookmark was not set...
                         if (!isset($bookmarkPaths[$bookmark])) {
@@ -110,8 +108,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                     }
 
                     // At every subpath, it can define a bookmark to that fragment by adding "[bookmarkName]" at its end
-                    for ($pathLevel=0; $pathLevel<count($dotfields)-1; $pathLevel++) {
-
+                    for ($pathLevel = 0; $pathLevel < count($dotfields) - 1; $pathLevel++) {
                         $errorMessageOrSymbolPositions = $this->validateProperty(
                             $dotfields[$pathLevel],
                             $commafields
@@ -141,8 +138,8 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         // If it has both "[" and "]"...
                         if ($bookmarkClosingSymbolPos !== false && $bookmarkOpeningSymbolPos !== false) {
                             // Extract the bookmark
-                            $bookmarkStartPos = $bookmarkOpeningSymbolPos+strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING);
-                            $bookmark = substr($dotfields[$pathLevel], $bookmarkStartPos, $bookmarkClosingSymbolPos-$bookmarkStartPos);
+                            $bookmarkStartPos = $bookmarkOpeningSymbolPos + strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING);
+                            $bookmark = substr($dotfields[$pathLevel], $bookmarkStartPos, $bookmarkClosingSymbolPos - $bookmarkStartPos);
 
                             // If the bookmark starts with "@", it's also a property alias.
                             $alias = '';
@@ -155,13 +152,13 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
                             // Remove the bookmark from the path. Add the alias again, and keep the fieldDirective "<...>
                             $dotfields[$pathLevel] =
-                                substr($dotfields[$pathLevel], 0, $bookmarkOpeningSymbolPos).
-                                $alias.
+                                substr($dotfields[$pathLevel], 0, $bookmarkOpeningSymbolPos) .
+                                $alias .
                                 (
                                     $skipOutputIfNullSymbolPos !== false ?
                                         QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL :
                                         ''
-                                ).
+                                ) .
                                 (
                                     $fieldDirectivesOpeningSymbolPos !== false ?
                                         substr($dotfields[$pathLevel], $fieldDirectivesOpeningSymbolPos) :
@@ -170,7 +167,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
                                 // Recalculate the path (all the levels until the pathLevel), and store it to be used on a later iteration
                             $bookmarkPath = $dotfields;
-                            array_splice($bookmarkPath, $pathLevel+1);
+                            array_splice($bookmarkPath, $pathLevel + 1);
                             $bookmarkPaths[$bookmark] = $bookmarkPath;
                             // This works now:
                             // ?query=posts(limit:3,search:template)[@posts].id|title,[posts].url
@@ -189,13 +186,13 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 }
 
                 // For each item, advance to the last level by following the "."
-                for ($i = 0; $i < count($dotfields)-1; $i++) {
+                for ($i = 0; $i < count($dotfields) - 1; $i++) {
                     $pointer[$dotfields[$i]] = $pointer[$dotfields[$i]] ?? array();
                     $pointer = &$pointer[$dotfields[$i]];
                 }
 
                 // The last level can contain several fields, separated by "|"
-                $pipefields = $dotfields[count($dotfields)-1];
+                $pipefields = $dotfields[count($dotfields) - 1];
                 // Use `splitElements` instead of `explode` so that the "|" can also be inside the fieldArgs (eg: order:title|asc)
                 foreach ($this->queryParser->splitElements($pipefields, QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $pipefield) {
                     $errorMessageOrSymbolPositions = $this->validateProperty(
@@ -288,7 +285,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         $pipeRest = substr($commafields, 0, $pipePos);
                         $dotElements = $this->queryParser->splitElements($pipeRest, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
                         // Watch out case in which there is no previous sectionPath. Eg: query=id|comments.id
-                        if ($lastDotPos = strlen($pipeRest) - strlen($dotElements[count($dotElements)-1])) {
+                        if ($lastDotPos = strlen($pipeRest) - strlen($dotElements[count($dotElements) - 1])) {
                             // The path to the properties
                             $sectionPath = substr($commafields, 0, $lastDotPos);
                             // Combination of properties and, possibly, further relational ElemCount
@@ -309,12 +306,16 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                                     0,
                                     $sectionRestDotPos
                                 ),
-                                QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING
+                                QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR,
+                                [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING],
+                                [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING],
+                                QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING,
+                                QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING
                             );
                             // Extract the new "rest" of the query section
                             $querySectionRest = substr(
                                 $sectionRest,
-                                $lastPipePos+strlen(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR)
+                                $lastPipePos + strlen(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR)
                             );
                             // Remove the relational property from the now only properties part
                             $sectionRest = substr(
@@ -323,8 +324,8 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                                 $lastPipePos
                             );
                             // Add these as 2 independent ElemCount to the query
-                            $expandedDotNotations[] = $sectionPath.$sectionRest;
-                            $commafields = $sectionPath.$querySectionRest;
+                            $expandedDotNotations[] = $sectionPath . $sectionRest;
+                            $commafields = $sectionPath . $querySectionRest;
                             // Keep iterating
                             $dotPos = QueryUtils::findFirstSymbolPosition($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
                         } else {
@@ -380,7 +381,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                     $fragmentName
                 ));
                 return null;
-            } elseif ($aliasSymbolPos === strlen($fragmentName)-1) {
+            } elseif ($aliasSymbolPos === strlen($fragmentName) - 1) {
                 // Only the "@" was added, but the alias is missing
                 $this->feedbackMessageStore->addQueryError(sprintf(
                     $this->translationAPI->__('Alias in \'%s\' is missing', 'api'),
@@ -397,9 +398,9 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
             }
             // Extract the alias, without the "@" symbol
             if ($pos !== false) {
-                $alias = substr($fragmentName, $aliasSymbolPos+strlen(QuerySyntax::SYMBOL_FIELDALIAS_PREFIX), $pos-strlen($fragmentName));
+                $alias = substr($fragmentName, $aliasSymbolPos + strlen(QuerySyntax::SYMBOL_FIELDALIAS_PREFIX), $pos - strlen($fragmentName));
             } else {
-                $alias = substr($fragmentName, $aliasSymbolPos+strlen(QuerySyntax::SYMBOL_FIELDALIAS_PREFIX));
+                $alias = substr($fragmentName, $aliasSymbolPos + strlen(QuerySyntax::SYMBOL_FIELDALIAS_PREFIX));
             }
         }
         // If it has the "skip output if null" symbol, transfer it to the resolved fragments
@@ -443,14 +444,14 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // Same with adding "?" for Skip output if null
         if ($fragmentDirectives || $alias || $skipOutputIfNull) {
             $fragmentPipeFields = $this->queryParser->splitElements($fragment, QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
-            $fragment = implode(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, array_filter(array_map(function($fragmentField) use($fragmentDirectives, $alias, $skipOutputIfNull, $fragmentPipeFields) {
+            $fragment = implode(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, array_filter(array_map(function ($fragmentField) use ($fragmentDirectives, $alias, $skipOutputIfNull, $fragmentPipeFields) {
                 // Calculate if to add the alias
                 $addAliasToFragmentField = false;
                 if ($alias) {
                     $fragmentAliasSymbolPos = QueryHelpers::findFieldAliasSymbolPosition($fragmentField);
                     $addAliasToFragmentField = $fragmentAliasSymbolPos === false;
                     if ($addAliasToFragmentField) {
-                        $fragmentFieldAliasWithSymbol = QuerySyntax::SYMBOL_FIELDALIAS_PREFIX.$alias.array_search($fragmentField, $fragmentPipeFields);
+                        $fragmentFieldAliasWithSymbol = QuerySyntax::SYMBOL_FIELDALIAS_PREFIX . $alias . array_search($fragmentField, $fragmentPipeFields);
                     }
                 }
                 // Calculate if to add "?"
@@ -478,9 +479,9 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                     if ($addSkipOutputIfNullToFragmentField) {
                         // Add "?" after the propertyName, before the directive
                         return
-                            substr($fragmentField, 0, $fragmentFieldDirectivesOpeningSymbolPos).
-                            ($addAliasToFragmentField ? $fragmentFieldAliasWithSymbol : '').
-                            QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL.
+                            substr($fragmentField, 0, $fragmentFieldDirectivesOpeningSymbolPos) .
+                            ($addAliasToFragmentField ? $fragmentFieldAliasWithSymbol : '') .
+                            QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL .
                             substr($fragmentField, $fragmentFieldDirectivesOpeningSymbolPos);
                     }
                     if ($addAliasToFragmentField) {
@@ -491,8 +492,8 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         }
                         if ($delimiterPos) {
                             return
-                                substr($fragmentField, 0, $delimiterPos).
-                                $fragmentFieldAliasWithSymbol.
+                                substr($fragmentField, 0, $delimiterPos) .
+                                $fragmentFieldAliasWithSymbol .
                                 substr($fragmentField, $delimiterPos);
                         }
                     }
@@ -505,10 +506,10 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 }
                 // Attach the fragment resolution's directives to the field, and maybe the alias and "?"
                 return
-                    $fragmentFieldName.
+                    $fragmentFieldName .
                     // Because the alias for elements on the fragment must be distinct, attach to them their position on the fragment
-                    ($addAliasToFragmentField ? $fragmentFieldAliasWithSymbol : '').
-                    ($addSkipOutputIfNullToFragmentField ? QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL : '').
+                    ($addAliasToFragmentField ? $fragmentFieldAliasWithSymbol : '') .
+                    ($addSkipOutputIfNullToFragmentField ? QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL : '') .
                     $fragmentDirectives;
             }, $fragmentPipeFields)));
         }
@@ -527,12 +528,12 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // Do this at the beginning, because the fragment may contain new leaves, which need be at the last level of the $dotfields array. So this array must be recalculated after replacing the fragments in
         // Iterate from right to left, because after replacing the fragment in, the length of $dotfields may increase
         // Right now only for the properties. For the path will be done immediately after
-        $lastLevel = count($dotfields)-1;
+        $lastLevel = count($dotfields) - 1;
         // Replace fragments for the properties, adding them to temporary variable $lastLevelProperties
         $pipefields = $this->queryParser->splitElements($dotfields[$lastLevel], QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
-        $lastPropertyNumber = count($pipefields)-1;
+        $lastPropertyNumber = count($pipefields) - 1;
         $lastLevelProperties = [];
-        for ($propertyNumber=0; $propertyNumber<=$lastPropertyNumber; $propertyNumber++) {
+        for ($propertyNumber = 0; $propertyNumber <= $lastPropertyNumber; $propertyNumber++) {
             // If it starts with "--", then it's a fragment
             $pipeField = $pipefields[$propertyNumber];
             if (substr($pipeField, 0, strlen(QuerySyntax::SYMBOL_FRAGMENT_PREFIX)) == QuerySyntax::SYMBOL_FRAGMENT_PREFIX) {
@@ -550,7 +551,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         $dotfields[$lastLevel] = implode(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, $lastLevelProperties);
 
         // Now replace fragments for properties
-        for ($pathLevel=$lastLevel-1; $pathLevel>=0; $pathLevel--) {
+        for ($pathLevel = $lastLevel - 1; $pathLevel >= 0; $pathLevel--) {
             // If it starts with "--", then it's a fragment
             $pipeField = $dotfields[$pathLevel];
             if (substr($pipeField, 0, strlen(QuerySyntax::SYMBOL_FRAGMENT_PREFIX)) == QuerySyntax::SYMBOL_FRAGMENT_PREFIX) {
@@ -682,10 +683,10 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         $aliasSymbolPos = QueryHelpers::findFieldAliasSymbolPosition($property);
         $skipOutputIfNullSymbolPos = QueryHelpers::findSkipOutputIfNullSymbolPosition($property);
         if ($fieldArgsClosingSymbolPos !== false) {
-            $nextCharPos = $fieldArgsClosingSymbolPos+strlen(QuerySyntax::SYMBOL_FIELDARGS_CLOSING);
+            $nextCharPos = $fieldArgsClosingSymbolPos + strlen(QuerySyntax::SYMBOL_FIELDARGS_CLOSING);
             if (!(
                 // It's in the last position
-                ($fieldArgsClosingSymbolPos == strlen($property)-strlen(QuerySyntax::SYMBOL_FIELDARGS_CLOSING)) ||
+                ($fieldArgsClosingSymbolPos == strlen($property) - strlen(QuerySyntax::SYMBOL_FIELDARGS_CLOSING)) ||
                 // Next comes "["
                 ($bookmarkOpeningSymbolPos !== false && $bookmarkOpeningSymbolPos == $nextCharPos) ||
                 // Next comes "@"
@@ -710,10 +711,10 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
         // After the "]", it must be either the end, "?" or "<"
         if ($bookmarkClosingSymbolPos !== false) {
-            $nextCharPos = $bookmarkClosingSymbolPos+strlen(QuerySyntax::SYMBOL_FIELDARGS_CLOSING);
+            $nextCharPos = $bookmarkClosingSymbolPos + strlen(QuerySyntax::SYMBOL_FIELDARGS_CLOSING);
             if (!(
                 // It's in the last position
-                ($bookmarkClosingSymbolPos == strlen($property)-strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING)) ||
+                ($bookmarkClosingSymbolPos == strlen($property) - strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING)) ||
                 // Next comes "?"
                 ($skipOutputIfNullSymbolPos !== false && $skipOutputIfNullSymbolPos == $nextCharPos) ||
                 // Next comes "<"
@@ -732,10 +733,10 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
         // After the "?", it must be either the end or "<"
         if ($skipOutputIfNullSymbolPos !== false) {
-            $nextCharPos = $skipOutputIfNullSymbolPos+strlen(QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL);
+            $nextCharPos = $skipOutputIfNullSymbolPos + strlen(QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL);
             if (!(
                 // It's in the last position
-                ($skipOutputIfNullSymbolPos == strlen($property)-strlen(QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL)) ||
+                ($skipOutputIfNullSymbolPos == strlen($property) - strlen(QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL)) ||
                 // Next comes "<"
                 ($fieldDirectivesOpeningSymbolPos !== false && $fieldDirectivesOpeningSymbolPos == $nextCharPos)
             )) {
@@ -753,7 +754,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         if ($fieldDirectivesClosingSymbolPos !== false) {
             if (!(
                 // It's in the last position
-                ($fieldDirectivesClosingSymbolPos == strlen($property)-strlen(QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING))
+                ($fieldDirectivesClosingSymbolPos == strlen($property) - strlen(QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING))
             )) {
                 return sprintf(
                     $this->translationAPI->__('After \'%s\', property \'%s\' must end (there cannot be any extra character). %s', 'api'),

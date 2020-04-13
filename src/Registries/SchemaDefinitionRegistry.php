@@ -11,7 +11,8 @@ use PoP\ComponentModel\Facades\Instances\InstanceManagerFacade;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\State\ApplicationState;
 
-class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
+class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface
+{
 
     protected $schemaInstances;
 
@@ -24,7 +25,7 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
      */
     protected function getArgumentKey(?array $fieldArgs, ?array $options): string
     {
-        return json_encode($fieldArgs ?? []).json_encode($options ?? []);
+        return json_encode($fieldArgs ?? []) . json_encode($options ?? []);
     }
 
     /**
@@ -52,7 +53,7 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
                     'namespaced' => $vars['namespace-types-and-interfaces'],
                 ];
                 // For the persistentCache, use a hash to remove invalid characters (such as "()")
-                $cacheKey = hash('md5', $key.'|'.json_encode($cacheKeyComponents));
+                $cacheKey = hash('md5', $key . '|' . json_encode($cacheKeyComponents));
             }
             if ($useCache) {
                 if ($persistentCache->hasCache($cacheKey, $cacheType)) {
@@ -83,5 +84,4 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface {
         }
         return $this->schemaInstances[$key];
     }
-
 }

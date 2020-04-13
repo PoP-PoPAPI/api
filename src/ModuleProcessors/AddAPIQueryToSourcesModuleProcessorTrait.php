@@ -29,14 +29,14 @@ trait AddAPIQueryToSourcesModuleProcessorTrait
                 // If not, and we're inside a subcomponent, there is no need to add the subcomponent's key alone, since the engine already includes this field as a data-field (so it was added in the previous iteration)
                 if ($key_datafields = $key_data['data-fields']) {
                     // Make sure the fields are not repeated, and no empty values
-                    $apiFields[] = $key.implode(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, array_values(array_unique(array_filter($key_datafields))));
+                    $apiFields[] = $key . implode(QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, array_values(array_unique(array_filter($key_datafields))));
                 }
 
                 // If there are subcomponents, add them into the heap
                 if ($key_data['subcomponents']) {
                     foreach ($key_data['subcomponents'] as $subcomponent_key => &$subcomponent_data) {
                         // Add the previous key, generating a path
-                        $heap[$key.$subcomponent_key.QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL][] = &$subcomponent_data;
+                        $heap[$key . $subcomponent_key . QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL][] = &$subcomponent_data;
                     }
                 }
             }

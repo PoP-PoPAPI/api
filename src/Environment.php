@@ -15,4 +15,3 @@ class Environment
         return isset($_ENV[self::USE_SCHEMA_DEFINITION_CACHE]) ? strtolower($_ENV[self::USE_SCHEMA_DEFINITION_CACHE]) == "true" : false;
     }
 }
-

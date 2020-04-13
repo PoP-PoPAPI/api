@@ -14,8 +14,7 @@ class ComponentConfigurationHookSet extends AbstractHookSet
         /**
          * Do not enable caching when doing a private schema mode
          */
-        if (
-            AccessControlEnvironment::enableIndividualControlForPublicPrivateSchemaMode() ||
+        if (AccessControlEnvironment::enableIndividualControlForPublicPrivateSchemaMode() ||
             AccessControlEnvironment::usePrivateSchemaMode()
         ) {
             $hookName = AbstractComponentConfiguration::getHookName(
@@ -24,7 +23,7 @@ class ComponentConfigurationHookSet extends AbstractHookSet
             );
             $this->hooksAPI->addFilter(
                 $hookName,
-                function() {
+                function () {
                     return false;
                 }
             );

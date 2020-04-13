@@ -14,6 +14,3 @@ class RelationalFieldQueryDataModuleProcessor extends AbstractRelationalFieldQue
         );
     }
 }
-
-
-

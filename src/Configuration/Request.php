@@ -9,4 +9,3 @@ class Request
         return isset($_REQUEST[self::URLPARAM_USE_NAMESPACE]) && $_REQUEST[self::URLPARAM_USE_NAMESPACE];
     }
 }
-

@@ -1,6 +1,7 @@
 <?php
 namespace PoP\API\Schema;
 
-class QuerySymbols {
+class QuerySymbols
+{
     const PERSISTED_QUERY = '!';
 }

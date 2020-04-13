@@ -3,7 +3,8 @@ namespace PoP\API\Container;
 
 use PoP\API\PersistedQueries\PersistedQueryUtils;
 
-class ContainerBuilderUtils {
+class ContainerBuilderUtils
+{
 
     /**
      * Add a predefined fragment to the catalogue
@@ -17,8 +18,7 @@ class ContainerBuilderUtils {
         string $fragmentName,
         string $fragmentResolution,
         ?string $description = null
-    ): void
-    {
+    ): void {
         // Format the fragment: Remove the tabs and new lines
         $fragmentResolution = PersistedQueryUtils::removeWhitespaces($fragmentResolution);
         // Enable using expressions, by going around an incompatibility with Symfony's DependencyInjection component
@@ -45,8 +45,7 @@ class ContainerBuilderUtils {
         string $queryName,
         string $queryResolution,
         ?string $description = null
-    ): void
-    {
+    ): void {
         // Format the query: Remove the tabs and new lines
         $queryResolution = PersistedQueryUtils::removeWhitespaces($queryResolution);
         // Enable using expressions, by going around an incompatibility with Symfony's DependencyInjection component

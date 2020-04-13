@@ -35,6 +35,3 @@ class RootRelationalFieldDataloadModuleProcessor extends AbstractRelationalField
         return parent::getTypeResolverClass($module);
     }
 }
-
-
-

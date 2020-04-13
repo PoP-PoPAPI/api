@@ -29,7 +29,7 @@ class ConditionalComponent
     public static function beforeBoot()
     {
         // Initialize classes
-        ContainerBuilderUtils::instantiateNamespaceServices(__NAMESPACE__.'\\Hooks');
+        ContainerBuilderUtils::instantiateNamespaceServices(__NAMESPACE__ . '\\Hooks');
         self::attachDynamicDirectiveResolvers();
     }
 
@@ -47,8 +47,7 @@ class ConditionalComponent
          * Fields will be available or not depending on the user being logged in or not
          * Then, the CacheControl for field "__schema" must be set to "no-cache"
          */
-        if (
-            Environment::enableIndividualControlForPublicPrivateSchemaMode() ||
+        if (Environment::enableIndividualControlForPublicPrivateSchemaMode() ||
             Environment::usePrivateSchemaMode()
         ) {
             SchemaNoCacheCacheControlDirectiveResolver::attach(AttachableExtensionGroups::DIRECTIVERESOLVERS);
