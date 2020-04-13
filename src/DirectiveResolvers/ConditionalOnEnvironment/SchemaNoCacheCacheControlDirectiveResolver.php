@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace PoP\API\DirectiveResolvers\ConditionalOnEnvironment;
 
 use PoP\CacheControl\DirectiveResolvers\AbstractCacheControlDirectiveResolver;

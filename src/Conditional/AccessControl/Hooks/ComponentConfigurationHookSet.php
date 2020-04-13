@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace PoP\API\Conditional\AccessControl\Hooks;
 
 use PoP\API\Environment;

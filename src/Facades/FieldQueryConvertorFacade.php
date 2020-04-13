@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace PoP\API\Facades;
 
 use PoP\API\Schema\FieldQueryConvertorInterface;

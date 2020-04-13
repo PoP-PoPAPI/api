@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace PoP\API\FieldResolvers;
 
 use PoP\API\Cache\CacheTypes;

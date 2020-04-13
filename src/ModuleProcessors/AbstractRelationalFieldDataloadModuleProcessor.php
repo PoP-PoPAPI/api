@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace PoP\API\ModuleProcessors;
 
 use PoP\ComponentModel\ModuleProcessors\AbstractDataloadModuleProcessor;
