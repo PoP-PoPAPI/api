@@ -17,6 +17,7 @@ use PoP\ComponentModel\Facades\Cache\PersistentCacheFacade;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\FieldResolvers\AbstractDBDataFieldResolver;
 use PoP\ComponentModel\Facades\Schema\SchemaDefinitionServiceFacade;
+use PoP\ComponentModel\Configuration\Request;
 
 class RootFieldResolver extends AbstractDBDataFieldResolver
 {
@@ -121,6 +122,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     $cacheType = CacheTypes::FULLSCHEMA_DEFINITION;
                     $cacheKeyComponents = [
                         'namespaced' => $vars['namespace-types-and-interfaces'],
+                        'version-constraint' => Request::getVersionConstraint() ?? '',
                     ];
                     // For the persistentCache, use a hash to remove invalid characters (such as "()")
                     $cacheKey = hash('md5', json_encode($cacheKeyComponents));

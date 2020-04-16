@@ -13,6 +13,7 @@ use PoP\ComponentModel\Facades\Cache\PersistentCacheFacade;
 use PoP\ComponentModel\Facades\Instances\InstanceManagerFacade;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\State\ApplicationState;
+use PoP\ComponentModel\Configuration\Request;
 
 class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface
 {
@@ -54,6 +55,7 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface
                 $cacheType = CacheTypes::SCHEMA_DEFINITION;
                 $cacheKeyComponents = [
                     'namespaced' => $vars['namespace-types-and-interfaces'],
+                    'version-constraint' => Request::getVersionConstraint() ?? '',
                 ];
                 // For the persistentCache, use a hash to remove invalid characters (such as "()")
                 $cacheKey = hash('md5', $key . '|' . json_encode($cacheKeyComponents));
