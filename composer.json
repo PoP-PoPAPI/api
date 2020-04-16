@@ -19,11 +19,11 @@
     "prefer-stable": true,
     "require": {
         "php" : "~7.1",
-        "getpop/engine": "~0.1",
-        "getpop/migrate-api": "~0.1"
+        "getpop/engine": "dev-master",
+        "getpop/migrate-api": "dev-master"
     },
     "require-dev": {
-        "getpop/access-control": "~0.1",
+        "getpop/access-control": "dev-master",
         "phpstan/phpstan": "^0.12",
         "phpunit/phpunit": ">=7.0",
         "squizlabs/php_codesniffer": "^3.0"
