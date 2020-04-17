@@ -49,13 +49,15 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface
             // Attempt to retrieve from the cache, if enabled
             if ($useCache = ComponentConfiguration::useSchemaDefinitionCache()) {
                 $persistentCache = PersistentCacheFacade::getInstance();
-                // Use different caches for the normal and namespaced schemas,
-                // or it throws exception if switching without deleting the cache (eg: when passing ?use_namespace=1)
+                // Use different caches for the normal and namespaced schemas,  or
+                // it throws exception if switching without deleting the cache (eg: when passing ?use_namespace=1)
                 $vars = ApplicationState::getVars();
                 $cacheType = CacheTypes::SCHEMA_DEFINITION;
                 $cacheKeyComponents = [
                     'namespaced' => $vars['namespace-types-and-interfaces'],
                     'version-constraint' => Request::getVersionConstraint() ?? '',
+                    'field-version-constraints' => Request::getVersionConstraintsForFields() ?? [],
+                    'directive-version-constraints' => Request::getVersionConstraintsForDirectives() ?? [],
                 ];
                 // For the persistentCache, use a hash to remove invalid characters (such as "()")
                 $cacheKey = hash('md5', $key . '|' . json_encode($cacheKeyComponents));
