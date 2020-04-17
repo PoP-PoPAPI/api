@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PoP\API\Cache;
 
 use PoP\ComponentModel\State\ApplicationState;
-use PoP\ComponentModel\Configuration\Request;
 
 class CacheUtils
 {
@@ -14,9 +13,9 @@ class CacheUtils
         $vars = ApplicationState::getVars();
         return [
             'namespaced' => $vars['namespace-types-and-interfaces'],
-            'version-constraint' => Request::getVersionConstraint() ?? '',
-            'field-version-constraints' => Request::getVersionConstraintsForFields() ?? [],
-            'directive-version-constraints' => Request::getVersionConstraintsForDirectives() ?? [],
+            'version-constraint' => $vars['version-constraint'],
+            'field-version-constraints' => $vars['field-version-constraints'],
+            'directive-version-constraints' => $vars['directive-version-constraints'],
         ];
     }
 }
