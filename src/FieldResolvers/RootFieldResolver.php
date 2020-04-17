@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PoP\API\FieldResolvers;
 
 use PoP\API\Cache\CacheTypes;
+use PoP\API\Cache\CacheUtils;
 use PoP\API\ComponentConfiguration;
-use PoP\ComponentModel\State\ApplicationState;
 use PoP\API\Schema\SchemaDefinition;
 use PoP\Engine\TypeResolvers\RootTypeResolver;
 use PoP\ComponentModel\Schema\SchemaHelpers;
@@ -17,7 +17,6 @@ use PoP\ComponentModel\Facades\Cache\PersistentCacheFacade;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\FieldResolvers\AbstractDBDataFieldResolver;
 use PoP\ComponentModel\Facades\Schema\SchemaDefinitionServiceFacade;
-use PoP\ComponentModel\Configuration\Request;
 
 class RootFieldResolver extends AbstractDBDataFieldResolver
 {
@@ -118,14 +117,8 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     $persistentCache = PersistentCacheFacade::getInstance();
                     // Use different caches for the normal and namespaced schemas, or
                     // it throws exception if switching without deleting the cache (eg: when passing ?use_namespace=1)
-                    $vars = ApplicationState::getVars();
                     $cacheType = CacheTypes::FULLSCHEMA_DEFINITION;
-                    $cacheKeyComponents = [
-                        'namespaced' => $vars['namespace-types-and-interfaces'],
-                        'version-constraint' => Request::getVersionConstraint() ?? '',
-                        'field-version-constraints' => Request::getVersionConstraintsForFields() ?? [],
-                        'directive-version-constraints' => Request::getVersionConstraintsForDirectives() ?? [],
-                    ];
+                    $cacheKeyComponents = CacheUtils::getSchemaCacheKeyComponents();
                     // For the persistentCache, use a hash to remove invalid characters (such as "()")
                     $cacheKey = hash('md5', json_encode($cacheKeyComponents));
                 }
