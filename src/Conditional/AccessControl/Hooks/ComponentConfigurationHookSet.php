@@ -8,7 +8,7 @@ use PoP\API\Environment;
 use PoP\API\ComponentConfiguration;
 use PoP\AccessControl\ComponentConfiguration as AccessControlComponentConfiguration;
 use PoP\Engine\Hooks\AbstractHookSet;
-use PoP\ComponentModel\ComponentConfiguration\AbstractComponentConfiguration;
+use PoP\ComponentModel\ComponentConfiguration\ComponentConfigurationHelpers;
 
 class ComponentConfigurationHookSet extends AbstractHookSet
 {
@@ -20,7 +20,7 @@ class ComponentConfigurationHookSet extends AbstractHookSet
         if (AccessControlComponentConfiguration::enableIndividualControlForPublicPrivateSchemaMode()
             || AccessControlComponentConfiguration::usePrivateSchemaMode()
         ) {
-            $hookName = AbstractComponentConfiguration::getHookName(
+            $hookName = ComponentConfigurationHelpers::getHookName(
                 ComponentConfiguration::class,
                 Environment::USE_SCHEMA_DEFINITION_CACHE
             );
