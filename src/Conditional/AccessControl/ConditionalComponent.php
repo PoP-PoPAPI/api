@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PoP\API\Conditional\AccessControl;
 
 use PoP\API\Component;
-use PoP\AccessControl\Environment;
 use PoP\AccessControl\ComponentConfiguration;
 use PoP\Root\Component\YAMLServicesTrait;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
@@ -52,7 +51,7 @@ class ConditionalComponent
          * Then, the CacheControl for field "__schema" must be set to "no-cache"
          */
         if (ComponentConfiguration::enableIndividualControlForPublicPrivateSchemaMode() ||
-            Environment::usePrivateSchemaMode()
+            ComponentConfiguration::usePrivateSchemaMode()
         ) {
             SchemaNoCacheCacheControlDirectiveResolver::attach(AttachableExtensionGroups::DIRECTIVERESOLVERS);
         }
