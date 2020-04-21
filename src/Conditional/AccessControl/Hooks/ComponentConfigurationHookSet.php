@@ -7,6 +7,7 @@ namespace PoP\API\Conditional\AccessControl\Hooks;
 use PoP\API\Environment;
 use PoP\AccessControl\Environment as AccessControlEnvironment;
 use PoP\API\ComponentConfiguration;
+use PoP\AccessControl\ComponentConfiguration as AccessControlComponentConfiguration;
 use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\ComponentModel\AbstractComponentConfiguration;
 
@@ -17,8 +18,8 @@ class ComponentConfigurationHookSet extends AbstractHookSet
         /**
          * Do not enable caching when doing a private schema mode
          */
-        if (AccessControlEnvironment::enableIndividualControlForPublicPrivateSchemaMode() ||
-            AccessControlEnvironment::usePrivateSchemaMode()
+        if (AccessControlComponentConfiguration::enableIndividualControlForPublicPrivateSchemaMode()
+            || AccessControlEnvironment::usePrivateSchemaMode()
         ) {
             $hookName = AbstractComponentConfiguration::getHookName(
                 ComponentConfiguration::class,

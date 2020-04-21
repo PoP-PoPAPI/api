@@ -6,6 +6,7 @@ namespace PoP\API\Conditional\AccessControl;
 
 use PoP\API\Component;
 use PoP\AccessControl\Environment;
+use PoP\AccessControl\ComponentConfiguration;
 use PoP\Root\Component\YAMLServicesTrait;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
 use PoP\ComponentModel\AttachableExtensions\AttachableExtensionGroups;
@@ -50,7 +51,7 @@ class ConditionalComponent
          * Fields will be available or not depending on the user being logged in or not
          * Then, the CacheControl for field "__schema" must be set to "no-cache"
          */
-        if (Environment::enableIndividualControlForPublicPrivateSchemaMode() ||
+        if (ComponentConfiguration::enableIndividualControlForPublicPrivateSchemaMode() ||
             Environment::usePrivateSchemaMode()
         ) {
             SchemaNoCacheCacheControlDirectiveResolver::attach(AttachableExtensionGroups::DIRECTIVERESOLVERS);
