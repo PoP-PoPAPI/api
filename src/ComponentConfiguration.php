@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PoP\API;
 
-use PoP\ComponentModel\AbstractComponentConfiguration;
+use PoP\ComponentModel\ComponentConfiguration\AbstractComponentConfiguration;
 use PoP\ComponentModel\ComponentConfiguration as ComponentModelComponentConfiguration;
 
 class ComponentConfiguration extends AbstractComponentConfiguration

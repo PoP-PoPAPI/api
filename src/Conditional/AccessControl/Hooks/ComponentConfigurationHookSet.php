@@ -8,7 +8,7 @@ use PoP\API\Environment;
 use PoP\API\ComponentConfiguration;
 use PoP\AccessControl\ComponentConfiguration as AccessControlComponentConfiguration;
 use PoP\Engine\Hooks\AbstractHookSet;
-use PoP\ComponentModel\AbstractComponentConfiguration;
+use PoP\ComponentModel\ComponentConfiguration\AbstractComponentConfiguration;
 
 class ComponentConfigurationHookSet extends AbstractHookSet
 {
