@@ -61,12 +61,37 @@ class RenamePropertyDirectiveResolver extends DuplicatePropertyDirectiveResolver
         array &$dbErrors,
         array &$dbWarnings,
         array &$dbDeprecations,
+        array &$dbNotices,
+        array &$dbTraces,
         array &$schemaErrors,
         array &$schemaWarnings,
-        array &$schemaDeprecations
+        array &$schemaDeprecations,
+        array &$schemaNotices,
+        array &$schemaTraces
     ): void {
         // After duplicating the property, delete the original
-        parent::resolveDirective($typeResolver, $idsDataFields, $succeedingPipelineIDsDataFields, $succeedingPipelineDirectiveResolverInstances, $resultIDItems, $unionDBKeyIDs, $dbItems, $previousDBItems, $variables, $messages, $dbErrors, $dbWarnings, $dbDeprecations, $schemaErrors, $schemaWarnings, $schemaDeprecations);
+        parent::resolveDirective(
+            $typeResolver,
+            $idsDataFields,
+            $succeedingPipelineIDsDataFields,
+            $succeedingPipelineDirectiveResolverInstances,
+            $resultIDItems,
+            $unionDBKeyIDs,
+            $dbItems,
+            $previousDBItems,
+            $variables,
+            $messages,
+            $dbErrors,
+            $dbWarnings,
+            $dbDeprecations,
+            $dbNotices,
+            $dbTraces,
+            $schemaErrors,
+            $schemaWarnings,
+            $schemaDeprecations,
+            $schemaNotices,
+            $schemaTraces
+        );
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
         foreach ($idsDataFields as $id => $dataFields) {
             foreach ($dataFields['direct'] as $field) {
