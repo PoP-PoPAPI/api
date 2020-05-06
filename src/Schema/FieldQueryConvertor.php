@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace PoP\API\Schema;
+
 use function count;
 use function strlen;
 use function substr;
