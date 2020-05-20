@@ -23,6 +23,17 @@ class Component extends AbstractComponent
     {
         return [
             \PoP\Engine\Component::class,
+        ];
+    }
+
+    /**
+     * All conditional component classes that this component depends upon, to initialize them
+     *
+     * @return array
+     */
+    public static function getDependedConditionalComponentClasses(): array
+    {
+        return [
             \PoP\AccessControl\Component::class,
         ];
     }
