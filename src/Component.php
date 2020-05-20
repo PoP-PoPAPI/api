@@ -19,6 +19,21 @@ class Component extends AbstractComponent
     use YAMLServicesTrait, CanDisableComponentTrait;
     // const VERSION = '0.1.0';
 
+    public static function getDependedComponentClasses(): array
+    {
+        return [
+            \PoP\Engine\Component::class,
+            \PoP\AccessControl\Component::class,
+        ];
+    }
+
+    public static function getDependedMigrationPlugins(): array
+    {
+        return [
+            'migrate-api',
+        ];
+    }
+
     /**
      * Initialize services
      */
