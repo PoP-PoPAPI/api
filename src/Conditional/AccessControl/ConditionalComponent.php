@@ -18,7 +18,7 @@ class ConditionalComponent
 {
     use YAMLServicesTrait;
 
-    public static function init()
+    public static function initialize()
     {
         self::initYAMLServices(Component::$COMPONENT_DIR, '/Conditional/AccessControl');
     }

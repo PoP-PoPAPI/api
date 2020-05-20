@@ -57,7 +57,7 @@ class Component extends AbstractComponent
             ServiceConfiguration::initialize();
 
             if (class_exists('\PoP\AccessControl\Component')) {
-                \PoP\API\Conditional\AccessControl\ConditionalComponent::init();
+                \PoP\API\Conditional\AccessControl\ConditionalComponent::initialize();
             }
         }
     }
