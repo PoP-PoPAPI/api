@@ -54,10 +54,11 @@ class Component extends AbstractComponent
             parent::doInitialize($skipSchema);
             self::$COMPONENT_DIR = dirname(__DIR__);
             self::initYAMLServices(self::$COMPONENT_DIR);
+            self::maybeInitYAMLSchemaServices(self::$COMPONENT_DIR, $skipSchema);
             ServiceConfiguration::initialize();
 
             if (class_exists('\PoP\AccessControl\Component')) {
-                \PoP\API\Conditional\AccessControl\ConditionalComponent::initialize();
+                \PoP\API\Conditional\AccessControl\ConditionalComponent::initialize($skipSchema);
             }
         }
     }
