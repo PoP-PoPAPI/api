@@ -73,7 +73,9 @@ RewriteRule ^api/(graphql|rest)/?$ /?scheme=api&datastructure=$1 [L,P,QSA]
 Initialize the component:
 
 ``` php
-\PoP\API\Component::initialize();
+\PoP\Root\ComponentLoader::initializeComponents([
+    \PoP\API\Component::class,
+]);
 ```
 
 > **Note:**<br/>To enable GraphQL and/or REST endpoints, the corresponding package must be installed: [GraphQL package](https://github.com/getpop/api-graphql), [REST package](https://github.com/getpop/api-rest) 
