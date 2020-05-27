@@ -48,17 +48,20 @@ class Component extends AbstractComponent
     /**
      * Initialize services
      */
-    protected static function doInitialize(bool $skipSchema = false): void
+    protected static function doInitialize(array $configuration = [], bool $skipSchema = false): void
     {
         if (self::isEnabled()) {
-            parent::doInitialize($skipSchema);
+            parent::doInitialize($configuration, $skipSchema);
             self::$COMPONENT_DIR = dirname(__DIR__);
             self::initYAMLServices(self::$COMPONENT_DIR);
             self::maybeInitYAMLSchemaServices(self::$COMPONENT_DIR, $skipSchema);
             ServiceConfiguration::initialize();
 
             if (class_exists('\PoP\AccessControl\Component')) {
-                \PoP\API\Conditional\AccessControl\ConditionalComponent::initialize($skipSchema);
+                \PoP\API\Conditional\AccessControl\ConditionalComponent::initialize(
+                    $configuration,
+                    $skipSchema
+                );
             }
         }
     }
