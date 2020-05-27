@@ -52,6 +52,7 @@ class Component extends AbstractComponent
     {
         if (self::isEnabled()) {
             parent::doInitialize($configuration, $skipSchema);
+            ComponentConfiguration::setConfiguration($configuration);
             self::$COMPONENT_DIR = dirname(__DIR__);
             self::initYAMLServices(self::$COMPONENT_DIR);
             self::maybeInitYAMLSchemaServices(self::$COMPONENT_DIR, $skipSchema);
