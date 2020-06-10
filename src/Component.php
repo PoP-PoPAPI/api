@@ -61,7 +61,9 @@ class Component extends AbstractComponent
             self::maybeInitYAMLSchemaServices(self::$COMPONENT_DIR, $skipSchema);
             ServiceConfiguration::initialize();
 
-            if (class_exists('\PoP\AccessControl\Component')) {
+            if (class_exists('\PoP\AccessControl\Component')
+                && !in_array(\PoP\AccessControl\Component::class, $skipSchemaComponentClasses)
+            ) {
                 \PoP\API\Conditional\AccessControl\ConditionalComponent::initialize(
                     $configuration,
                     $skipSchema
