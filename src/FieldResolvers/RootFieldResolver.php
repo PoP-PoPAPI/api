@@ -40,6 +40,15 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
         return $types[$fieldName] ?? parent::getSchemaFieldType($typeResolver, $fieldName);
     }
 
+    public function isSchemaFieldResponseNonNullable(TypeResolverInterface $typeResolver, string $fieldName): bool
+    {
+        switch ($fieldName) {
+            case 'fullSchema':
+                return true;
+        }
+        return parent::isSchemaFieldResponseNonNullable($typeResolver, $fieldName);
+    }
+
     public function getSchemaFieldDescription(TypeResolverInterface $typeResolver, string $fieldName): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
