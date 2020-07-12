@@ -20,6 +20,8 @@ use PoP\ComponentModel\Facades\Schema\SchemaDefinitionServiceFacade;
 
 class RootFieldResolver extends AbstractDBDataFieldResolver
 {
+    public const ENUM_SCHEMA_OUTPUT_SHAPE = 'SchemaOutputShape';
+
     public static function getClassesToAttachTo(): array
     {
         return array(RootTypeResolver::class);
@@ -89,6 +91,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                                 SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                                 SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_NESTED
                             ),
+                            SchemaDefinition::ARGNAME_ENUMNAME => self::ENUM_SCHEMA_OUTPUT_SHAPE,
                             SchemaDefinition::ARGNAME_ENUMVALUES => SchemaHelpers::convertToSchemaFieldArgEnumValueDefinitions(
                                 $this->getSchemaFieldShapeValues()
                             ),
