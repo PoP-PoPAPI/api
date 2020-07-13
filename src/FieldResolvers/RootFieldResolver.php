@@ -8,20 +8,20 @@ use PoP\API\Cache\CacheTypes;
 use PoP\API\Cache\CacheUtils;
 use PoP\API\ComponentConfiguration;
 use PoP\API\Schema\SchemaDefinition;
-use PoP\Engine\TypeResolvers\RootTypeResolver;
+use PoP\API\Enums\SchemaFieldShapeEnum;
 use PoP\ComponentModel\Schema\SchemaHelpers;
+use PoP\Engine\TypeResolvers\RootTypeResolver;
 use PoP\API\Facades\PersistedQueryManagerFacade;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\API\Facades\PersistedFragmentManagerFacade;
 use PoP\ComponentModel\Facades\Cache\PersistentCacheFacade;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
+use PoP\ComponentModel\Facades\Instances\InstanceManagerFacade;
 use PoP\ComponentModel\FieldResolvers\AbstractDBDataFieldResolver;
 use PoP\ComponentModel\Facades\Schema\SchemaDefinitionServiceFacade;
 
 class RootFieldResolver extends AbstractDBDataFieldResolver
 {
-    public const ENUM_SCHEMA_OUTPUT_SHAPE = 'SchemaOutputShape';
-
     public static function getClassesToAttachTo(): array
     {
         return array(RootTypeResolver::class);
@@ -60,20 +60,14 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
         return $descriptions[$fieldName] ?? parent::getSchemaFieldDescription($typeResolver, $fieldName);
     }
 
-    protected function getSchemaFieldShapeValues()
-    {
-        return [
-            SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
-            SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_NESTED,
-        ];
-    }
-
     public function getSchemaFieldArgs(TypeResolverInterface $typeResolver, string $fieldName): array
     {
         $schemaFieldArgs = parent::getSchemaFieldArgs($typeResolver, $fieldName);
         $translationAPI = TranslationAPIFacade::getInstance();
+        $instanceManager = InstanceManagerFacade::getInstance();
         switch ($fieldName) {
             case 'fullSchema':
+                $schemaOutputShapeEnum = $instanceManager->getInstance(SchemaFieldShapeEnum::class);
                 return array_merge(
                     $schemaFieldArgs,
                     [
@@ -91,9 +85,9 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                                 SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                                 SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_NESTED
                             ),
-                            SchemaDefinition::ARGNAME_ENUMNAME => self::ENUM_SCHEMA_OUTPUT_SHAPE,
+                            SchemaDefinition::ARGNAME_ENUMNAME => $schemaOutputShapeEnum->getName(),
                             SchemaDefinition::ARGNAME_ENUMVALUES => SchemaHelpers::convertToSchemaFieldArgEnumValueDefinitions(
-                                $this->getSchemaFieldShapeValues()
+                                $schemaOutputShapeEnum->getValues(),
                             ),
                             SchemaDefinition::ARGNAME_DEFAULT_VALUE => SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                         ],
@@ -151,12 +145,14 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     // Normalize properties in $fieldArgs with their defaults
                     // By default make it deep. To avoid it, must pass argument (deep:false)
                     // By default, use the "flat" shape
+                    $instanceManager = InstanceManagerFacade::getInstance();
+                    $schemaOutputShapeEnum = $instanceManager->getInstance(SchemaFieldShapeEnum::class);
                     $schemaOptions = array_merge(
                         $options,
                         [
                             'deep' => isset($fieldArgs['deep']) ? $fieldArgs['deep'] : true,
                             'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : true,
-                            'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $this->getSchemaFieldShapeValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
+                            'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $schemaOutputShapeEnum->getValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                             'useTypeName' => isset($fieldArgs['useTypeName']) ? $fieldArgs['useTypeName'] : true,
                         ]
                     );
