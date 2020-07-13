@@ -85,8 +85,8 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                                 SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
                                 SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_NESTED
                             ),
-                            SchemaDefinition::ARGNAME_ENUMNAME => $schemaOutputShapeEnum->getName(),
-                            SchemaDefinition::ARGNAME_ENUMVALUES => SchemaHelpers::convertToSchemaFieldArgEnumValueDefinitions(
+                            SchemaDefinition::ARGNAME_ENUM_NAME => $schemaOutputShapeEnum->getName(),
+                            SchemaDefinition::ARGNAME_ENUM_VALUES => SchemaHelpers::convertToSchemaFieldArgEnumValueDefinitions(
                                 $schemaOutputShapeEnum->getValues(),
                             ),
                             SchemaDefinition::ARGNAME_DEFAULT_VALUE => SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
