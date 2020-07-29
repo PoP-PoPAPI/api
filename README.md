@@ -28,6 +28,8 @@ composer require getpop/api
 
 #### Enable pretty permalinks
 
+##### Apache
+
 Add the following code in the `.htaccess` file to enable API endpoint `/api/`:
 
 ```apache
@@ -66,6 +68,38 @@ RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
 RewriteRule ^api/(graphql|rest)/?$ /?scheme=api&datastructure=$1 [L,P,QSA]
 </IfModule>
+```
+
+##### Nginx
+
+Add the following code in the Nginx configuration's `server` entry, to enable API endpoint `/api/`. Please notice that the resolver below is the one for Docker; replace this value for your environment.
+
+```nginx
+location ~ ^(.*)/api/?$ {
+    # Resolver for Docker. Change to your own
+    resolver 127.0.0.11 [::1];
+    # If adding $args and it's empty, it does a redirect from /api/ to ?scheme=api.
+    # Then, add $args only if not empty
+    set $redirect_uri "$scheme://$server_name$1/?scheme=api";
+    if ($args) {
+        set $redirect_uri "$scheme://$server_name$1/?$args&scheme=api";
+    }
+    proxy_pass $redirect_uri;
+}
+```
+
+To add pretty API endpoints for the extensions (GraphQL => `/api/graphql/`), REST => `/api/rest/`), add the following code:
+
+```nginx
+location ~ ^(.*)/api/(rest|graphql)/?$ {
+    # Resolver for Docker. Change to your own
+    resolver 127.0.0.11 [::1];
+    set $redirect_uri "$scheme://$server_name$1/?scheme=api&datastructure=$2";
+    if ($args) {
+        set $redirect_uri "$scheme://$server_name$1/?$args&scheme=api&datastructure=$2";
+    }
+    proxy_pass $redirect_uri;
+}
 ```
 
 ## Usage
