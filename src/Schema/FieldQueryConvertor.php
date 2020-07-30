@@ -128,59 +128,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         }
                         // Otherwise, it is an array with all the symbol positions
                         $symbolPositions = (array)$errorMessageOrSymbolPositions;
-                        list(
-                            $fieldArgsOpeningSymbolPos,
-                            $fieldArgsClosingSymbolPos,
-                            $aliasSymbolPos,
-                            $bookmarkOpeningSymbolPos,
-                            $bookmarkClosingSymbolPos,
-                            $skipOutputIfNullSymbolPos,
-                            $fieldDirectivesOpeningSymbolPos,
-                            $fieldDirectivesClosingSymbolPos,
-                        ) = $symbolPositions;
-
-                        // If it has both "[" and "]"...
-                        if ($bookmarkClosingSymbolPos !== false && $bookmarkOpeningSymbolPos !== false) {
-                            // Extract the bookmark
-                            $bookmarkStartPos = $bookmarkOpeningSymbolPos + strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING);
-                            $bookmark = substr($dotfields[$pathLevel], $bookmarkStartPos, $bookmarkClosingSymbolPos - $bookmarkStartPos);
-
-                            // If the bookmark starts with "@", it's also a property alias.
-                            $alias = '';
-                            if (substr($bookmark, 0, strlen(QuerySyntax::SYMBOL_FIELDALIAS_PREFIX)) == QuerySyntax::SYMBOL_FIELDALIAS_PREFIX) {
-                                // Add the alias again to the pathLevel item, in the right format:
-                                // Instead of fieldName[@alias] it is fieldName@alias
-                                $alias = $bookmark;
-                                $bookmark = substr($bookmark, strlen(QuerySyntax::SYMBOL_FIELDALIAS_PREFIX));
-                            }
-
-                            // Remove the bookmark from the path. Add the alias again, and keep the fieldDirective "<...>
-                            $dotfields[$pathLevel] =
-                                substr($dotfields[$pathLevel], 0, $bookmarkOpeningSymbolPos) .
-                                $alias .
-                                (
-                                    $skipOutputIfNullSymbolPos !== false ?
-                                        QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL :
-                                        ''
-                                ) .
-                                (
-                                    $fieldDirectivesOpeningSymbolPos !== false ?
-                                        substr($dotfields[$pathLevel], $fieldDirectivesOpeningSymbolPos) :
-                                        ''
-                                );
-
-                                // Recalculate the path (all the levels until the pathLevel), and store it to be used on a later iteration
-                            $bookmarkPath = $dotfields;
-                            array_splice($bookmarkPath, $pathLevel + 1);
-                            $bookmarkPaths[$bookmark] = $bookmarkPath;
-                            // This works now:
-                            // ?query=posts(limit:3,search:template)[@posts].id|title,[posts].url
-                            // Also support appending "@" before the bookmark for the aliases
-                            // ?query=posts(limit:3,search:template)[@posts].id|title,[@posts].url
-                            if ($alias) {
-                                $bookmarkPaths[$alias] = $bookmarkPath;
-                            }
-                        }
+                        $dotfields[$pathLevel] = $this->maybeReplaceBookmark($dotfields[$pathLevel], $symbolPositions, $dotfields, $pathLevel, $bookmarkPaths);
                     }
 
                     // Calculate the new "prev" bookmark path
@@ -209,13 +157,73 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         // Exit 1 levels, so it ignores only this property but keeps processing the others
                         continue;
                     }
-                    $pointer[] = $pipefield;
+                    // Otherwise, it is an array with all the symbol positions
+                    $symbolPositions = (array)$errorMessageOrSymbolPositions;
+                    $pointer[] = $this->maybeReplaceBookmark($pipefield, $symbolPositions, $dotfields, count($dotfields) - 1, $bookmarkPaths);
                 }
                 $pointer = &$fields;
             }
         }
 
         return $fields;
+    }
+    protected function maybeReplaceBookmark(string $field, array $symbolPositions, array $fieldPath, int $pathLevel, array &$bookmarkPaths): string
+    {
+        list(
+            $fieldArgsOpeningSymbolPos,
+            $fieldArgsClosingSymbolPos,
+            $aliasSymbolPos,
+            $bookmarkOpeningSymbolPos,
+            $bookmarkClosingSymbolPos,
+            $skipOutputIfNullSymbolPos,
+            $fieldDirectivesOpeningSymbolPos,
+            $fieldDirectivesClosingSymbolPos,
+        ) = $symbolPositions;
+
+        // If it has both "[" and "]"...
+        if ($bookmarkClosingSymbolPos !== false && $bookmarkOpeningSymbolPos !== false) {
+            // Extract the bookmark
+            $bookmarkStartPos = $bookmarkOpeningSymbolPos + strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING);
+            $bookmark = substr($field, $bookmarkStartPos, $bookmarkClosingSymbolPos - $bookmarkStartPos);
+
+            // If the bookmark starts with "@", it's also a property alias.
+            $alias = '';
+            if (substr($bookmark, 0, strlen(QuerySyntax::SYMBOL_FIELDALIAS_PREFIX)) == QuerySyntax::SYMBOL_FIELDALIAS_PREFIX) {
+                // Add the alias again to the pathLevel item, in the right format:
+                // Instead of fieldName[@alias] it is fieldName@alias
+                $alias = $bookmark;
+                $bookmark = substr($bookmark, strlen(QuerySyntax::SYMBOL_FIELDALIAS_PREFIX));
+            }
+
+            // Remove the bookmark from the path. Add the alias again, and keep the fieldDirective "<...>
+            $field =
+                substr($field, 0, $bookmarkOpeningSymbolPos) .
+                $alias .
+                (
+                    $skipOutputIfNullSymbolPos !== false ?
+                        QuerySyntax::SYMBOL_SKIPOUTPUTIFNULL :
+                        ''
+                ) .
+                (
+                    $fieldDirectivesOpeningSymbolPos !== false ?
+                        substr($field, $fieldDirectivesOpeningSymbolPos) :
+                        ''
+                );
+
+            // Recalculate the path (all the levels until the pathLevel), and store it to be used on a later iteration
+            $bookmarkPath = $fieldPath;
+            array_splice($bookmarkPath, $pathLevel + 1);
+            $bookmarkPaths[$bookmark] = $bookmarkPath;
+            // This works now:
+            // ?query=posts(limit:3,search:template)[@posts].id|title,[posts].url
+            // Also support appending "@" before the bookmark for the aliases
+            // ?query=posts(limit:3,search:template)[@posts].id|title,[@posts].url
+            if ($alias) {
+                $bookmarkPaths[$alias] = $bookmarkPath;
+            }
+        }
+
+        return $field;
     }
 
     protected function getFragments(): array
