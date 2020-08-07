@@ -50,7 +50,8 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         $executableFields = [];
         $executeQueryBatchInStrictOrder = ComponentConfiguration::executeQueryBatchInStrictOrder();
         $maxDepth = 0;
-        foreach ($this->queryParser->splitElements($operationDotNotation, QuerySyntax::SYMBOL_OPERATIONS_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_BOOKMARK_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_BOOKMARK_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $dotNotation) {
+        $dotNotations = $this->queryParser->splitElements($operationDotNotation, QuerySyntax::SYMBOL_OPERATIONS_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_BOOKMARK_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_BOOKMARK_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
+        foreach ($dotNotations as $dotNotation) {
 
             // Support a query combining relational and properties:
             // ?field=posts.id|title|author.id|name|posts.id|title|author.name
@@ -70,17 +71,18 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 // Eg: a fragment can contain strings such as "id|author.id"
                 $dotNotation = $this->expandRelationalProperties($dotNotation);
 
-                // Initialize the pointer
-                $requestedPointer = &$requestedFields;
-                $executablePointer = &$executableFields;
-
                 // Allow for bookmarks, similar to GraphQL: https://graphql.org/learn/queries/#bookmarks
                 // The bookmark "prev" (under constant TOKEN_BOOKMARK) is a reserved one: it always refers to the previous query node
                 $bookmarkPaths = [];
                 $operationMaxLevels = 0;
 
                 // Split the ElemCount by ",". Use `splitElements` instead of `explode` so that the "," can also be inside the fieldArgs
-                foreach ($this->queryParser->splitElements($dotNotation, QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_BOOKMARK_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_BOOKMARK_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $commafields) {
+                $commafieldSet = $this->queryParser->splitElements($dotNotation, QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_BOOKMARK_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_BOOKMARK_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
+                foreach ($commafieldSet as $commafields) {
+
+                    // Initialize the pointer
+                    $requestedPointer = &$requestedFields;
+                    $executablePointer = &$executableFields;
 
                     // Add as many "self" as the highest number of levels in the previous operation
                     for ($i = 0; $i < $maxDepth; $i++) {
@@ -185,16 +187,12 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         $requestedPointer[] = $pipefield;
                         $executablePointer[] = $pipefield;
                     }
-                    $requestedPointer = &$requestedFields;
-                    $executablePointer = &$executableFields;
                 }
             }
             if ($executeQueryBatchInStrictOrder) {
-                // Get the maximum number of connections in this operation
-                // Add it to the depth for the next operation minus one:
-                // that will add it at the same level as the last field
-                // from the previous operation
-                $maxDepth += $operationMaxLevels - 1;
+                // Get the maximum number of connections in this operation,
+                // and add it to the depth for the next operation
+                $maxDepth += $operationMaxLevels;
             }
         }
         return new FieldQuerySet($requestedFields, $executableFields);
