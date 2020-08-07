@@ -10,6 +10,7 @@ use function substr;
 use PoP\FieldQuery\QueryUtils;
 use PoP\FieldQuery\QuerySyntax;
 use PoP\FieldQuery\QueryHelpers;
+use PoP\API\Schema\FieldQuerySet;
 use PoP\QueryParsing\QueryParserInterface;
 use PoP\Translation\TranslationAPIInterface;
 use PoP\API\Facades\PersistedFragmentManagerFacade;
@@ -39,133 +40,164 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         $this->queryParser = $queryParser;
     }
 
-    public function convertAPIQuery(string $dotNotation, ?array $fragments = null): array
+    public function convertAPIQuery(string $operationDotNotation, ?array $fragments = null): FieldQuerySet
     {
         $fragments = $fragments ?? $this->getFragments();
 
         // If it is a string, split the ElemCount with ',', the inner ElemCount with '.', and the inner fields with '|'
-        $fields = [];
+        $requestedFields = [];
+        $executableFields = [];
+        // $executeQueryBatchInStrictOrder = ComponentConfiguration::executeQueryBatchInStrictOrder();
+        $executeQueryBatchInStrictOrder = true;
+        $maxDepth = 0;
+        foreach ($this->queryParser->splitElements($operationDotNotation, QuerySyntax::SYMBOL_OPERATIONS_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_BOOKMARK_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_BOOKMARK_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $dotNotation) {
 
-        // Support a query combining relational and properties:
-        // ?field=posts.id|title|author.id|name|posts.id|title|author.name
-        // Transform it into:
-        // ?field=posts.id|title,posts.author.id|name,posts.author.posts.id|title,posts.author.posts.author.name
-        $dotNotation = $this->expandRelationalProperties($dotNotation);
-
-        // Replace all fragment placeholders with the actual fragments
-        $replacedDotNotation = [];
-        foreach ($this->queryParser->splitElements($dotNotation, QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_BOOKMARK_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_BOOKMARK_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $commafields) {
-            if ($replacedCommaFields = $this->replaceFragments($commafields, $fragments)) {
-                $replacedDotNotation[] = $replacedCommaFields;
-            }
-        }
-        if ($dotNotation = implode(QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR, $replacedDotNotation)) {
-            // After replacing the fragments, expand relational properties once again, since any such string could have been provided through a fragment
-            // Eg: a fragment can contain strings such as "id|author.id"
+            // Support a query combining relational and properties:
+            // ?field=posts.id|title|author.id|name|posts.id|title|author.name
+            // Transform it into:
+            // ?field=posts.id|title,posts.author.id|name,posts.author.posts.id|title,posts.author.posts.author.name
             $dotNotation = $this->expandRelationalProperties($dotNotation);
 
-            // Initialize the pointer
-            $pointer = &$fields;
-
-            // Allow for bookmarks, similar to GraphQL: https://graphql.org/learn/queries/#bookmarks
-            // The bookmark "prev" (under constant TOKEN_BOOKMARK) is a reserved one: it always refers to the previous query node
-            $bookmarkPaths = [];
-
-            // Split the ElemCount by ",". Use `splitElements` instead of `explode` so that the "," can also be inside the fieldArgs
+            // Replace all fragment placeholders with the actual fragments
+            $replacedDotNotation = [];
             foreach ($this->queryParser->splitElements($dotNotation, QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_BOOKMARK_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_BOOKMARK_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $commafields) {
-                // The fields are split by "."
-                // Watch out: we need to ignore all instances of "(" and ")" which may happen inside the fieldArg values!
-                // Eg: /api/?query=posts(searchfor:this => ( and this => ) are part of the search too).id|title
-                $dotfields = $this->queryParser->splitElements($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
+                if ($replacedCommaFields = $this->replaceFragments($commafields, $fragments)) {
+                    $replacedDotNotation[] = $replacedCommaFields;
+                }
+            }
+            if ($dotNotation = implode(QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR, $replacedDotNotation)) {
+                // After replacing the fragments, expand relational properties once again, since any such string could have been provided through a fragment
+                // Eg: a fragment can contain strings such as "id|author.id"
+                $dotNotation = $this->expandRelationalProperties($dotNotation);
 
-                // If there is a path to the node...
-                if (count($dotfields) >= 2) {
-                    // If surrounded by "[]", the first element references a bookmark from a previous iteration. If so, retrieve it
-                    $firstPathLevel = $dotfields[0];
-                    // Remove the fieldDirective, if it has one
-                    if ($fieldDirectiveSplit = $this->queryParser->splitElements($firstPathLevel, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING, QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING)) {
-                        $firstPathLevel = $fieldDirectiveSplit[0];
+                // Initialize the pointer
+                $requestedPointer = &$requestedFields;
+                $executablePointer = &$executableFields;
+
+                // Allow for bookmarks, similar to GraphQL: https://graphql.org/learn/queries/#bookmarks
+                // The bookmark "prev" (under constant TOKEN_BOOKMARK) is a reserved one: it always refers to the previous query node
+                $bookmarkPaths = [];
+                $operationMaxLevels = 0;
+
+                // Split the ElemCount by ",". Use `splitElements` instead of `explode` so that the "," can also be inside the fieldArgs
+                foreach ($this->queryParser->splitElements($dotNotation, QuerySyntax::SYMBOL_QUERYFIELDS_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_BOOKMARK_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_BOOKMARK_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $commafields) {
+
+                    // Add as many "self" as the highest number of levels in the previous operation
+                    for ($i = 0; $i < $maxDepth; $i++) {
+                        $executablePointer['self'] = $executablePointer['self'] ?? array();
+                        $executablePointer = &$executablePointer['self'];
                     }
-                    if ((substr($firstPathLevel, 0, strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING)) == QuerySyntax::SYMBOL_BOOKMARK_OPENING) &&
-                        (substr($firstPathLevel, -1 * strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING)) == QuerySyntax::SYMBOL_BOOKMARK_CLOSING)
-                    ) {
-                        $bookmark = substr($firstPathLevel, strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING), strlen($firstPathLevel) - 1 - strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING));
 
-                        // If this bookmark was not set...
-                        if (!isset($bookmarkPaths[$bookmark])) {
-                            // Show an error and discard this element
-                            $errorMessage = sprintf(
-                                $this->translationAPI->__('Query path alias \'%s\' is undefined. Query section \'%s\' has been ignored', 'api'),
-                                $bookmark,
+                    // The fields are split by "."
+                    // Watch out: we need to ignore all instances of "(" and ")" which may happen inside the fieldArg values!
+                    // Eg: /api/?query=posts(searchfor:this => ( and this => ) are part of the search too).id|title
+                    $dotfields = $this->queryParser->splitElements($commafields, QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
+
+                    if ($executeQueryBatchInStrictOrder) {
+                        // Count the depth of each query when doing batching
+                        $operationMaxLevels = max(count($dotfields), $operationMaxLevels);
+                    }
+                    // If there is a path to the node...
+                    if (count($dotfields) >= 2) {
+                        // If surrounded by "[]", the first element references a bookmark from a previous iteration. If so, retrieve it
+                        $firstPathLevel = $dotfields[0];
+                        // Remove the fieldDirective, if it has one
+                        if ($fieldDirectiveSplit = $this->queryParser->splitElements($firstPathLevel, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING, QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING)) {
+                            $firstPathLevel = $fieldDirectiveSplit[0];
+                        }
+                        if ((substr($firstPathLevel, 0, strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING)) == QuerySyntax::SYMBOL_BOOKMARK_OPENING) &&
+                            (substr($firstPathLevel, -1 * strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING)) == QuerySyntax::SYMBOL_BOOKMARK_CLOSING)
+                        ) {
+                            $bookmark = substr($firstPathLevel, strlen(QuerySyntax::SYMBOL_BOOKMARK_OPENING), strlen($firstPathLevel) - 1 - strlen(QuerySyntax::SYMBOL_BOOKMARK_CLOSING));
+
+                            // If this bookmark was not set...
+                            if (!isset($bookmarkPaths[$bookmark])) {
+                                // Show an error and discard this element
+                                $errorMessage = sprintf(
+                                    $this->translationAPI->__('Query path alias \'%s\' is undefined. Query section \'%s\' has been ignored', 'api'),
+                                    $bookmark,
+                                    $commafields
+                                );
+                                $this->feedbackMessageStore->addQueryError($errorMessage);
+                                unset($bookmarkPaths[QueryTokens::TOKEN_BOOKMARK_PREV]);
+                                continue;
+                            }
+                            // Replace the first element with the bookmark path
+                            array_shift($dotfields);
+                            $dotfields = array_merge(
+                                $bookmarkPaths[$bookmark],
+                                $dotfields
+                            );
+                        }
+
+                        // At every subpath, it can define a bookmark to that fragment by adding "[bookmarkName]" at its end
+                        for ($pathLevel = 0; $pathLevel < count($dotfields) - 1; $pathLevel++) {
+                            $errorMessageOrSymbolPositions = $this->validateProperty(
+                                $dotfields[$pathLevel],
                                 $commafields
                             );
-                            $this->feedbackMessageStore->addQueryError($errorMessage);
-                            unset($bookmarkPaths[QueryTokens::TOKEN_BOOKMARK_PREV]);
-                            continue;
+
+                            // If the validation is a string, then it's an error
+                            if (is_string($errorMessageOrSymbolPositions)) {
+                                $error = (string)$errorMessageOrSymbolPositions;
+                                $this->feedbackMessageStore->addQueryError($error);
+                                unset($bookmarkPaths[QueryTokens::TOKEN_BOOKMARK_PREV]);
+                                // Exit 2 levels, so it doesn't process the whole query section, not just the property
+                                continue 2;
+                            }
+                            // Otherwise, it is an array with all the symbol positions
+                            $symbolPositions = (array)$errorMessageOrSymbolPositions;
+                            $dotfields[$pathLevel] = $this->maybeReplaceBookmark($dotfields[$pathLevel], $symbolPositions, $dotfields, $pathLevel, $bookmarkPaths);
                         }
-                        // Replace the first element with the bookmark path
-                        array_shift($dotfields);
-                        $dotfields = array_merge(
-                            $bookmarkPaths[$bookmark],
-                            $dotfields
-                        );
+
+                        // Calculate the new "prev" bookmark path
+                        $bookmarkPrevPath = $dotfields;
+                        array_pop($bookmarkPrevPath);
+                        $bookmarkPaths[QueryTokens::TOKEN_BOOKMARK_PREV] = $bookmarkPrevPath;
                     }
 
-                    // At every subpath, it can define a bookmark to that fragment by adding "[bookmarkName]" at its end
-                    for ($pathLevel = 0; $pathLevel < count($dotfields) - 1; $pathLevel++) {
-                        $errorMessageOrSymbolPositions = $this->validateProperty(
-                            $dotfields[$pathLevel],
-                            $commafields
-                        );
+                    // For each item, advance to the last level by following the "."
+                    for ($i = 0; $i < count($dotfields) - 1; $i++) {
+                        $requestedPointer[$dotfields[$i]] = $requestedPointer[$dotfields[$i]] ?? array();
+                        $requestedPointer = &$requestedPointer[$dotfields[$i]];
 
+                        $executablePointer[$dotfields[$i]] = $executablePointer[$dotfields[$i]] ?? array();
+                        $executablePointer = &$executablePointer[$dotfields[$i]];
+                    }
+
+                    // The last level can contain several fields, separated by "|"
+                    $pipefields = $dotfields[count($dotfields) - 1];
+                    // Use `splitElements` instead of `explode` so that the "|" can also be inside the fieldArgs (eg: order:title|asc)
+                    foreach ($this->queryParser->splitElements($pipefields, QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $pipefield) {
+                        $errorMessageOrSymbolPositions = $this->validateProperty(
+                            $pipefield
+                        );
                         // If the validation is a string, then it's an error
                         if (is_string($errorMessageOrSymbolPositions)) {
                             $error = (string)$errorMessageOrSymbolPositions;
                             $this->feedbackMessageStore->addQueryError($error);
-                            unset($bookmarkPaths[QueryTokens::TOKEN_BOOKMARK_PREV]);
-                            // Exit 2 levels, so it doesn't process the whole query section, not just the property
-                            continue 2;
+                            // Exit 1 levels, so it ignores only this property but keeps processing the others
+                            continue;
                         }
                         // Otherwise, it is an array with all the symbol positions
                         $symbolPositions = (array)$errorMessageOrSymbolPositions;
-                        $dotfields[$pathLevel] = $this->maybeReplaceBookmark($dotfields[$pathLevel], $symbolPositions, $dotfields, $pathLevel, $bookmarkPaths);
+                        $pipefield = $this->maybeReplaceBookmark($pipefield, $symbolPositions, $dotfields, count($dotfields) - 1, $bookmarkPaths);
+                        $requestedPointer[] = $pipefield;
+                        $executablePointer[] = $pipefield;
                     }
-
-                    // Calculate the new "prev" bookmark path
-                    $bookmarkPrevPath = $dotfields;
-                    array_pop($bookmarkPrevPath);
-                    $bookmarkPaths[QueryTokens::TOKEN_BOOKMARK_PREV] = $bookmarkPrevPath;
+                    $requestedPointer = &$requestedFields;
+                    $executablePointer = &$executableFields;
                 }
-
-                // For each item, advance to the last level by following the "."
-                for ($i = 0; $i < count($dotfields) - 1; $i++) {
-                    $pointer[$dotfields[$i]] = $pointer[$dotfields[$i]] ?? array();
-                    $pointer = &$pointer[$dotfields[$i]];
-                }
-
-                // The last level can contain several fields, separated by "|"
-                $pipefields = $dotfields[count($dotfields) - 1];
-                // Use `splitElements` instead of `explode` so that the "|" can also be inside the fieldArgs (eg: order:title|asc)
-                foreach ($this->queryParser->splitElements($pipefields, QuerySyntax::SYMBOL_FIELDPROPERTIES_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $pipefield) {
-                    $errorMessageOrSymbolPositions = $this->validateProperty(
-                        $pipefield
-                    );
-                    // If the validation is a string, then it's an error
-                    if (is_string($errorMessageOrSymbolPositions)) {
-                        $error = (string)$errorMessageOrSymbolPositions;
-                        $this->feedbackMessageStore->addQueryError($error);
-                        // Exit 1 levels, so it ignores only this property but keeps processing the others
-                        continue;
-                    }
-                    // Otherwise, it is an array with all the symbol positions
-                    $symbolPositions = (array)$errorMessageOrSymbolPositions;
-                    $pointer[] = $this->maybeReplaceBookmark($pipefield, $symbolPositions, $dotfields, count($dotfields) - 1, $bookmarkPaths);
-                }
-                $pointer = &$fields;
+            }
+            if ($executeQueryBatchInStrictOrder) {
+                // Get the maximum number of connections in this operation
+                // Add it to the depth for the next operation minus one:
+                // that will add it at the same level as the last field
+                // from the previous operation
+                $maxDepth += $operationMaxLevels - 1;
             }
         }
-
-        return $fields;
+        return new FieldQuerySet($requestedFields, $executableFields);
     }
     protected function maybeReplaceBookmark(string $field, array $symbolPositions, array $fieldPath, int $pathLevel, array &$bookmarkPaths): string
     {

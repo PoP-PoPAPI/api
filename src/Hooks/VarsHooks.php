@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace PoP\API\Hooks;
 
-use PoP\API\Configuration\Request;
-use PoP\API\PersistedQueries\PersistedQueryUtils;
 use PoP\API\Schema\QueryInputs;
-use PoP\ComponentModel\State\ApplicationState;
+use PoP\API\Configuration\Request;
 use PoP\Engine\Hooks\AbstractHookSet;
+use PoP\ComponentModel\StratumManagerFactory;
+use PoP\API\Facades\FieldQueryConvertorFacade;
+use PoP\ComponentModel\State\ApplicationState;
+use PoP\API\PersistedQueries\PersistedQueryUtils;
+use PoP\API\State\ApplicationStateUtils;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\ModelInstance\ModelInstance;
-use PoP\API\Schema\FieldQueryConvertorUtils;
-use PoP\ComponentModel\StratumManagerFactory;
 
 class VarsHooks extends AbstractHookSet
 {
@@ -74,7 +75,7 @@ class VarsHooks extends AbstractHookSet
         }
     }
 
-    public function addURLParamVars($vars_in_array)
+    public function addURLParamVars(array $vars_in_array)
     {
         // Allow WP API to set the "routing-state" first
         // Each page is an independent configuration
@@ -89,7 +90,7 @@ class VarsHooks extends AbstractHookSet
         }
     }
 
-    private function addFieldsToVars(&$vars)
+    private function addFieldsToVars(array &$vars)
     {
         if (isset($_REQUEST[QueryInputs::QUERY])) {
             $query = $_REQUEST[QueryInputs::QUERY];
@@ -97,8 +98,8 @@ class VarsHooks extends AbstractHookSet
             // If the query starts with "!", then it is the query name to a persisted query
             $query = PersistedQueryUtils::maybeGetPersistedQuery($query);
 
-            // The fields param can either be an array or a string. Convert them to array
-            $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($query);
+            // Set the query in $vars
+            ApplicationStateUtils::maybeConvertQueryAndAddToVars($vars, $query);
         }
     }
 
