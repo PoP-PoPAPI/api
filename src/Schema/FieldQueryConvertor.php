@@ -10,6 +10,7 @@ use function substr;
 use PoP\FieldQuery\QueryUtils;
 use PoP\FieldQuery\QuerySyntax;
 use PoP\FieldQuery\QueryHelpers;
+use PoP\API\Schema\FieldQuerySet;
 use PoP\QueryParsing\QueryParserInterface;
 use PoP\Translation\TranslationAPIInterface;
 use PoP\API\Facades\PersistedFragmentManagerFacade;
@@ -39,7 +40,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         $this->queryParser = $queryParser;
     }
 
-    public function convertAPIQuery(string $operationDotNotation, ?array $fragments = null): array
+    public function convertAPIQuery(string $operationDotNotation, ?array $fragments = null): FieldQuerySet
     {
         $fragments = $fragments ?? $this->getFragments();
 
@@ -190,11 +191,13 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
             }
             if ($executeQueryBatchInStrictOrder) {
                 // Get the maximum number of connections in this operation
+                // Add it to the depth for the next operation minus one:
+                // that will add it at the same level as the last field
+                // from the previous operation
                 $maxDepth += $operationMaxLevels - 1;
             }
         }
-
-        return $requestedFields;
+        return new FieldQuerySet($requestedFields, $executableFields);
     }
     protected function maybeReplaceBookmark(string $field, array $symbolPositions, array $fieldPath, int $pathLevel, array &$bookmarkPaths): string
     {
