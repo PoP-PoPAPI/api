@@ -13,6 +13,7 @@ class ComponentConfiguration
     use ComponentConfigurationTrait;
 
     private static $useSchemaDefinitionCache;
+    private static $executeQueryBatchInStrictOrder;
 
     public static function useSchemaDefinitionCache(): bool
     {
@@ -25,6 +26,24 @@ class ComponentConfiguration
         $envVariable = Environment::USE_SCHEMA_DEFINITION_CACHE;
         $selfProperty = &self::$useSchemaDefinitionCache;
         $defaultValue = false;
+        $callback = [EnvironmentValueHelpers::class, 'toBool'];
+
+        // Initialize property from the environment/hook
+        self::maybeInitializeConfigurationValue(
+            $envVariable,
+            $selfProperty,
+            $defaultValue,
+            $callback
+        );
+        return $selfProperty;
+    }
+
+    public static function executeQueryBatchInStrictOrder(): bool
+    {
+        // Define properties
+        $envVariable = Environment::EXECUTE_QUERY_BATCH_IN_STRICT_ORDER;
+        $selfProperty = &self::$executeQueryBatchInStrictOrder;
+        $defaultValue = true;
         $callback = [EnvironmentValueHelpers::class, 'toBool'];
 
         // Initialize property from the environment/hook

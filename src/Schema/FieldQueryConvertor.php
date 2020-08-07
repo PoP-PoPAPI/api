@@ -11,6 +11,7 @@ use PoP\FieldQuery\QueryUtils;
 use PoP\FieldQuery\QuerySyntax;
 use PoP\FieldQuery\QueryHelpers;
 use PoP\API\Schema\FieldQuerySet;
+use PoP\API\ComponentConfiguration;
 use PoP\QueryParsing\QueryParserInterface;
 use PoP\Translation\TranslationAPIInterface;
 use PoP\API\Facades\PersistedFragmentManagerFacade;
@@ -47,8 +48,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         // If it is a string, split the ElemCount with ',', the inner ElemCount with '.', and the inner fields with '|'
         $requestedFields = [];
         $executableFields = [];
-        // $executeQueryBatchInStrictOrder = ComponentConfiguration::executeQueryBatchInStrictOrder();
-        $executeQueryBatchInStrictOrder = true;
+        $executeQueryBatchInStrictOrder = ComponentConfiguration::executeQueryBatchInStrictOrder();
         $maxDepth = 0;
         foreach ($this->queryParser->splitElements($operationDotNotation, QuerySyntax::SYMBOL_OPERATIONS_SEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_BOOKMARK_OPENING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_BOOKMARK_CLOSING, QuerySyntax::SYMBOL_FIELDDIRECTIVE_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING) as $dotNotation) {
 
