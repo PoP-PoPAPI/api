@@ -49,7 +49,7 @@ class SetPropertiesAsExpressionsDirectiveResolver extends AbstractGlobalDirectiv
     public function getSchemaDirectiveDeprecationDescription(TypeResolverInterface $typeResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
-        return $translationAPI->__('Use directive `getSelfProp` together with field `extract` instead', 'component-model');
+        return $translationAPI->__('Use directive `getDynamicVariableProp` together with field `extract` instead', 'component-model');
     }
 
     public function getSchemaDirectiveArgs(TypeResolverInterface $typeResolver): array
