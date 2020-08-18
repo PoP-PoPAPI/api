@@ -6,6 +6,7 @@ namespace PoP\API\Engine;
 
 use PoP\API\Component as APIComponent;
 use PoP\ComponentModel\State\ApplicationState;
+use PoP\API\Response\Schemes as APISchemes;
 
 trait RemoveEntryModuleFromOutputEngineTrait
 {
@@ -17,7 +18,7 @@ trait RemoveEntryModuleFromOutputEngineTrait
         // For the API: maybe remove the entry module from the output
         $vars = ApplicationState::getVars();
         if (APIComponent::isEnabled() &&
-            $vars['scheme'] == POP_SCHEME_API &&
+            $vars['scheme'] == APISchemes::API &&
             in_array(POP_ACTION_REMOVE_ENTRYMODULE_FROM_OUTPUT, $vars['actions']) &&
             $vars['dataoutputmode'] == GD_URLPARAM_DATAOUTPUTMODE_COMBINED
         ) {

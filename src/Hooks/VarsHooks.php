@@ -8,12 +8,12 @@ use PoP\API\Schema\QueryInputs;
 use PoP\API\Configuration\Request;
 use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\ComponentModel\StratumManagerFactory;
-use PoP\API\Facades\FieldQueryConvertorFacade;
 use PoP\ComponentModel\State\ApplicationState;
 use PoP\API\PersistedQueries\PersistedQueryUtils;
 use PoP\API\State\ApplicationStateUtils;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\ModelInstance\ModelInstance;
+use PoP\API\Response\Schemes as APISchemes;
 
 class VarsHooks extends AbstractHookSet
 {
@@ -46,7 +46,7 @@ class VarsHooks extends AbstractHookSet
     public function addVars($vars_in_array)
     {
         $vars = &$vars_in_array[0];
-        if ($vars['scheme'] == \POP_SCHEME_API) {
+        if ($vars['scheme'] == APISchemes::API) {
             // For the API, the response is always JSON
             $vars['output'] = \GD_URLPARAM_OUTPUT_JSON;
 
@@ -80,7 +80,7 @@ class VarsHooks extends AbstractHookSet
         // Allow WP API to set the "routing-state" first
         // Each page is an independent configuration
         $vars = &$vars_in_array[0];
-        if ($vars['scheme'] == \POP_SCHEME_API) {
+        if ($vars['scheme'] == APISchemes::API) {
             $this->addFieldsToVars($vars);
         }
 
@@ -108,7 +108,7 @@ class VarsHooks extends AbstractHookSet
         // Allow WP API to set the "routing-state" first
         // Each page is an independent configuration
         $vars = ApplicationState::getVars();
-        if ($vars['scheme'] == \POP_SCHEME_API) {
+        if ($vars['scheme'] == APISchemes::API) {
             $this->addFieldsToComponents($components);
         }
 

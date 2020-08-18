@@ -8,6 +8,7 @@ use Exception;
 use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\ComponentModel\Misc\RequestUtils;
 use PoP\ComponentModel\State\ApplicationState;
+use PoP\API\Response\Schemes as APISchemes;
 
 class RoutingHooks extends AbstractHookSet
 {
@@ -32,7 +33,7 @@ class RoutingHooks extends AbstractHookSet
         // Because the fields can't be applied to different resources!
         // (Eg: author/leo/ and author/leo/?route=posts)
         $vars = ApplicationState::getVars();
-        if ($vars['scheme'] == POP_SCHEME_API) {
+        if ($vars['scheme'] == APISchemes::API) {
             return [];
         }
 
