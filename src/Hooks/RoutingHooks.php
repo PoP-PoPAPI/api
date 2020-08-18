@@ -7,6 +7,7 @@ namespace PoP\API\Hooks;
 use Exception;
 use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\ComponentModel\Misc\RequestUtils;
+use PoP\ComponentModel\State\ApplicationState;
 
 class RoutingHooks extends AbstractHookSet
 {
@@ -16,6 +17,26 @@ class RoutingHooks extends AbstractHookSet
             '\PoP\Routing:uri-route',
             array($this, 'getURIRoute')
         );
+
+        $this->hooksAPI->addFilter(
+            '\PoP\ComponentModel\Engine:getExtraRoutes',
+            array($this, 'getExtraRoutes'),
+            10,
+            1
+        );
+    }
+
+    public function getExtraRoutes(array $extraRoutes): array
+    {
+        // The API cannot use getExtraRoutes()!!!!!
+        // Because the fields can't be applied to different resources!
+        // (Eg: author/leo/ and author/leo/?route=posts)
+        $vars = ApplicationState::getVars();
+        if ($vars['scheme'] == POP_SCHEME_API) {
+            return [];
+        }
+
+        return $extraRoutes;
     }
 
     public function getURIRoute(string $route): string
