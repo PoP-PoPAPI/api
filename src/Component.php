@@ -53,7 +53,7 @@ class Component extends AbstractComponent
     /**
      * Initialize services
      *
-     * @param mixed[] $configuration
+     * @param array<string, mixed> $configuration
      * @param string[] $skipSchemaComponentClasses
      */
     protected static function doInitialize(
