@@ -63,6 +63,9 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface
             // If either not using cache, or using but the value had not been cached, then calculate the value
             if (!$schemaDefinition) {
                 $instanceManager = InstanceManagerFacade::getInstance();
+                /**
+                 * @var RootTypeResolver
+                 */
                 $rootTypeResolver = $instanceManager->getInstance(RootTypeResolver::class);
                 $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
                 $root = RootObjectFacade::getInstance();

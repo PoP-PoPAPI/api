@@ -67,6 +67,9 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
         $instanceManager = InstanceManagerFacade::getInstance();
         switch ($fieldName) {
             case 'fullSchema':
+                /**
+                 * @var SchemaFieldShapeEnum
+                 */
                 $schemaOutputShapeEnum = $instanceManager->getInstance(SchemaFieldShapeEnum::class);
                 return array_merge(
                     $schemaFieldArgs,
@@ -160,6 +163,9 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     // By default make it deep. To avoid it, must pass argument (deep:false)
                     // By default, use the "flat" shape
                     $instanceManager = InstanceManagerFacade::getInstance();
+                    /**
+                     * @var SchemaFieldShapeEnum
+                     */
                     $schemaOutputShapeEnum = $instanceManager->getInstance(SchemaFieldShapeEnum::class);
                     $schemaOptions = array_merge(
                         $options,
