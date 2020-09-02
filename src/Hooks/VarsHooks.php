@@ -42,8 +42,9 @@ class VarsHooks extends AbstractHookSet
     /**
      * Override values for the API mode!
      * Whenever doing ?scheme=api, the specific configuration below must be set in the vars
+     * @param array<array> $vars_in_array
      */
-    public function addVars($vars_in_array)
+    public function addVars(array $vars_in_array): void
     {
         $vars = &$vars_in_array[0];
         if ($vars['scheme'] == APISchemes::API) {
