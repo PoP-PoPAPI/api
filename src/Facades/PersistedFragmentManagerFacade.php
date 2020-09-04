@@ -11,6 +11,10 @@ class PersistedFragmentManagerFacade
 {
     public static function getInstance(): PersistedFragmentManagerInterface
     {
-        return ContainerBuilderFactory::getInstance()->get('persisted_fragment_manager');
+        /**
+         * @var PersistedFragmentManagerInterface
+         */
+        $service = ContainerBuilderFactory::getInstance()->get('persisted_fragment_manager');
+        return $service;
     }
 }

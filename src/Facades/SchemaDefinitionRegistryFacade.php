@@ -11,6 +11,10 @@ class SchemaDefinitionRegistryFacade
 {
     public static function getInstance(): SchemaDefinitionRegistryInterface
     {
-        return ContainerBuilderFactory::getInstance()->get('schema_definition_registry');
+        /**
+         * @var SchemaDefinitionRegistryInterface
+         */
+        $service = ContainerBuilderFactory::getInstance()->get('schema_definition_registry');
+        return $service;
     }
 }

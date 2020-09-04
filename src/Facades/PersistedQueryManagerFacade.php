@@ -11,6 +11,10 @@ class PersistedQueryManagerFacade
 {
     public static function getInstance(): PersistedQueryManagerInterface
     {
-        return ContainerBuilderFactory::getInstance()->get('persisted_query_manager');
+        /**
+         * @var PersistedQueryManagerInterface
+         */
+        $service = ContainerBuilderFactory::getInstance()->get('persisted_query_manager');
+        return $service;
     }
 }

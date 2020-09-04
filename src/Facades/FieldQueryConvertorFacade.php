@@ -11,6 +11,10 @@ class FieldQueryConvertorFacade
 {
     public static function getInstance(): FieldQueryConvertorInterface
     {
-        return ContainerBuilderFactory::getInstance()->get('field_query_convertor');
+        /**
+         * @var FieldQueryConvertorInterface
+         */
+        $service = ContainerBuilderFactory::getInstance()->get('field_query_convertor');
+        return $service;
     }
 }
