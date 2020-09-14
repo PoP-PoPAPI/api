@@ -12,10 +12,12 @@ use PoP\FieldQuery\QuerySyntax;
 use PoP\FieldQuery\QueryHelpers;
 use PoP\API\Schema\FieldQuerySet;
 use PoP\API\ComponentConfiguration;
+use PoP\FieldQuery\FieldQueryInterpreter;
 use PoP\QueryParsing\QueryParserInterface;
 use PoP\Translation\TranslationAPIInterface;
 use PoP\API\Facades\PersistedFragmentManagerFacade;
 use PoP\ComponentModel\Schema\FeedbackMessageStoreInterface;
+use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 
 class FieldQueryConvertor implements FieldQueryConvertorInterface
 {
@@ -150,6 +152,8 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                             // Otherwise, it is an array with all the symbol positions
                             $symbolPositions = (array)$errorMessageOrSymbolPositions;
                             $dotfields[$pathLevel] = $this->maybeReplaceBookmark($dotfields[$pathLevel], $symbolPositions, $dotfields, $pathLevel, $bookmarkPaths);
+                            // Replace the embeddable fields
+                            $dotfields[$pathLevel] = $this->maybeReplaceEmbeddableFields($dotfields[$pathLevel]);
                         }
 
                         // Calculate the new "prev" bookmark path
@@ -184,6 +188,8 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                         // Otherwise, it is an array with all the symbol positions
                         $symbolPositions = (array)$errorMessageOrSymbolPositions;
                         $pipefield = $this->maybeReplaceBookmark($pipefield, $symbolPositions, $dotfields, count($dotfields) - 1, $bookmarkPaths);
+                        // Replace the embeddable fields
+                        $pipefield = $this->maybeReplaceEmbeddableFields($pipefield);
                         $requestedPointer[] = $pipefield;
                         $executablePointer[] = $pipefield;
                     }
@@ -250,6 +256,69 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
             // ?query=posts(limit:3,search:template)[@posts].id|title,[@posts].url
             if ($alias) {
                 $bookmarkPaths[$alias] = $bookmarkPath;
+            }
+        }
+
+        return $field;
+    }
+
+    /**
+     * Support resolving other fields from the same type in field/directive arguments:
+     * Replace posts(searchfor: "{{title}}") with posts(searchfor: "sprintf(%s, [title()])")
+     */
+    protected function maybeReplaceEmbeddableFields(string $field): string
+    {
+        if (ComponentConfiguration::enableEmbeddableFields()) {
+            $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
+            /**
+             * Embeddable fields can only appear in field/directive arguments
+             */
+            $fieldArgValues = $fieldQueryInterpreter->extractFieldArgumentValues($field);
+            foreach ($fieldArgValues as $fieldArgValue) {
+                // Identify all the fieldArgValues from the string
+                /**
+                 * Inside the string, everything of pattern "{{field}}" is a field from the same type
+                 * Use a single `string` for all matches.
+                 * Eg: "title is {{title}} and authorID is {{authorID}}" is replaced
+                 * as "sprintf(title is %s and authorID is %s, [title(), authorID()])"
+                 */
+                $matches = [];
+                if (preg_match_all(
+                    '/' . QuerySyntax::SYMBOL_EMBEDDABLE_FIELD_PREFIX . '([a-zA-Z_][0-9a-zA-Z_]*)' . QuerySyntax::SYMBOL_EMBEDDABLE_FIELD_SUFFIX . '/',
+                    $fieldArgValue,
+                    $matches
+                )) {
+                    // A field can appear more than once. Use %1$s instead of %s to handle all instances
+                    $fieldEmbeds = array_unique($matches[0]); // ["{{title}}"]
+                    $fieldNames = array_unique($matches[1]); // ["title"]
+                    $fieldCount = count($fieldEmbeds);
+                    $fields = [];
+                    $replacedFieldArgValue = $fieldArgValue;
+                    for ($i = 0; $i < $fieldCount; $i++) {
+                        $replacedFieldArgValue = str_replace(
+                            $fieldEmbeds[$i],
+                            '%' . ($i + 1) . '$s', // %1$s
+                            $replacedFieldArgValue
+                        );
+                        // Add "()" to the fieldName, to make it resolvable
+                        $fields[] = $fieldQueryInterpreter->getField(
+                            $fieldNames[$i],
+                            [],
+                            null,
+                            false,
+                            [],
+                            true // <= this always adds the () at the end
+                        );
+                    }
+                    $replacedFieldArgValue = $fieldQueryInterpreter->getField(
+                        'sprintf',
+                        [
+                            'string' => $replacedFieldArgValue,
+                            'values' => $fields
+                        ]
+                    );
+                    $field = str_replace($fieldArgValue, $replacedFieldArgValue, $field);
+                }
             }
         }
 

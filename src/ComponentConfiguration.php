@@ -14,6 +14,7 @@ class ComponentConfiguration
 
     private static $useSchemaDefinitionCache;
     private static $executeQueryBatchInStrictOrder;
+    private static $enableEmbeddableFields;
 
     public static function useSchemaDefinitionCache(): bool
     {
@@ -43,6 +44,24 @@ class ComponentConfiguration
         // Define properties
         $envVariable = Environment::EXECUTE_QUERY_BATCH_IN_STRICT_ORDER;
         $selfProperty = &self::$executeQueryBatchInStrictOrder;
+        $defaultValue = true;
+        $callback = [EnvironmentValueHelpers::class, 'toBool'];
+
+        // Initialize property from the environment/hook
+        self::maybeInitializeConfigurationValue(
+            $envVariable,
+            $selfProperty,
+            $defaultValue,
+            $callback
+        );
+        return $selfProperty;
+    }
+
+    public static function enableEmbeddableFields(): bool
+    {
+        // Define properties
+        $envVariable = Environment::ENABLE_EMBEDDABLE_FIELDS;
+        $selfProperty = &self::$enableEmbeddableFields;
         $defaultValue = true;
         $callback = [EnvironmentValueHelpers::class, 'toBool'];
 
