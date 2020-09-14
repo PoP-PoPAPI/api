@@ -6,21 +6,13 @@ namespace PoP\API\Schema;
 
 use PoP\FieldQuery\QueryUtils;
 use PoP\FieldQuery\QuerySyntax;
-use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 
 class FieldQueryInterpreter extends \PoP\ComponentModel\Schema\FieldQueryInterpreter implements FieldQueryInterpreterInterface
 {
     // Cache the output from functions
     private $extractedFieldArgumentValuesCache = [];
+    private $extractedDirectiveArgumentValuesCache = [];
 
-    /**
-     * Extract field arg values without using the schema.
-     * It is needed to replace embeddable fields ({{title}}) in the arguments
-     *
-     * @param TypeResolverInterface $typeResolver
-     * @param string $field
-     * @return array
-     */
     public function extractFieldArgumentValues(string $field): array
     {
         if (!isset($this->extractedFieldArgumentValuesCache[$field])) {
@@ -31,30 +23,58 @@ class FieldQueryInterpreter extends \PoP\ComponentModel\Schema\FieldQueryInterpr
 
     protected function doExtractFieldArgumentValues(string $field): array
     {
-        $fieldArgValues = [];
+        // Extract the directives from the field
+        if ($fieldDirectives = $this->getFieldDirectives($field)) {
+            // Extract the args from the string into an array
+            if ($directiveArgsStr = $this->getFieldDirectiveArgs($fieldDirectives)) {
+                return $this->doExtractFieldOrDirectiveArgumentValues($directiveArgsStr);
+            }
+        }
+
+        return [];
+    }
+
+    public function extractDirectiveArgumentValues(string $field): array
+    {
+        if (!isset($this->extractedDirectiveArgumentValuesCache[$field])) {
+            $this->extractedDirectiveArgumentValuesCache[$field] = $this->doExtractDirectiveArgumentValues($field);
+        }
+        return $this->extractedDirectiveArgumentValuesCache[$field];
+    }
+
+    protected function doExtractDirectiveArgumentValues(string $field): array
+    {
         // Extract the args from the string into an array
-        if ($fieldArgsStr = $this->getFieldArgs($field)) {
-            // Remove the opening and closing brackets
-            $fieldArgsStr = substr($fieldArgsStr, strlen(QuerySyntax::SYMBOL_FIELDARGS_OPENING), strlen($fieldArgsStr) - strlen(QuerySyntax::SYMBOL_FIELDARGS_OPENING) - strlen(QuerySyntax::SYMBOL_FIELDARGS_CLOSING));
-            // Remove the white spaces before and after
-            if ($fieldArgsStr = trim($fieldArgsStr)) {
-                // Iterate all the elements, and extract them into the array
-                if ($fieldArgElems = $this->queryParser->splitElements($fieldArgsStr, QuerySyntax::SYMBOL_FIELDARGS_ARGSEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUEARRAY_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUEARRAY_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING)) {
-                    for ($i = 0; $i < count($fieldArgElems); $i++) {
-                        $fieldArg = $fieldArgElems[$i];
-                        // If there is no separator, then the element is the value
-                        $separatorPos = QueryUtils::findFirstSymbolPosition($fieldArg, QuerySyntax::SYMBOL_FIELDARGS_ARGKEYVALUESEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUEARRAY_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUEARRAY_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
-                        if ($separatorPos === false) {
-                            $fieldArgValue = $fieldArg;
-                        } else {
-                            $fieldArgValue = trim(substr($fieldArg, $separatorPos + strlen(QuerySyntax::SYMBOL_FIELDARGS_ARGKEYVALUESEPARATOR)));
-                        }
-                        $fieldArgValues[] = $fieldArgValue;
+        if ($directiveArgsStr = $this->getFieldDirectiveArgs($field)) {
+            return $this->doExtractFieldOrDirectiveArgumentValues($directiveArgsStr);
+        }
+
+        return [];
+    }
+
+    protected function doExtractFieldOrDirectiveArgumentValues(string $fieldOrDirectiveArgsStr): array
+    {
+        $fieldOrDirectiveArgValues = [];
+        // Remove the opening and closing brackets
+        $fieldOrDirectiveArgsStr = substr($fieldOrDirectiveArgsStr, strlen(QuerySyntax::SYMBOL_FIELDARGS_OPENING), strlen($fieldOrDirectiveArgsStr) - strlen(QuerySyntax::SYMBOL_FIELDARGS_OPENING) - strlen(QuerySyntax::SYMBOL_FIELDARGS_CLOSING));
+        // Remove the white spaces before and after
+        if ($fieldOrDirectiveArgsStr = trim($fieldOrDirectiveArgsStr)) {
+            // Iterate all the elements, and extract them into the array
+            if ($fieldArgElems = $this->queryParser->splitElements($fieldOrDirectiveArgsStr, QuerySyntax::SYMBOL_FIELDARGS_ARGSEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUEARRAY_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUEARRAY_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING)) {
+                for ($i = 0; $i < count($fieldArgElems); $i++) {
+                    $fieldArg = $fieldArgElems[$i];
+                    // If there is no separator, then the element is the value
+                    $separatorPos = QueryUtils::findFirstSymbolPosition($fieldArg, QuerySyntax::SYMBOL_FIELDARGS_ARGKEYVALUESEPARATOR, [QuerySyntax::SYMBOL_FIELDARGS_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUEARRAY_OPENING], [QuerySyntax::SYMBOL_FIELDARGS_CLOSING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUEARRAY_CLOSING], QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_OPENING, QuerySyntax::SYMBOL_FIELDARGS_ARGVALUESTRING_CLOSING);
+                    if ($separatorPos === false) {
+                        $fieldArgValue = $fieldArg;
+                    } else {
+                        $fieldArgValue = trim(substr($fieldArg, $separatorPos + strlen(QuerySyntax::SYMBOL_FIELDARGS_ARGKEYVALUESEPARATOR)));
                     }
+                    $fieldOrDirectiveArgValues[] = $fieldArgValue;
                 }
             }
         }
 
-        return $fieldArgValues;
+        return $fieldOrDirectiveArgValues;
     }
 }

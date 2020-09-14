@@ -88,7 +88,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
                     // Add as many "self" as the highest number of levels in the previous operation
                     for ($i = 0; $i < $maxDepth; $i++) {
-                        $executablePointer['self'] = $executablePointer['self'] ?? array();
+                        $fragments = $fragments ?? $this->getFragments();
                         $executablePointer = &$executablePointer['self'];
                     }
 
@@ -274,74 +274,91 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
              * Identify all the fieldArgValues from the string, because
              * embeddable fields can only appear in field/directive arguments
              */
-            $fieldArgValues = $fieldQueryInterpreter->extractFieldArgumentValues($field);
-            foreach ($fieldArgValues as $fieldArgValue) {
+            if ($fieldArgValues = $fieldQueryInterpreter->extractFieldArgumentValues($field)) {
+                $field = $this->maybeReplaceEmbeddableFieldOrDirectiveArguments($field, $fieldArgValues);
+            }
+            if ($directiveArgValues = $fieldQueryInterpreter->extractDirectiveArgumentValues($field)) {
+                $field = $this->maybeReplaceEmbeddableFieldOrDirectiveArguments($field, $directiveArgValues);
+            }
+        }
+
+        return $field;
+    }
+
+    /**
+     * Support resolving other fields from the same type in field/directive arguments:
+     * Replace posts(searchfor: "{{title}}") with posts(searchfor: "sprintf(%s, [title()])")
+     */
+    protected function maybeReplaceEmbeddableFieldOrDirectiveArguments(string $field, array $fieldOrDirectiveArgValues): string
+    {
+        $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
+        /**
+         * Inside the string, everything of pattern "{{field}}" is a field from the same type
+         * The field can include arguments:
+         * "{{date(d/m/Y)}}" or "{{date(format:d/m/Y)}}"
+         * There can be whitespaces before/after the field, not in between fieldName and fieldArgs:
+         * "{{  date(d/m/Y)  }}", but not "{{  date  (d/m/Y)  }}"
+         *
+         * Use a single `sprintf` for all matches.
+         * Eg: "title is {{title}} and authorID is {{authorID}}" is replaced
+         * as "sprintf(title is %s and authorID is %s, [title(), authorID()])"
+         *
+         * We know that SYMBOL_FIELDARGS_OPENING is "(" and SYMBOL_FIELDARGS_CLOSING is ")",
+         * so we escape them in the regex using "\\"
+         */
+        $regex = sprintf(
+            '/%s(\s*)([a-zA-Z_][0-9a-zA-Z_]*(%s.*%s)?)(\s*)%s/',
+            APIQuerySyntax::SYMBOL_EMBEDDABLE_FIELD_PREFIX,
+            '\\' . FieldQueryQuerySyntax::SYMBOL_FIELDARGS_OPENING,
+            '\\' . FieldQueryQuerySyntax::SYMBOL_FIELDARGS_CLOSING,
+            APIQuerySyntax::SYMBOL_EMBEDDABLE_FIELD_SUFFIX
+        );
+        // var_dump('--', $field);
+        foreach ($fieldOrDirectiveArgValues as $fieldOrDirectiveArgValue) {
+            $matches = [];
+            if (preg_match_all(
+                $regex,
+                $fieldOrDirectiveArgValue,
+                $matches
+            )) {
                 /**
-                 * Inside the string, everything of pattern "{{field}}" is a field from the same type
-                 * The field can include arguments:
-                 * "{{date(d/m/Y)}}" or "{{date(format:d/m/Y)}}"
-                 * There can be whitespaces before/after the field, not in between fieldName and fieldArgs:
-                 * "{{  date(d/m/Y)  }}", but not "{{  date  (d/m/Y)  }}"
-                 *
                  * Use a single `sprintf` for all matches.
                  * Eg: "title is {{title}} and authorID is {{authorID}}" is replaced
                  * as "sprintf(title is %s and authorID is %s, [title(), authorID()])"
                  *
-                 * We know that SYMBOL_FIELDARGS_OPENING is "(" and SYMBOL_FIELDARGS_CLOSING is ")",
-                 * so we escape them in the regex using "\\"
+                 * A field can appear more than once.
+                 * Use %1$s instead of %s to handle all instances
                  */
-                $regex = sprintf(
-                    '/%s(\s*)([a-zA-Z_][0-9a-zA-Z_]*(%s.*%s)?)(\s*)%s/',
-                    APIQuerySyntax::SYMBOL_EMBEDDABLE_FIELD_PREFIX,
-                    '\\' . FieldQueryQuerySyntax::SYMBOL_FIELDARGS_OPENING,
-                    '\\' . FieldQueryQuerySyntax::SYMBOL_FIELDARGS_CLOSING,
-                    APIQuerySyntax::SYMBOL_EMBEDDABLE_FIELD_SUFFIX
-                );
-                $matches = [];
-                if (preg_match_all(
-                    $regex,
-                    $fieldArgValue,
-                    $matches
-                )) {
-                    /**
-                     * Use a single `sprintf` for all matches.
-                     * Eg: "title is {{title}} and authorID is {{authorID}}" is replaced
-                     * as "sprintf(title is %s and authorID is %s, [title(), authorID()])"
-                     *
-                     * A field can appear more than once.
-                     * Use %1$s instead of %s to handle all instances
-                     */
-                    $fieldEmbeds = array_unique($matches[0]); // ["{{title}}"]
-                    $fieldNames = array_unique($matches[2]); // ["title"]
-                    $fieldCount = count($fieldEmbeds);
-                    $fields = [];
-                    $replacedFieldArgValue = $fieldArgValue;
-                    for ($i = 0; $i < $fieldCount; $i++) {
-                        $replacedFieldArgValue = str_replace(
-                            $fieldEmbeds[$i],
-                            '%' . ($i + 1) . '$s', // %1$s
-                            $replacedFieldArgValue
-                        );
-                        /**
-                         * If the field has no fieldArgs, then add "()" at the end, to make it resolvable
-                         */
-                        if (!str_ends_with($fieldNames[$i], FieldQueryQuerySyntax::SYMBOL_FIELDARGS_CLOSING)) {
-                            $fieldNames[$i] = $fieldQueryInterpreter->composeField(
-                                $fieldNames[$i],
-                                $fieldQueryInterpreter->getFieldArgsAsString([], true)
-                            );
-                        }
-                        $fields[] = $fieldNames[$i];
-                    }
-                    $replacedFieldArgValue = $fieldQueryInterpreter->getField(
-                        'sprintf',
-                        [
-                            'string' => $replacedFieldArgValue,
-                            'values' => $fields
-                        ]
+                $fieldEmbeds = array_unique($matches[0]); // ["{{title}}"]
+                $fieldNames = array_unique($matches[2]); // ["title"]
+                $fieldCount = count($fieldEmbeds);
+                $fields = [];
+                $replacedFieldArgValue = $fieldOrDirectiveArgValue;
+                for ($i = 0; $i < $fieldCount; $i++) {
+                    $replacedFieldArgValue = str_replace(
+                        $fieldEmbeds[$i],
+                        '%' . ($i + 1) . '$s', // %1$s
+                        $replacedFieldArgValue
                     );
-                    $field = str_replace($fieldArgValue, $replacedFieldArgValue, $field);
+                    /**
+                     * If the field has no fieldArgs, then add "()" at the end, to make it resolvable
+                     */
+                    if (!str_ends_with($fieldNames[$i], FieldQueryQuerySyntax::SYMBOL_FIELDARGS_CLOSING)) {
+                        $fieldNames[$i] = $fieldQueryInterpreter->composeField(
+                            $fieldNames[$i],
+                            $fieldQueryInterpreter->getFieldArgsAsString([], true)
+                        );
+                    }
+                    $fields[] = $fieldNames[$i];
                 }
+                $replacedFieldArgValue = $fieldQueryInterpreter->getField(
+                    'sprintf',
+                    [
+                        'string' => $replacedFieldArgValue,
+                        'values' => $fields
+                    ]
+                );
+                $field = str_replace($fieldOrDirectiveArgValue, $replacedFieldArgValue, $field);
             }
         }
 
