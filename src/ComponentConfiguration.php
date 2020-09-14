@@ -62,7 +62,7 @@ class ComponentConfiguration
         // Define properties
         $envVariable = Environment::ENABLE_EMBEDDABLE_FIELDS;
         $selfProperty = &self::$enableEmbeddableFields;
-        $defaultValue = true;
+        $defaultValue = false;
         $callback = [EnvironmentValueHelpers::class, 'toBool'];
 
         // Initialize property from the environment/hook
