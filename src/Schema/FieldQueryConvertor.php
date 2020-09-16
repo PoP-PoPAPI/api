@@ -45,7 +45,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
     public function convertAPIQuery(string $operationDotNotation, ?array $fragments = null): FieldQuerySet
     {
-        $fragments = $fragments ?? $this->getFragments();
+        $fragments ??= $this->getFragments();
 
         // If it is a string, split the ElemCount with ',', the inner ElemCount with '.', and the inner fields with '|'
         $requestedFields = [];
@@ -88,7 +88,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
                     // Add as many "self" as the highest number of levels in the previous operation
                     for ($i = 0; $i < $maxDepth; $i++) {
-                        $fragments = $fragments ?? $this->getFragments();
+                        $executablePointer['self'] ??= [];
                         $executablePointer = &$executablePointer['self'];
                     }
 
@@ -164,10 +164,10 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
                     // For each item, advance to the last level by following the "."
                     for ($i = 0; $i < count($dotfields) - 1; $i++) {
-                        $requestedPointer[$dotfields[$i]] = $requestedPointer[$dotfields[$i]] ?? array();
+                        $requestedPointer[$dotfields[$i]] ??= [];
                         $requestedPointer = &$requestedPointer[$dotfields[$i]];
 
-                        $executablePointer[$dotfields[$i]] = $executablePointer[$dotfields[$i]] ?? array();
+                        $executablePointer[$dotfields[$i]] ??= [];
                         $executablePointer = &$executablePointer[$dotfields[$i]];
                     }
 
@@ -313,7 +313,6 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
             '\\' . FieldQueryQuerySyntax::SYMBOL_FIELDARGS_CLOSING,
             APIQuerySyntax::SYMBOL_EMBEDDABLE_FIELD_SUFFIX
         );
-        // var_dump('--', $field);
         foreach ($fieldOrDirectiveArgValues as $fieldOrDirectiveArgValue) {
             $matches = [];
             if (preg_match_all(

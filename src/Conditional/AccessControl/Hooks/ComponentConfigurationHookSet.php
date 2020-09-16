@@ -26,9 +26,7 @@ class ComponentConfigurationHookSet extends AbstractHookSet
             );
             $this->hooksAPI->addFilter(
                 $hookName,
-                function () {
-                    return false;
-                }
+                fn () => false
             );
         }
     }
