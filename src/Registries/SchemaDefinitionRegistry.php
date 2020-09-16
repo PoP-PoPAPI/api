@@ -16,8 +16,10 @@ use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 
 class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface
 {
-
-    protected $schemaInstances;
+    /**
+     * @var array<string, array>
+     */
+    protected array $schemaInstances = [];
 
     /**
      * Create a key from the arrays, to cache the results

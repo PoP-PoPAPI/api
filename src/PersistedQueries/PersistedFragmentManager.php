@@ -8,8 +8,14 @@ use PoP\API\Schema\SchemaDefinition;
 
 class PersistedFragmentManager implements PersistedFragmentManagerInterface
 {
-    protected $persistedFragments = [];
-    protected $persistedFragmentsForSchema = [];
+    /**
+     * @var array<string, string>
+     */
+    protected array $persistedFragments = [];
+    /**
+     * @var array<string, array>
+     */
+    protected array $persistedFragmentsForSchema = [];
 
     public function getPersistedFragments(): array
     {

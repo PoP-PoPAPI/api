@@ -29,9 +29,9 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
     private $fragmentsFromRequestCache;
 
     // Services
-    protected $translationAPI;
-    protected $feedbackMessageStore;
-    protected $queryParser;
+    protected TranslationAPIInterface $translationAPI;
+    protected FeedbackMessageStoreInterface $feedbackMessageStore;
+    protected QueryParserInterface $queryParser;
 
     public function __construct(
         TranslationAPIInterface $translationAPI,

@@ -11,8 +11,8 @@ namespace PoP\API\Schema;
  */
 class FieldQuerySet
 {
-    protected $requestedFieldQuery;
-    protected $executableFieldQuery;
+    protected array $requestedFieldQuery;
+    protected array $executableFieldQuery;
 
     public function __construct(
         array $requestedFieldQuery,

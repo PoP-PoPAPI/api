@@ -8,8 +8,14 @@ use PoP\API\Schema\SchemaDefinition;
 
 class PersistedQueryManager implements PersistedQueryManagerInterface
 {
-    protected $persistedQueries = [];
-    protected $persistedQueriesForSchema = [];
+    /**
+     * @var array<string, string>
+     */
+    protected array $persistedQueries = [];
+    /**
+     * @var array<string, array>
+     */
+    protected array $persistedQueriesForSchema = [];
 
     public function getPersistedQueries(): array
     {
