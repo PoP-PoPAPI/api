@@ -22,11 +22,20 @@ use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 class FieldQueryConvertor implements FieldQueryConvertorInterface
 {
     // Cache the output from functions
-    private $expandedRelationalPropertiesCache = [];
+    /**
+     * @var array<string, string>
+     */
+    private array $expandedRelationalPropertiesCache = [];
 
     // Cache vars to take from the request
-    private $fragmentsCache;
-    private $fragmentsFromRequestCache;
+    /**
+     * @var array<string, mixed>
+     */
+    private ?array $fragmentsCache = null;
+    /**
+     * @var array<string, mixed>
+     */
+    private ?array $fragmentsFromRequestCache = null;
 
     // Services
     protected TranslationAPIInterface $translationAPI;

@@ -10,8 +10,14 @@ use PoP\FieldQuery\QuerySyntax;
 class FieldQueryInterpreter extends \PoP\ComponentModel\Schema\FieldQueryInterpreter implements FieldQueryInterpreterInterface
 {
     // Cache the output from functions
-    private $extractedFieldArgumentValuesCache = [];
-    private $extractedDirectiveArgumentValuesCache = [];
+    /**
+     * @var array<string, array >
+     */
+    private array $extractedFieldArgumentValuesCache = [];
+    /**
+     * @var array<string, array >
+     */
+    private array $extractedDirectiveArgumentValuesCache = [];
 
     public function extractFieldArgumentValues(string $field): array
     {
