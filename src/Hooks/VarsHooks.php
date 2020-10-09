@@ -46,7 +46,7 @@ class VarsHooks extends AbstractHookSet
      */
     public function addVars(array $vars_in_array): void
     {
-        $vars = &$vars_in_array[0];
+        [&$vars] = $vars_in_array;
         if ($vars['scheme'] == APISchemes::API) {
             // For the API, the response is always JSON
             $vars['output'] = \GD_URLPARAM_OUTPUT_JSON;
@@ -80,7 +80,7 @@ class VarsHooks extends AbstractHookSet
     {
         // Allow WP API to set the "routing-state" first
         // Each page is an independent configuration
-        $vars = &$vars_in_array[0];
+        [&$vars] = $vars_in_array;
         if ($vars['scheme'] == APISchemes::API) {
             $this->addFieldsToVars($vars);
         }
