@@ -1,9 +1,7 @@
 services:
     _defaults:
-        bind:
-            PoP\Hooks\HooksAPIInterface: '@hooks_api'
-            PoP\Translation\TranslationAPIInterface: '@translation_api'
+        public: true
+        autowire: true
 
     PoP\API\Conditional\AccessControl\Hooks\:
         resource: '../../../src/Conditional/AccessControl/Hooks/*'
-        public: true

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace PoP\API\Config;
 
-use PoP\ComponentModel\Container\ContainerBuilderUtils;
 use PoP\Root\Component\PHPServiceConfigurationTrait;
+use PoP\ComponentModel\Container\ContainerBuilderUtils;
+use PoP\ModuleRouting\RouteModuleProcessorManagerInterface;
 
 class ServiceConfiguration
 {
@@ -15,7 +16,7 @@ class ServiceConfiguration
     {
         // Add RouteModuleProcessors to the Manager
         ContainerBuilderUtils::injectServicesIntoService(
-            'route_module_processor_manager',
+            RouteModuleProcessorManagerInterface::class,
             'PoP\\API\\RouteModuleProcessors',
             'add'
         );

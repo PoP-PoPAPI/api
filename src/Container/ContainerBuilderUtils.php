@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace PoP\API\Container;
 
 use PoP\API\PersistedQueries\PersistedQueryUtils;
+use PoP\API\PersistedQueries\PersistedQueryManagerInterface;
+use PoP\API\PersistedQueries\PersistedFragmentManagerInterface;
 
 class ContainerBuilderUtils
 {
@@ -28,7 +30,7 @@ class ContainerBuilderUtils
         $fragmentResolution = PersistedQueryUtils::addSpacingToExpressions($fragmentResolution);
         // Inject the values into the service
         \PoP\Root\Container\ContainerBuilderUtils::injectValuesIntoService(
-            'persisted_fragment_manager',
+            PersistedFragmentManagerInterface::class,
             'add',
             $fragmentName,
             $fragmentResolution,
@@ -55,7 +57,7 @@ class ContainerBuilderUtils
         $queryResolution = PersistedQueryUtils::addSpacingToExpressions($queryResolution);
         // Inject the values into the service
         \PoP\Root\Container\ContainerBuilderUtils::injectValuesIntoService(
-            'persisted_query_manager',
+            PersistedQueryManagerInterface::class,
             'add',
             $queryName,
             $queryResolution,

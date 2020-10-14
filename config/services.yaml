@@ -1,37 +1,26 @@
 services:
     _defaults:
-        bind:
-            PoP\Hooks\HooksAPIInterface: '@hooks_api'
-            PoP\Translation\TranslationAPIInterface: '@translation_api'
-            PoP\ComponentModel\Schema\FeedbackMessageStoreInterface: '@feedback_message_store'
-            PoP\QueryParsing\QueryParserInterface: '@query_parser'
-            PoP\ComponentModel\Schema\TypeCastingExecuterInterface: '@type_casting_executer'
+        public: true
+        autowire: true
 
-    field_query_convertor:
+    PoP\API\Schema\FieldQueryConvertorInterface:
         class: \PoP\API\Schema\FieldQueryConvertor
-        public: true
 
-    schema_definition_registry:
+    PoP\API\Registries\SchemaDefinitionRegistryInterface:
         class: \PoP\API\Registries\SchemaDefinitionRegistry
-        public: true
 
-    persisted_fragment_manager:
+    PoP\API\PersistedQueries\PersistedFragmentManagerInterface:
         class: \PoP\API\PersistedQueries\PersistedFragmentManager
-        public: true
 
-    persisted_query_manager:
+    PoP\API\PersistedQueries\PersistedQueryManagerInterface:
         class: \PoP\API\PersistedQueries\PersistedQueryManager
-        public: true
 
     # Override the service from ComponentModel
-    field_query_interpreter:
+    PoP\ComponentModel\Schema\FieldQueryInterpreterInterface:
         class: \PoP\API\Schema\FieldQueryInterpreter
-        public: true
 
     PoP\API\Hooks\:
         resource: '../src/Hooks/*'
-        public: true
 
     PoP\API\RouteModuleProcessors\:
         resource: '../src/RouteModuleProcessors/*'
-        public: true
