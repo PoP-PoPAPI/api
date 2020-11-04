@@ -24,7 +24,7 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface
     /**
      * Create a key from the arrays, to cache the results
      *
-     * @param array $fieldArgs
+     * @param array<string, mixed> $fieldArgs
      * @param array|null $options
      * @return string
      */
