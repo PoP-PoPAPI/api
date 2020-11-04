@@ -373,7 +373,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
         return $field;
     }
 
-    protected function getFragments(): array
+    protected function getFragments(): array: array
     {
         if (is_null($this->fragmentsCache)) {
             $this->fragmentsCache = $this->doGetFragments();
