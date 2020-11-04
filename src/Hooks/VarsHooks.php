@@ -6,7 +6,7 @@ namespace PoP\API\Hooks;
 
 use PoP\API\Schema\QueryInputs;
 use PoP\API\Configuration\Request;
-use PoP\Engine\Hooks\AbstractHookSet;
+use PoP\Hooks\AbstractHookSet;
 use PoP\ComponentModel\StratumManagerFactory;
 use PoP\ComponentModel\State\ApplicationState;
 use PoP\API\PersistedQueries\PersistedQueryUtils;

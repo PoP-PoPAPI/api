@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PoP\API\Hooks;
 
 use Exception;
-use PoP\Engine\Hooks\AbstractHookSet;
+use PoP\Hooks\AbstractHookSet;
 use PoP\ComponentModel\Misc\RequestUtils;
 use PoP\ComponentModel\State\ApplicationState;
 use PoP\API\Response\Schemes as APISchemes;

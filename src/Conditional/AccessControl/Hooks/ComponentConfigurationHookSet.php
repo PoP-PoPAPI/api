@@ -7,7 +7,7 @@ namespace PoP\API\Conditional\AccessControl\Hooks;
 use PoP\API\Environment;
 use PoP\API\ComponentConfiguration;
 use PoP\AccessControl\ComponentConfiguration as AccessControlComponentConfiguration;
-use PoP\Engine\Hooks\AbstractHookSet;
+use PoP\Hooks\AbstractHookSet;
 use PoP\ComponentModel\ComponentConfiguration\ComponentConfigurationHelpers;
 
 class ComponentConfigurationHookSet extends AbstractHookSet
