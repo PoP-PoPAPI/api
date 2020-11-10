@@ -162,18 +162,13 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     // Normalize properties in $fieldArgs with their defaults
                     // By default make it deep. To avoid it, must pass argument (deep:false)
                     // By default, use the "flat" shape
-                    $instanceManager = InstanceManagerFacade::getInstance();
-                    /**
-                     * @var SchemaFieldShapeEnum
-                     */
-                    $schemaOutputShapeEnum = $instanceManager->getInstance(SchemaFieldShapeEnum::class);
                     $schemaOptions = array_merge(
                         $options,
                         [
-                            'deep' => isset($fieldArgs['deep']) ? $fieldArgs['deep'] : true,
-                            'compressed' => isset($fieldArgs['compressed']) ? $fieldArgs['compressed'] : true,
-                            'shape' => isset($fieldArgs['shape']) && in_array(strtolower($fieldArgs['shape']), $schemaOutputShapeEnum->getValues()) ? strtolower($fieldArgs['shape']) : SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
-                            'useTypeName' => isset($fieldArgs['useTypeName']) ? $fieldArgs['useTypeName'] : true,
+                            'deep' => $fieldArgs['deep'],
+                            'compressed' => $fieldArgs['compressed'],
+                            'shape' => $fieldArgs['shape'],
+                            'useTypeName' => $fieldArgs['useTypeName'],
                         ]
                     );
                     // If it is flat shape, all types will be added under $generalMessages

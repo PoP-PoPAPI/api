@@ -63,7 +63,6 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
                 SchemaDefinition::ARGNAME_NAME => 'copyToFields',
                 SchemaDefinition::ARGNAME_TYPE => TypeCastingHelpers::makeArray(SchemaDefinition::TYPE_STRING),
                 SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The fields in the current object to which copy the data. Default value: Same fields provided through \'copyFromFields\' argument', 'component-model'),
-                // SchemaDefinition::ARGNAME_DEFAULT_VALUE => $translationAPI->__('Same fields provided through \'copyFromFields\' argument', 'component-model'),
             ],
             [
                 SchemaDefinition::ARGNAME_NAME => 'keepRelationalIDs',
@@ -160,7 +159,7 @@ class CopyRelationalResultsDirectiveResolver extends AbstractGlobalDirectiveReso
 
         $copyFromFields = $this->directiveArgsForSchema['copyFromFields'];
         $copyToFields = $this->directiveArgsForSchema['copyToFields'] ?? $copyFromFields;
-        $keepRelationalIDs = $this->directiveArgsForSchema['keepRelationalIDs'] ?? false;
+        $keepRelationalIDs = $this->directiveArgsForSchema['keepRelationalIDs'];
 
         // From the typeResolver, obtain under what type the data for the current object is stored
         $dbKey = $typeResolver->getTypeOutputName();
