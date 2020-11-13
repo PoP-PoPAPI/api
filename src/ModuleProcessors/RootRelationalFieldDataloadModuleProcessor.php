@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PoP\API\ModuleProcessors;
 
 use PoP\API\ModuleProcessors\AbstractRelationalFieldDataloadModuleProcessor;
-use PoP\Engine\TypeResolvers\RootTypeResolver;
+use PoP\Engine\Facades\Schema\SchemaDefinitionServiceFacade;
 use PoP\Engine\ObjectModels\Root;
 
 class RootRelationalFieldDataloadModuleProcessor extends AbstractRelationalFieldDataloadModuleProcessor
@@ -32,7 +32,8 @@ class RootRelationalFieldDataloadModuleProcessor extends AbstractRelationalField
     {
         switch ($module[1]) {
             case self::MODULE_DATALOAD_RELATIONALFIELDS_ROOT:
-                return RootTypeResolver::class;
+                $schemaDefinitionService = SchemaDefinitionServiceFacade::getInstance();
+                return $schemaDefinitionService->getRootTypeResolverClass();
         }
 
         return parent::getTypeResolverClass($module);
