@@ -76,7 +76,7 @@ class VarsHooks extends AbstractHookSet
             $vars['actions'][] = \POP_ACTION_REMOVE_ENTRYMODULE_FROM_OUTPUT;
 
             // Enable mutations?
-            $vars['are-mutations-executable'] = ComponentConfiguration::enableMutations();
+            $vars['are-mutations-enabled'] = ComponentConfiguration::enableMutations();
         }
     }
 
