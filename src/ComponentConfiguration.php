@@ -15,6 +15,7 @@ class ComponentConfiguration
     private static $useSchemaDefinitionCache;
     private static $executeQueryBatchInStrictOrder;
     private static $enableEmbeddableFields;
+    private static $enableMutations;
 
     public static function useSchemaDefinitionCache(): bool
     {
@@ -63,6 +64,24 @@ class ComponentConfiguration
         $envVariable = Environment::ENABLE_EMBEDDABLE_FIELDS;
         $selfProperty = &self::$enableEmbeddableFields;
         $defaultValue = false;
+        $callback = [EnvironmentValueHelpers::class, 'toBool'];
+
+        // Initialize property from the environment/hook
+        self::maybeInitializeConfigurationValue(
+            $envVariable,
+            $selfProperty,
+            $defaultValue,
+            $callback
+        );
+        return $selfProperty;
+    }
+
+    public static function enableMutations(): bool
+    {
+        // Define properties
+        $envVariable = Environment::ENABLE_MUTATIONS;
+        $selfProperty = &self::$enableMutations;
+        $defaultValue = true;
         $callback = [EnvironmentValueHelpers::class, 'toBool'];
 
         // Initialize property from the environment/hook

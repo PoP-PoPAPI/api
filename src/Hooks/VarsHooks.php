@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PoP\API\Hooks;
 
+use PoP\API\ComponentConfiguration;
 use PoP\API\Schema\QueryInputs;
 use PoP\API\Configuration\Request;
 use PoP\Hooks\AbstractHookSet;
@@ -73,6 +74,9 @@ class VarsHooks extends AbstractHookSet
 
             // Do not print the entry module
             $vars['actions'][] = \POP_ACTION_REMOVE_ENTRYMODULE_FROM_OUTPUT;
+
+            // Enable mutations?
+            $vars['are-mutations-executable'] = ComponentConfiguration::enableMutations();
         }
     }
 
