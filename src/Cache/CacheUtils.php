@@ -6,6 +6,7 @@ namespace PoP\API\Cache;
 
 use PoP\Hooks\Facades\HooksAPIFacade;
 use PoP\ComponentModel\State\ApplicationState;
+use PoP\Engine\ComponentConfiguration as EngineComponentConfiguration;
 
 class CacheUtils
 {
@@ -22,6 +23,7 @@ class CacheUtils
                 'version-constraint' => $vars['version-constraint'],
                 'field-version-constraints' => $vars['field-version-constraints'],
                 'directive-version-constraints' => $vars['directive-version-constraints'],
+                'redundant-root-fields-disabled' => EngineComponentConfiguration::disableRedundantRootTypeMutationFields(),
             ]
         );
     }
