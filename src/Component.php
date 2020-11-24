@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace PoP\API;
 
+use PoP\API\Configuration\Request;
 use PoP\API\Config\ServiceConfiguration;
 use PoP\Root\Component\AbstractComponent;
-use PoP\Root\Component\CanDisableComponentTrait;
 use PoP\Root\Component\YAMLServicesTrait;
+use PoP\Root\Component\CanDisableComponentTrait;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
 
 /**
@@ -49,6 +50,23 @@ class Component extends AbstractComponent
         return [
             'getpop/migrate-api',
         ];
+    }
+
+    /**
+     * Set the default component configuration
+     *
+     * @param array<string, mixed> $componentClassConfiguration
+     */
+    public static function customizeComponentClassConfiguration(
+        array &$componentClassConfiguration
+    ): void {
+        // If passing ?use_namespace=1, set it on the configuration
+        if (Environment::enableSettingNamespacingByURLParam()) {
+            $useNamespacing = Request::namespaceTypesAndInterfaces();
+            if ($useNamespacing !== null) {
+                $componentClassConfiguration[\PoP\ComponentModel\Component::class][\PoP\ComponentModel\Environment::NAMESPACE_TYPES_AND_INTERFACES] = $useNamespacing;
+            }
+        }
     }
 
     /**

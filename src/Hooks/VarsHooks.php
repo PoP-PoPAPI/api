@@ -88,11 +88,6 @@ class VarsHooks extends AbstractHookSet
         if ($vars['scheme'] == APISchemes::API) {
             $this->addFieldsToVars($vars);
         }
-
-        // Maybe enable using namespaces
-        if (Request::namespaceTypesAndInterfaces()) {
-            $vars['namespace-types-and-interfaces'] = true;
-        }
     }
 
     private function addFieldsToVars(array &$vars)
