@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PoP\API\PersistedQueries;
 
 use PoP\API\Schema\QuerySymbols;
+use PoP\API\Schema\SchemaDefinition;
 
 abstract class AbstractPersistedQueryManager implements PersistedQueryManagerInterface
 {
@@ -12,6 +13,15 @@ abstract class AbstractPersistedQueryManager implements PersistedQueryManagerInt
      * @var array<string, string>
      */
     protected array $persistedQueries = [];
+    /**
+     * @var array<string, array>
+     */
+    protected array $persistedQueriesForSchema = [];
+
+    public function getPersistedQueriesForSchema(): array
+    {
+        return $this->persistedQueriesForSchema;
+    }
 
     public function getPersistedQueries(): array
     {
@@ -47,5 +57,13 @@ abstract class AbstractPersistedQueryManager implements PersistedQueryManagerInt
     public function add(string $queryName, string $queryResolution, ?string $description = null): void
     {
         $this->persistedQueries[$queryName] = $queryResolution;
+
+        $this->persistedQueriesForSchema[$queryName] = [
+            SchemaDefinition::ARGNAME_NAME => $queryName,
+        ];
+        if ($description) {
+            $this->persistedQueriesForSchema[$queryName][SchemaDefinition::ARGNAME_DESCRIPTION] = $description;
+        }
+        $this->persistedQueriesForSchema[$queryName][SchemaDefinition::ARGNAME_FRAGMENT_RESOLUTION] = $queryResolution;
     }
 }
