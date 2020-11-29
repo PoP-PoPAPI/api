@@ -6,4 +6,8 @@ namespace PoP\API\PersistedQueries;
 
 class PersistedQueryManager extends AbstractPersistedQueryManager
 {
+    protected function addQueryResolutionToSchema(): bool
+    {
+        return true;
+    }
 }

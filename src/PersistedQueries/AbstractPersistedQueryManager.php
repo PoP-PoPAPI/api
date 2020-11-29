@@ -64,6 +64,10 @@ abstract class AbstractPersistedQueryManager implements PersistedQueryManagerInt
         if ($description) {
             $this->persistedQueriesForSchema[$queryName][SchemaDefinition::ARGNAME_DESCRIPTION] = $description;
         }
-        $this->persistedQueriesForSchema[$queryName][SchemaDefinition::ARGNAME_FRAGMENT_RESOLUTION] = $queryResolution;
+        if ($this->addQueryResolutionToSchema()) {
+            $this->persistedQueriesForSchema[$queryName][SchemaDefinition::ARGNAME_FRAGMENT_RESOLUTION] = $queryResolution;
+        }
     }
+
+    abstract protected function addQueryResolutionToSchema(): bool;
 }
