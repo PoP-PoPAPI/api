@@ -34,16 +34,32 @@ class PersistedQueryUtils
     }
 
     /**
-     * If the query starts with "!" then it is the query name to a persisted query. Then retrieve it
+     * If the query starts with "!" then it is the query name to a persisted query
+     */
+    public static function isPersistedQuery(string $query): bool
+    {
+        return substr($query, 0, strlen(QuerySymbols::PERSISTED_QUERY)) == QuerySymbols::PERSISTED_QUERY;
+    }
+
+    /**
+     * Remove "!" to get the persisted query name
+     */
+    public static function getPersistedQueryName(string $query): string
+    {
+        return substr($query, strlen(QuerySymbols::PERSISTED_QUERY));
+    }
+
+    /**
+     * Retrieve the query name from the persisted query param, which starts with "!"
      *
      * @param string $query
      * @return string
      */
     public static function maybeGetPersistedQuery(string $query): string
     {
-        if (substr($query, 0, strlen(QuerySymbols::PERSISTED_QUERY)) == QuerySymbols::PERSISTED_QUERY) {
+        if (self::isPersistedQuery($query)) {
             // Get the query name, and extract the query from the PersistedQueryManager
-            $queryName = substr($query, strlen(QuerySymbols::PERSISTED_QUERY));
+            $queryName = self::getPersistedQueryName($query);
             $queryCatalogueManager = PersistedQueryManagerFacade::getInstance();
             if ($queryCatalogueManager->hasPersistedQuery($queryName)) {
                 return $queryCatalogueManager->getPersistedQuery($queryName);
