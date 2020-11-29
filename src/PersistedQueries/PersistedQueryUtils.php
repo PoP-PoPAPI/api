@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PoP\API\PersistedQueries;
 
-use PoP\API\Schema\QuerySymbols;
 use PoP\API\Facades\PersistedQueryManagerFacade;
 
 class PersistedQueryUtils
@@ -34,22 +33,6 @@ class PersistedQueryUtils
     }
 
     /**
-     * If the query starts with "!" then it is the query name to a persisted query
-     */
-    public static function isPersistedQuery(string $query): bool
-    {
-        return substr($query, 0, strlen(QuerySymbols::PERSISTED_QUERY)) == QuerySymbols::PERSISTED_QUERY;
-    }
-
-    /**
-     * Remove "!" to get the persisted query name
-     */
-    public static function getPersistedQueryName(string $query): string
-    {
-        return substr($query, strlen(QuerySymbols::PERSISTED_QUERY));
-    }
-
-    /**
      * Retrieve the query name from the persisted query param, which starts with "!"
      *
      * @param string $query
@@ -57,10 +40,10 @@ class PersistedQueryUtils
      */
     public static function maybeGetPersistedQuery(string $query): string
     {
-        if (self::isPersistedQuery($query)) {
+        $queryCatalogueManager = PersistedQueryManagerFacade::getInstance();
+        if ($queryCatalogueManager->isPersistedQuery($query)) {
             // Get the query name, and extract the query from the PersistedQueryManager
-            $queryName = self::getPersistedQueryName($query);
-            $queryCatalogueManager = PersistedQueryManagerFacade::getInstance();
+            $queryName = $queryCatalogueManager->getPersistedQueryName($query);
             if ($queryCatalogueManager->hasPersistedQuery($queryName)) {
                 return $queryCatalogueManager->getPersistedQuery($queryName);
             }

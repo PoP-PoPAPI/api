@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PoP\API\PersistedQueries;
 
 use PoP\API\Schema\SchemaDefinition;
+use PoP\API\Schema\QuerySymbols;
 
 class PersistedQueryManager implements PersistedQueryManagerInterface
 {
@@ -35,6 +36,22 @@ class PersistedQueryManager implements PersistedQueryManagerInterface
     public function getPersistedQuery(string $queryName): ?string
     {
         return $this->persistedQueries[$queryName];
+    }
+
+    /**
+     * If the query starts with "!" then it is the query name to a persisted query
+     */
+    public function isPersistedQuery(string $query): bool
+    {
+        return substr($query, 0, strlen(QuerySymbols::PERSISTED_QUERY)) == QuerySymbols::PERSISTED_QUERY;
+    }
+
+    /**
+     * Remove "!" to get the persisted query name
+     */
+    public function getPersistedQueryName(string $query): string
+    {
+        return substr($query, strlen(QuerySymbols::PERSISTED_QUERY));
     }
 
     public function add(string $queryName, string $queryResolution, ?string $description = null): void
