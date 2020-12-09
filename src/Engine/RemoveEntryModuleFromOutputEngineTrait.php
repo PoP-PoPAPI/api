@@ -22,16 +22,16 @@ trait RemoveEntryModuleFromOutputEngineTrait
             in_array(POP_ACTION_REMOVE_ENTRYMODULE_FROM_OUTPUT, $vars['actions']) &&
             $vars['dataoutputmode'] == GD_URLPARAM_DATAOUTPUTMODE_COMBINED
         ) {
-            if ($data['datasetmodulesettings']) {
+            if ($data['datasetmodulesettings'] ?? null) {
                 $data['datasetmodulesettings'] = $this->removeEntryModuleFromOutput($data['datasetmodulesettings']);
             }
-            if ($data['moduledata']) {
+            if ($data['moduledata'] ?? null) {
                 $data['moduledata'] = $this->removeEntryModuleFromOutput($data['moduledata']);
             }
-            if ($data['datasetmoduledata']) {
+            if ($data['datasetmoduledata'] ?? null) {
                 $data['datasetmoduledata'] = $this->removeEntryModuleFromOutput($data['datasetmoduledata']);
             }
-            if ($data['modulesettings']) {
+            if ($data['modulesettings'] ?? null) {
                 $data['modulesettings'] = $this->removeEntryModuleFromOutput($data['modulesettings']);
             }
         }

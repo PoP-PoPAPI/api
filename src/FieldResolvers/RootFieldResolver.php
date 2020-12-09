@@ -205,7 +205,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         // Add the interfaces to the root
                         $interfaces = [];
                         foreach ($schemaDefinition[SchemaDefinition::ARGNAME_TYPES] as $typeName => $typeDefinition) {
-                            if ($typeInterfaces = $typeDefinition[SchemaDefinition::ARGNAME_INTERFACES]) {
+                            if ($typeInterfaces = $typeDefinition[SchemaDefinition::ARGNAME_INTERFACES] ?? null) {
                                 $interfaces = array_merge(
                                     $interfaces,
                                     (array)$typeInterfaces

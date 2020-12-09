@@ -36,7 +36,7 @@ trait AddAPIQueryToSourcesModuleProcessorTrait
                 }
 
                 // If there are subcomponents, add them into the heap
-                if ($key_data['subcomponents']) {
+                if ($key_data['subcomponents'] ?? null) {
                     foreach ($key_data['subcomponents'] as $subcomponent_key => &$subcomponent_data) {
                         // Add the previous key, generating a path
                         $heap[$key . $subcomponent_key . QuerySyntax::SYMBOL_RELATIONALFIELDS_NEXTLEVEL][] = &$subcomponent_data;
