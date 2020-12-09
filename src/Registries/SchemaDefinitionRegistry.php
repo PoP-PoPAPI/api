@@ -46,7 +46,7 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface
     {
         // Create a key from the arrays, to cache the results
         $key = $this->getArgumentKey($fieldArgs, $options);
-        if (is_null($this->schemaInstances[$key])) {
+        if (!isset($this->schemaInstances[$key])) {
             // Attempt to retrieve from the cache, if enabled
             if ($useCache = ComponentConfiguration::useSchemaDefinitionCache()) {
                 $persistentCache = PersistentCacheFacade::getInstance();
