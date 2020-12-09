@@ -513,7 +513,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
     protected function getFragment($fragmentName, array $fragments): ?string
     {
         // A fragment can itself contain fragments!
-        if ($fragment = $fragments[$fragmentName]) {
+        if ($fragment = $fragments[$fragmentName] ?? null) {
             return $this->replaceFragments($fragment, $fragments);
         }
         return null;
