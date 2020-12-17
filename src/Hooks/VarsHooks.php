@@ -121,7 +121,7 @@ class VarsHooks extends AbstractHookSet
     private function addFieldsToComponents(&$components)
     {
         $vars = ApplicationState::getVars();
-        if ($fields = $vars['query']) {
+        if ($fields = $vars['query'] ?? null) {
             // Serialize instead of implode, because $fields can contain $key => $value
             $components[] = TranslationAPIFacade::getInstance()->__('fields:', 'pop-engine') . serialize($fields);
         }
