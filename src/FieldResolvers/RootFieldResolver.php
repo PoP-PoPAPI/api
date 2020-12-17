@@ -145,6 +145,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                     // For the persistentCache, use a hash to remove invalid characters (such as "()")
                     $cacheKey = hash('md5', json_encode($cacheKeyComponents));
                 }
+                $schemaDefinition = null;
                 if ($useCache) {
                     if ($persistentCache->hasCache($cacheKey, $cacheType)) {
                         $schemaDefinition = $persistentCache->getCache($cacheKey, $cacheType);
