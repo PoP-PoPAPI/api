@@ -151,7 +151,7 @@ class RootFieldResolver extends AbstractDBDataFieldResolver
                         $schemaDefinition = $persistentCache->getCache($cacheKey, $cacheType);
                     }
                 }
-                if (!$schemaDefinition) {
+                if ($schemaDefinition === null) {
                     $schemaDefinitionService = SchemaDefinitionServiceFacade::getInstance();
                     $stackMessages = [
                         'processed' => [],

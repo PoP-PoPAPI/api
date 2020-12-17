@@ -64,7 +64,7 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface
                 }
             }
             // If either not using cache, or using but the value had not been cached, then calculate the value
-            if (!$schemaDefinition) {
+            if ($schemaDefinition === null) {
                 $instanceManager = InstanceManagerFacade::getInstance();
                 /**
                  * @var RootTypeResolver
