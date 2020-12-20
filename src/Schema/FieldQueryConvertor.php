@@ -296,7 +296,8 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
 
     /**
      * Support resolving other fields from the same type in field/directive arguments:
-     * Replace posts(searchfor: "{{title}}") with posts(searchfor: "sprintf(%s, [title()])")
+     * Replace posts(searchfor: "{{title}}") with posts(searchfor: "title()")
+     * Replace posts(searchfor: "{{title}} and {{excerpt}}") with posts(searchfor: "sprintf(%s and %s, [title(), excerpt()])")
      */
     protected function maybeReplaceEmbeddableFieldOrDirectiveArguments(string $field, array $fieldOrDirectiveArgValues): string
     {
@@ -329,6 +330,22 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 $fieldOrDirectiveArgValue,
                 $matches
             )) {
+                // If there is only one item, and it occupies the whole param
+                // (eg: echoStr("{{ title }}")), then don't use "sprintf" but that field directly.
+                // That is to be able to retrieve objects other than strings
+                // (eg: "{{ blockMetadata }}" becomes blockMetadata(), which is an array)
+                $isSingleWholeEmbed = false;
+                if (count($matches[0]) == 1) {
+                    // Check if the embedded field is exactly the requested field
+                    // Notice that it has '"' at the beginning and end
+                    $embeddedField = $matches[0][0];
+                    if ($embeddedField == $fieldOrDirectiveArgValue
+                        || $fieldQueryInterpreter->wrapStringInQuotes($embeddedField) == $fieldOrDirectiveArgValue
+                    ) {
+                        $isSingleWholeEmbed = true;
+                    }
+                }
+
                 /**
                  * Use a single `sprintf` for all matches.
                  * Eg: "title is {{title}} and authorID is {{authorID}}" is replaced
@@ -359,13 +376,17 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                     }
                     $fields[] = $fieldNames[$i];
                 }
-                $replacedFieldArgValue = $fieldQueryInterpreter->getField(
-                    'sprintf',
-                    [
-                        'string' => $replacedFieldArgValue,
-                        'values' => $fields
-                    ]
-                );
+                // If the embedded field is the whole arg value, use that field directly
+                // Otherwise concatenate the different parts as a string, use "sprintf"
+                $replacedFieldArgValue = $isSingleWholeEmbed ?
+                    $fields[0]
+                    : $fieldQueryInterpreter->getField(
+                        'sprintf',
+                        [
+                            'string' => $replacedFieldArgValue,
+                            'values' => $fields
+                        ]
+                    );
                 $field = str_replace($fieldOrDirectiveArgValue, $replacedFieldArgValue, $field);
             }
         }
