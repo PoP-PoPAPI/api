@@ -16,6 +16,7 @@ class ComponentConfiguration
     private static $executeQueryBatchInStrictOrder;
     private static $enableEmbeddableFields;
     private static $enableMutations;
+    private static $overrideRequestURI;
 
     public static function useSchemaDefinitionCache(): bool
     {
@@ -82,6 +83,29 @@ class ComponentConfiguration
         $envVariable = Environment::ENABLE_MUTATIONS;
         $selfProperty = &self::$enableMutations;
         $defaultValue = true;
+        $callback = [EnvironmentValueHelpers::class, 'toBool'];
+
+        // Initialize property from the environment/hook
+        self::maybeInitializeConfigurationValue(
+            $envVariable,
+            $selfProperty,
+            $defaultValue,
+            $callback
+        );
+        return $selfProperty;
+    }
+
+    /**
+     * Remove unwanted data added to the REQUEST_URI, replacing
+     * it with the website home URL.
+     * Eg: the language information from qTranslate (https://domain.com/en/...)
+     */
+    public static function overrideRequestURI(): bool
+    {
+        // Define properties
+        $envVariable = Environment::OVERRIDE_REQUEST_URI;
+        $selfProperty = &self::$overrideRequestURI;
+        $defaultValue = false;
         $callback = [EnvironmentValueHelpers::class, 'toBool'];
 
         // Initialize property from the environment/hook
