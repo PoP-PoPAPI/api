@@ -102,6 +102,10 @@ location ~ ^(.*)/api/(rest|graphql)/?$ {
 }
 ```
 
+## Development
+
+The source code is hosted on the [PoP monorepo](https://github.com/leoloso/PoP), under [`API/packages/api`](https://github.com/leoloso/PoP/tree/master/layers/API/packages/api).
+
 ## Usage
 
 Initialize the component:
@@ -122,9 +126,9 @@ Initialize the component:
 
 2. Add your query under URL parameter `query`, following [this syntax](https://github.com/getpop/field-query)
 
-## Features
+<!-- ## Features
 
-Please refer to the [features in the GraphQL package](https://github.com/getpop/api-graphql#features).
+Please refer to the [features in the GraphQL package](https://github.com/getpop/api-graphql#features). -->
 
 <!--
 ### Query the root or URL-based resources
@@ -492,7 +496,7 @@ Same as the [Supported PHP features for `getpop/root`](https://github.com/getpop
 Via [Rector](https://github.com/rectorphp/rector) (dry-run mode):
 
 ```bash
-composer downgrade-code
+composer preview-code-downgrade
 ```
 
 ## Standards
@@ -553,7 +557,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-code-quality]: https://scrutinizer-ci.com/g/getpop/api
 [link-downloads]: https://packagist.org/packages/getpop/api
 [link-author]: https://github.com/leoloso
-[link-contributors]: ../../contributors
+[link-contributors]: ../../../../../../contributors
 
 
 
