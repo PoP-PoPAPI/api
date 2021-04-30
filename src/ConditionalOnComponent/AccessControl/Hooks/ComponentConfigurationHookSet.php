@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PoP\API\Conditional\AccessControl\Hooks;
+namespace PoP\API\ConditionalOnComponent\AccessControl\Hooks;
 
 use PoP\API\Environment;
 use PoP\API\ComponentConfiguration;
