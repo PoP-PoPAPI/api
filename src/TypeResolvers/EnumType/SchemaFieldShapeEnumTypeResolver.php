@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PoP\API\Enums;
+namespace PoP\API\TypeResolvers\EnumType;
 
 use PoP\API\Schema\SchemaDefinition;
 use PoP\ComponentModel\Enums\AbstractEnumTypeResolver;
 
-class SchemaFieldShapeEnum extends AbstractEnumTypeResolver
+class SchemaFieldShapeEnumTypeResolver extends AbstractEnumTypeResolver
 {
     public function getTypeName(): string
     {
@@ -22,5 +22,13 @@ class SchemaFieldShapeEnum extends AbstractEnumTypeResolver
             SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_FLAT,
             SchemaDefinition::ARGVALUE_SCHEMA_SHAPE_NESTED,
         ];
+    }
+
+    /**
+     * Use the original values
+     */
+    public function getOutputEnumValueCallable(): ?callable
+    {
+        return null;
     }
 }
