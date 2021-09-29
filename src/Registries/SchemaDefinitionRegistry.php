@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace PoP\API\Registries;
 
-use Symfony\Contracts\Service\Attribute\Required;
 use PoP\API\Cache\CacheTypes;
 use PoP\API\ComponentConfiguration;
-use PoP\ComponentModel\Cache\CacheInterface;
+use PoP\ComponentModel\Cache\PersistentCacheInterface;
 use PoP\ComponentModel\ErrorHandling\Error;
-use PoP\ComponentModel\Facades\Cache\PersistentCacheFacade;
 use PoP\ComponentModel\Instances\InstanceManagerInterface;
 use PoP\ComponentModel\Misc\GeneralUtils;
 use PoP\ComponentModel\Schema\FeedbackMessageStoreInterface;
@@ -18,10 +16,11 @@ use PoP\Engine\Cache\CacheUtils;
 use PoP\Engine\ObjectModels\Root;
 use PoP\Engine\TypeResolvers\ObjectType\RootObjectTypeResolver;
 use PoP\Translation\TranslationAPIInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface
 {
-    protected CacheInterface $persistentCache;
+    protected PersistentCacheInterface $persistentCache;
     protected FeedbackMessageStoreInterface $feedbackMessageStore;
     protected FieldQueryInterpreterInterface $fieldQueryInterpreter;
     protected TranslationAPIInterface $translationAPI;
@@ -35,6 +34,7 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface
         FieldQueryInterpreterInterface $fieldQueryInterpreter,
         TranslationAPIInterface $translationAPI,
         InstanceManagerInterface $instanceManager,
+        PersistentCacheInterface $persistentCache,
         RootObjectTypeResolver $rootTypeResolver,
         Root $root,
     ): void {
@@ -42,9 +42,9 @@ class SchemaDefinitionRegistry implements SchemaDefinitionRegistryInterface
         $this->fieldQueryInterpreter = $fieldQueryInterpreter;
         $this->translationAPI = $translationAPI;
         $this->instanceManager = $instanceManager;
+        $this->persistentCache = $persistentCache;
         $this->rootTypeResolver = $rootTypeResolver;
         $this->root = $root;
-        $this->persistentCache = PersistentCacheFacade::getInstance();
     }
 
     /**
