@@ -16,26 +16,20 @@ class RootObjectTypeSchemaDefinitionProvider extends ObjectTypeSchemaDefinitionP
     public function getSchemaDefinition(): array
     {
         $schemaDefinition = parent::getSchemaDefinition();
-        if (!ComponentConfiguration::addGlobalFieldsToSchema()) {
-            return array_merge(
-                $schemaDefinition,
-                [
-                    SchemaDefinition::GLOBAL_FIELDS => [],
-                    SchemaDefinition::GLOBAL_CONNECTIONS => [],
-                ]
-            );
-        }
         $globalSchemaDefinition = $this->getObjectTypeSchemaDefinition(true);
         $schemaDefinition[SchemaDefinition::DIRECTIVES] = array_merge(
             $schemaDefinition[SchemaDefinition::DIRECTIVES],
             $globalSchemaDefinition[SchemaDefinition::DIRECTIVES]
         );
-        return array_merge(
-            $schemaDefinition,
-            [
-                SchemaDefinition::GLOBAL_FIELDS => $globalSchemaDefinition[SchemaDefinition::FIELDS],
-                SchemaDefinition::GLOBAL_CONNECTIONS => $globalSchemaDefinition[SchemaDefinition::CONNECTIONS],
-            ]
-        );
+        if (ComponentConfiguration::exposeGlobalFieldsInSchema()) {
+            return array_merge(
+                $schemaDefinition,
+                [
+                    SchemaDefinition::GLOBAL_FIELDS => $globalSchemaDefinition[SchemaDefinition::FIELDS],
+                    SchemaDefinition::GLOBAL_CONNECTIONS => $globalSchemaDefinition[SchemaDefinition::CONNECTIONS],
+                ]
+            );
+        }
+        return $schemaDefinition;
     }
 }
