@@ -49,6 +49,14 @@ class ObjectTypeSchemaDefinitionProvider extends AbstractTypeSchemaDefinitionPro
         return $schemaDefinition;
     }
 
+    /**
+     * Watch out! The POSSIBLE_TYPES are injected in SchemaDefinitionService,
+     * so that only typeResolvers accessible from the Root are analyzed,
+     * and not necessarily all of them (as they appear in the TypeRegistry)
+     *
+     * For instance, QueryRoot with nested mutations enabled must be skipped,
+     * yet it would be retrieved if reading the types from the typeRegistry
+     */
     final protected function addPossibleTypeSchemaDefinitions(array &$schemaDefinition): void
     {
         // Initialize it here, but it will be filled in SchemaDefinitionService
@@ -75,7 +83,6 @@ class ObjectTypeSchemaDefinitionProvider extends AbstractTypeSchemaDefinitionPro
     {
         // Add the fields (non-global)
         $schemaDefinition[SchemaDefinition::FIELDS] = [];
-        $schemaDefinition[SchemaDefinition::CONNECTIONS] = [];
         $schemaObjectTypeFieldResolvers = $this->objectTypeResolver->getExecutableObjectTypeFieldResolversByField($useGlobal);
         foreach ($schemaObjectTypeFieldResolvers as $fieldName => $objectTypeFieldResolver) {
             // Fields may not be directly visible in the schema
@@ -96,13 +103,7 @@ class ObjectTypeSchemaDefinitionProvider extends AbstractTypeSchemaDefinitionPro
                 $this->accessedTypeAndDirectiveResolvers[$fieldArgTypeResolver::class] = $fieldArgTypeResolver;
                 SchemaDefinitionHelpers::replaceTypeResolverWithTypeProperties($fieldSchemaDefinition[SchemaDefinition::ARGS][$fieldArgName]);
             }
-
-            // Split the results into "fields" and "connections"
-            $isConnection = $fieldTypeResolver instanceof RelationalTypeResolverInterface;
-            $entry = $isConnection ?
-                SchemaDefinition::CONNECTIONS :
-                SchemaDefinition::FIELDS;
-            $schemaDefinition[$entry][$fieldName] = $fieldSchemaDefinition;
+            $schemaDefinition[SchemaDefinition::FIELDS][$fieldName] = $fieldSchemaDefinition;
         }
     }
 
