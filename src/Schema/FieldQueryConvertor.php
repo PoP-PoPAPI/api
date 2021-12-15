@@ -381,6 +381,19 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                     $matches
                 )
             ) {
+                /**
+                 * Most likely, the argValue is the embedded field.
+                 * But the embed might also be inside an InputObject, as when doing:
+                 * 
+                 * ```
+                 * appendExpressions: {
+                 *   toLang: "{{extract(__value__,translateTo)}}"
+                 * }
+                 * ```
+                 * 
+                 * In that case, the embedded field will be a substring within the argValue.
+                 */
+                $embeddedField = $fieldOrDirectiveArgValue;
                 // If there is only one item, and it occupies the whole param
                 // (eg: echoStr("{{ title }}")), then don't use "sprintf" but that field directly.
                 // That is to be able to retrieve objects other than strings
@@ -390,10 +403,8 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                     // Check if the embedded field is exactly the requested field
                     // Notice that it has '"' at the beginning and end
                     $embeddedField = $matches[0][0];
-                    if (
-                        $embeddedField == $fieldOrDirectiveArgValue
-                        || $this->getFieldQueryInterpreter()->wrapStringInQuotes($embeddedField) == $fieldOrDirectiveArgValue
-                    ) {
+                    $embeddedField = $this->getFieldQueryInterpreter()->wrapStringInQuotes($embeddedField);
+                    if ($embeddedField == $fieldOrDirectiveArgValue) {
                         $isSingleWholeEmbed = true;
                     }
                 }
@@ -410,7 +421,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                 $fieldNames = array_map('trim', array_unique($matches[2])); // ["title"]
                 $fieldCount = count($fieldEmbeds);
                 $fields = [];
-                $replacedFieldArgValue = $fieldOrDirectiveArgValue;
+                $replacedFieldArgValue = $embeddedField;
                 for ($i = 0; $i < $fieldCount; $i++) {
                     $replacedFieldArgValue = str_replace(
                         $fieldEmbeds[$i],
@@ -439,7 +450,7 @@ class FieldQueryConvertor implements FieldQueryConvertorInterface
                             'values' => $fields
                         ]
                     );
-                    $field = str_replace($fieldOrDirectiveArgValue, $replacedFieldArgValue, $field);
+                $field = str_replace($embeddedField, $replacedFieldArgValue, $field);
             }
         }
 
