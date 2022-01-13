@@ -10,7 +10,7 @@ use PoP\API\ComponentConfiguration;
 use PoP\API\Response\Schemes as APISchemes;
 use PoP\ComponentModel\HelperServices\RequestHelperServiceInterface;
 use PoP\Engine\CMS\CMSServiceInterface;
-use PoP\BasicService\AbstractHookSet;
+use PoP\Root\Hooks\AbstractHookSet;
 
 class RoutingHookSet extends AbstractHookSet
 {
@@ -36,12 +36,12 @@ class RoutingHookSet extends AbstractHookSet
 
     protected function init(): void
     {
-        $this->getHooksAPI()->addFilter(
+        App::addFilter(
             '\PoP\Routing:uri-route',
             array($this, 'getURIRoute')
         );
 
-        $this->getHooksAPI()->addFilter(
+        App::addFilter(
             '\PoP\ComponentModel\Engine:getExtraRoutes',
             array($this, 'getExtraRoutes'),
             10,
