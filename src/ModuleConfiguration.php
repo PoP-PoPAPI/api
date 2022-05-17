@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace PoPAPI\API;
 
 use PoP\Root\App;
-use PoP\Root\Component\AbstractComponentConfiguration;
-use PoP\ComponentModel\Component as ComponentModelComponent;
-use PoP\ComponentModel\ComponentConfiguration as ComponentModelComponentConfiguration;
-use PoP\Root\Component\EnvironmentValueHelpers;
+use PoP\Root\Module\AbstractModuleConfiguration;
+use PoP\ComponentModel\Module as ComponentModelModule;
+use PoP\ComponentModel\ModuleConfiguration as ComponentModelModuleConfiguration;
+use PoP\Root\Module\EnvironmentValueHelpers;
 
-class ComponentConfiguration extends AbstractComponentConfiguration
+class ModuleConfiguration extends AbstractModuleConfiguration
 {
     public function useSchemaDefinitionCache(): bool
     {
         // First check that the Component Model cache is enabled
-        /** @var ComponentModelComponentConfiguration */
-        $componentConfiguration = App::getComponent(ComponentModelComponent::class)->getConfiguration();
-        if (!$componentConfiguration->useComponentModelCache()) {
+        /** @var ComponentModelModuleConfiguration */
+        $moduleConfiguration = App::getModule(ComponentModelModule::class)->getConfiguration();
+        if (!$moduleConfiguration->useComponentModelCache()) {
             return false;
         }
 
