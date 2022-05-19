@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PoPAPI\API\ModuleProcessors;
+namespace PoPAPI\API\ComponentProcessors;
 
 use PoP\Root\App;
 use PoP\ComponentModel\TypeResolvers\RelationalTypeResolverInterface;
 use PoP\Engine\ObjectModels\Root;
 use PoP\Engine\Schema\SchemaDefinitionServiceInterface;
 
-class RootRelationalFieldDataloadModuleProcessor extends AbstractRelationalFieldDataloadModuleProcessor
+class RootRelationalFieldDataloadComponentProcessor extends AbstractRelationalFieldDataloadComponentProcessor
 {
-    public final const MODULE_DATALOAD_RELATIONALFIELDS_ROOT = 'dataload-relationalfields-root';
+    public final const COMPONENT_DATALOAD_RELATIONALFIELDS_ROOT = 'dataload-relationalfields-root';
 
     private ?SchemaDefinitionServiceInterface $schemaDefinitionService = null;
 
@@ -24,32 +24,32 @@ class RootRelationalFieldDataloadModuleProcessor extends AbstractRelationalField
         return $this->schemaDefinitionService ??= $this->instanceManager->getInstance(SchemaDefinitionServiceInterface::class);
     }
 
-    public function getModulesToProcess(): array
+    public function getComponentsToProcess(): array
     {
         return array(
-            [self::class, self::MODULE_DATALOAD_RELATIONALFIELDS_ROOT],
+            [self::class, self::COMPONENT_DATALOAD_RELATIONALFIELDS_ROOT],
         );
     }
 
-    public function getObjectIDOrIDs(array $module, array &$props, &$data_properties): string | int | array | null
+    public function getObjectIDOrIDs(array $component, array &$props, &$data_properties): string | int | array | null
     {
         if (App::getState('does-api-query-have-errors')) {
             return null;
         }
-        switch ($module[1]) {
-            case self::MODULE_DATALOAD_RELATIONALFIELDS_ROOT:
+        switch ($component[1]) {
+            case self::COMPONENT_DATALOAD_RELATIONALFIELDS_ROOT:
                 return Root::ID;
         }
-        return parent::getObjectIDOrIDs($module, $props, $data_properties);
+        return parent::getObjectIDOrIDs($component, $props, $data_properties);
     }
 
-    public function getRelationalTypeResolver(array $module): ?RelationalTypeResolverInterface
+    public function getRelationalTypeResolver(array $component): ?RelationalTypeResolverInterface
     {
-        switch ($module[1]) {
-            case self::MODULE_DATALOAD_RELATIONALFIELDS_ROOT:
+        switch ($component[1]) {
+            case self::COMPONENT_DATALOAD_RELATIONALFIELDS_ROOT:
                 return $this->getSchemaDefinitionService()->getSchemaRootObjectTypeResolver();
         }
 
-        return parent::getRelationalTypeResolver($module);
+        return parent::getRelationalTypeResolver($component);
     }
 }
