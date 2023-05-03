@@ -21,7 +21,7 @@ use PoP\ComponentModel\AbstractTestCase;
 use PoP\Root\Module\ModuleInterface;
 use SplObjectStorage;
 
-abstract class AbstractMultipleQueryExecutionQueryASTTransformationServiceTest extends AbstractTestCase
+abstract class AbstractMultipleQueryExecutionQueryASTTransformationServiceTestCase extends AbstractTestCase
 {
     /**
      * @return array<class-string<ModuleInterface>,array<string,mixed>> [key]: Module class, [value]: Configuration
@@ -71,7 +71,7 @@ abstract class AbstractMultipleQueryExecutionQueryASTTransformationServiceTest e
          *   }
          *   ```
          *
-         * @see layers/API/packages/api/tests/QueryResolution/AbstractMultipleQueryExecutionTest.php Query based on example test there (and then completed a bit more)
+         * @see layers/API/packages/api/tests/QueryResolution/AbstractMultipleQueryExecutionTestCase.php Query based on example test there (and then completed a bit more)
          */
         $argument1 = new Argument('id', new Literal(1, new Location(3, 26)), new Location(3, 22));
         $leafField1 = new LeafField('title', null, [], [], new Location(4, 21));
